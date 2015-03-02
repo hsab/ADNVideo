@@ -1,10 +1,14 @@
+// Detect shotshots (splits) templates in videos or list of images.
+// Please read README.txt for information and build instructions.
+
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <fstream>
 #include "repere.h"
 
 namespace amu {
-
+	
+// This function returns the cumulate gradient of sobel filters 
     int CumulateGradient(const cv::Mat& image, cv::Mat& horizontal, cv::Mat& vertical) {
         cv::Mat gray, dx, dy;
         cv::cvtColor(image, gray, CV_BGR2GRAY);
@@ -14,17 +18,13 @@ namespace amu {
         vertical += dy;
         return 1;
     }
-
+    
+// This function plots matched templates with horizontal and vertical gradients
     int MatchTemplate(cv::Mat& image, cv::Mat& horizontal, cv::Mat& vertical, std::vector<amu::Split>& templates) {
-        /*cv::Mat gray, horizontal, vertical;
-        cv::cvtColor(image, gray, CV_BGR2GRAY);
-        cv::Sobel(gray, horizontal, CV_16S, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT );
-        cv::Sobel(gray, vertical, CV_16S, 0, 1, 3, 1, 0, cv::BORDER_DEFAULT );*/
+		   
         horizontal = cv::abs(horizontal);
         vertical = cv::abs(vertical);
-        //cv::threshold(horizontal, horizontal, 192, 255, CV_THRESH_BINARY);
-        //cv::threshold(vertical, vertical, 192, 255, CV_THRESH_BINARY);
-
+        
         horizontal.convertTo(horizontal, CV_8U);
         vertical.convertTo(vertical, CV_8U);
 
@@ -77,62 +77,54 @@ namespace amu {
                 }
                 sum /= 256 * norm;
                 if(sum > max) { // && min_segment > 0.1) {
-                    //std::cout << i << " " << sum << " " << min_segment << "\n";
                     max = sum;
                     argmax = i;
                 }
-                /*if(argmax == -1 || min_segment > max) {
-                  max = min_segment;
-                  argmax = i;
-                  }*/
             }
-            std::cout << " " << max;
+            
+            if(argmax != -1 && max >= 0.45) {
+				
+				std::cout << " split_id = "<<argmax << " split_score = "<< max<<std::endl;
+				// idea: display masked horizontal and vertical
+				// use vertical as penalty on horizontals and vice versa
+				for(int i = 0; i < templates[argmax].subshots.size(); i++) {
+					const amu::SubShot subshot = templates[argmax].subshots[i];
+					std::stringstream name;
+					name << i;
+					cv::rectangle(image, cv::Rect(subshot.x, subshot.y, subshot.width, subshot.height), cv::Scalar(0, 0, 255));
+					cv::imshow("splits", image);
+					cv::waitKey(0);
+				}
+			}
         }
         std::cout << "\n";
-
-        /*if(argmax != -1 && max >= 0.4) {
-            // idea: display masked horizontal and vertical
-            //       use vertical as penalty on horizontals and vice versa
-            for(int i = 0; i < templates[argmax].subshots.size(); i++) {
-                const amu::SubShot subshot = templates[argmax].subshots[i];
-                std::stringstream name;
-                name << i;
-                cv::imshow(name.str(), cv::Mat(image, cv::Rect(subshot.x, subshot.y, subshot.width, subshot.height)));
-                cv::rectangle(image, cv::Rect(subshot.x, subshot.y, subshot.width, subshot.height), cv::Scalar(0, 0, 255));
-                //cv::rectangle(vertical, cv::Rect(subshot.x, subshot.y, subshot.width, subshot.height), cv::Scalar(255));
-                //cv::rectangle(horizontal, cv::Rect(subshot.x, subshot.y, subshot.width, subshot.height), cv::Scalar(255));
-            }
-        }
-            cv::imshow("vertical", vertical);
-            cv::imshow("horizontal", horizontal);
-        cv::imshow("result", image);
-        cv::waitKey(0);
-        if(argmax != -1) {
-            for(int i = 0; i < templates[argmax].subshots.size(); i++) {
-                std::stringstream name;
-                name << i;
-                cv::destroyWindow(name.str());
-            }
-        }*/
-
         return 0;
     }
-
 }
 
+// Main function: Takes the shot boundaries detections and shows template split candidates
+// templates : text file of split templates for 1024x576 frames
+//             split_name number_split coor_x coor_y width hight coor_x coor_y width hight ... coor_x coor_y width hight
+// prints numframe middle shot 
+// if split candidates then prints split_ids and split_scores
 int main(int argc, char** argv) {
+
+	// need split template file and shot boudaries detection outputs	
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --templates <template-file>       subshot template definition file\n");
     options.AddUsage("  --shots <shots-file>              shot segmentation\n");
 
+	//scale split templates coordinates 
     double scale = options.Read("--scale", 1.0); // from video.Configure()
     std::string templateFile = options.Get<std::string>("--templates", "");
     std::string shotFile = options.Get<std::string>("--shots", "");
-
+	
+	//load video
     amu::VideoReader video;
     if(!video.Configure(options)) return 1;
     if(options.Size() != 0 || templateFile == "" || shotFile == "") options.Usage();
-
+    
+	// load templates
     std::fstream templateStream(templateFile.c_str());
     if(!templateStream) {
         std::cerr << "ERROR: cannot read template file \"" << templateFile << "\"\n";
@@ -140,43 +132,40 @@ int main(int argc, char** argv) {
     }
     std::vector<amu::Split> templates;
     amu::Split::ParseTemplates(templateStream, templates, scale);
-
+    
+	// load shot boundaries file
     std::fstream shotStream(shotFile.c_str());
     if(!shotStream) {
-        std::cerr << "ERROR: cannot read template file \"" << shotFile << "\"\n";
+        std::cerr << "ERROR: cannot read shots file \"" << shotFile << "\"\n";
         return 1;
     }
     std::vector<amu::ShotSegment> shots;
     amu::ShotSegment::ParseShotSegmentation(shotStream, shots);
 
+
     cv::Mat image;
+    cv::Mat resized;
+            
     for(size_t shot = 0; shot < shots.size(); shot++) {
-        //video.SeekTime(shots[shot].time);
         video.Seek(shots[shot].frame);
         video.ReadFrame(image);
-
-        cv::Mat horizontal = cv::Mat::zeros(image.rows, image.cols, CV_16S);
-        cv::Mat vertical = cv::Mat::zeros(image.rows, image.cols, CV_16S);
+        // resize image to 1024x576
+        cv::resize(image, resized,cv::Size(1024,576));
+            
+        cv::Mat horizontal = cv::Mat::zeros(resized.rows, resized.cols, CV_16S);
+        cv::Mat vertical = cv::Mat::zeros(resized.rows, resized.cols, CV_16S);
         cv::Mat frame;
         video.SeekTime(shots[shot].startTime);
         int numFrames = 0;
-        /*while(video.GetTime() < shots[shot].endTime) {
-            video.ReadFrame(frame);
-            amu::CumulateGradient(frame, horizontal, vertical);
-            numFrames ++;
-        }*/
-        amu::CumulateGradient(image, horizontal, vertical);
-        numFrames++;
 
+        amu::CumulateGradient(resized, horizontal, vertical);
+        numFrames++;
+     
         horizontal /= numFrames;
         vertical /= numFrames;
 
-        std::cout << shots[shot].frame;// << " ";
-        amu::MatchTemplate(image, horizontal, vertical, templates);
+        std::cout << "shot_id = "<<shot <<"   Middle_frame = "<<shots[shot].frame;// << " ";
+        amu::MatchTemplate(resized, horizontal, vertical, templates);
     }
-    /*while(video.HasNext()) {
-        video.ReadFrame(image);
-        amu::MatchTemplate(image, templates);
-    }*/
     return 0;
 }

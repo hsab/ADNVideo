@@ -1,4 +1,4 @@
-// See Shot boundary detection in videos or list of images.
+// Shot boundary detection in videos or list of images.
 // Please read README.txt for information and build instructions.
 #include <iostream>
 #include <algorithm>
@@ -80,11 +80,10 @@ double Median(const amu::Buffer<double>& values) {
     return sorted[n];
 }
 
-// Main function: Takes the entire video or sequence of images,
+// Main function: Takes a video or list of images,
 // returns shot boundaries detected on the console output as :
 // Video_name start_time end_time shot shot_Id start_frame end_frame middle_frame start_time end_time middle_time score
 // score is the break distance
-
 int main(int argc, char** argv) {
 	 
     amu::CommandLine options(argv, "[options]\n");

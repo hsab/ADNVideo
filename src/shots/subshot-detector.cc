@@ -1,3 +1,5 @@
+// Detect shotshots (splits) in videos or list of images without split templates.
+// Please read README.txt for information and build instructions.
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include "nbest.h"
@@ -42,12 +44,6 @@ double FindRectangles(cv::Mat& hEdges, cv::Mat& vEdges, cv::Mat& image) {
     horizontal.insertNmax(width, height - 1);
     horizontal.sortNmax();
 
-    /*for(int i = 0; i < vertical.size(); i++) {
-        cv::line(image, cv::Point(vertical.get(i), 0), cv::Point(vertical.get(i), height), cv::Scalar(0, 0, 255), 1);
-    }
-    for(int j = 0; j < horizontal.size(); j++) {
-        cv::line(image, cv::Point(0, horizontal.get(j)), cv::Point(width, horizontal.get(j)), cv::Scalar(255, 0, 0), 1);
-    }*/
 
     std::vector<int> sorted_vertical;
     for(int i = 0; i < vertical.size(); i++) sorted_vertical.push_back(vertical.get(i));
@@ -80,13 +76,6 @@ double FindRectangles(cv::Mat& hEdges, cv::Mat& vEdges, cv::Mat& image) {
                     double ratio2 = (double) border2 / (256.0 * (x2 - x1));
                     double ratio3 = (double) border3 / (256.0 * (y2 - y1));
                     double ratio4 = (double) border4 / (256.0 * (y2 - y1));
-
-                    /*int border = row_integral(hSum, x2, y1) - row_integral(hSum, x1, y1)
-                        + row_integral(hSum, x2, y2) - row_integral(hSum, x1, y2)
-                        + column_integral(vSum, x1, y2) - column_integral(vSum, x1, y1)
-                        + column_integral(vSum, x2, y2) - column_integral(vSum, x2, y1);
-
-                    double ratio = (double) border / perimeter;*/
 
                     double ratio = (ratio1 + ratio2 + ratio3 + ratio4) / 4;
 
@@ -123,65 +112,38 @@ void DrawRectangles(cv::Mat& image) {
     cv::Mat vertical(image.rows, image.cols, CV_16S);
     horizontal.setTo(0);
     vertical.setTo(0);
-    /*for(int i = 0; i < 1; i++) {
-        cv::Mat grad_x, grad_y;
-        cv::Sobel(channels[i], grad_x, CV_16S, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT );
-        cv::Sobel(channels[i], grad_y, CV_16S, 0, 1, 3, 1, 0, cv::BORDER_DEFAULT );
-        horizontal = cv::max(horizontal, cv::abs(grad_x));
-        vertical = cv::max(vertical, cv::abs(grad_y));
-    }*/
+
     cv::Mat gray;
     cv::cvtColor(image, gray, CV_BGR2GRAY);
-    cv::Sobel(gray, horizontal, CV_16S, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT );
-    cv::Sobel(gray, vertical, CV_16S, 0, 1, 3, 1, 0, cv::BORDER_DEFAULT );
+    cv::Sobel(gray, vertical, CV_16S, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT );
+    cv::Sobel(gray, horizontal, CV_16S, 0, 1, 3, 1, 0, cv::BORDER_DEFAULT );
     horizontal = cv::abs(horizontal);
     vertical = cv::abs(vertical);
     cv::threshold(horizontal, horizontal, 192, 255, CV_THRESH_BINARY);
     cv::threshold(vertical, vertical, 192, 255, CV_THRESH_BINARY);
+	
 
-    cv::imshow("h", horizontal * 128);
-    cv::imshow("v", vertical * 128);
-
+    
     int width = image.cols;
     int height = image.rows;
     cv::Mat hSum, vSum;
     horizontal.convertTo(horizontal, CV_8U);
     vertical.convertTo(vertical, CV_8U);
-    //FindRectangles(horizontal, vertical, image);
 
-    /*cv::integral(horizontal, hSum);
-    cv::integral(vertical, vSum);
-
-    for(int x = 0; x < width; x++) {
-        double value = hSum.at<int>(height, x + 1) - hSum.at<int>(height, x);
-        value /= 255 * width / 50;
-        cv::line(image, cv::Point(x, height), cv::Point(x, height - value), cv::Scalar(0, 0, 255), 1);
-    }
-    for(int y = 0; y < height; y++) {
-        double value = vSum.at<int>(y + 1, width) - vSum.at<int>(y, width);
-        value /= 255 * width / 50;
-        cv::line(image, cv::Point(width - value, y), cv::Point(width, y), cv::Scalar(0, 255, 0), 1);
-    }*/
-    //cv::imshow("image", image);
-    /*for(int i = 0; i < vertical.size(); i++) {
-        cv::line(image, cv::Point(vertical.get(i), 0), cv::Point(vertical.get(i), height), cv::Scalar(0, 0, 255), 1);
-    }
-    for(int j = 0; j < horizontal.size(); j++) {
-        cv::line(image, cv::Point(0, horizontal.get(j)), cv::Point(width, horizontal.get(j)), cv::Scalar(255, 0, 0), 1);
-    }*/
 
     cv::vector<cv::Vec4i> lines;
     // input, output, rho, theta, threshold, min-length, max-gap
-      cv::HoughLinesP(horizontal, lines, 1, CV_PI, 10, 50, 4);
+      cv::HoughLinesP(horizontal, lines, 1, CV_PI/2, 50, 50, 4);
       for( size_t i = 0; i < lines.size(); i++ )
-      {
+      {	 
       cv::Vec4i l = lines[i];
       cv::line(image, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 1, CV_AA);
       }
-      cv::imshow("image", image);
 
-    cv::vector<cv::Vec4i> lines2;
+
+	  cv::vector<cv::Vec4i> lines2;
       cv::HoughLinesP(vertical, lines2, 1, CV_PI, 50, 50, 4);
+
       for( size_t i = 0; i < lines2.size(); i++ )
       {
       cv::Vec4i l = lines2[i];
@@ -190,44 +152,12 @@ void DrawRectangles(cv::Mat& image) {
       cv::imshow("image", image);
 
     cv::waitKey(0);
+          FindRectangles(horizontal, vertical, image) ;
+
 }
 
 int main(int argc, char** argv) {
 
-    /*cv::Mat accu(cv::Size(1024, 576), CV_32F);
-    accu.setTo(0);
-
-    cv::Mat image;
-    for(int i = 1; i < argc; i++) {
-        image = cv::imread(argv[i], 1);
-        cv::resize(image, image, cv::Size(1024, 576));
-        cv::Mat edges, gray;
-        cv::cvtColor(image, gray, CV_BGR2GRAY);
-        cv::Canny(gray, edges, 150, 200, 3);
-        cv::accumulate(edges & 1, accu);
-    }
-
-    accu /= argc - 1;
-    
-    //imshow("accu", accu);
-    cv::Mat accu2(cv::Size(1024, 576), CV_8UC1);
-    cv::normalize(accu, accu2, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-    FindRectangles(accu2, image);
-    cv::waitKey(0);*/
-
-    /*cv::Mat image = cv::imread(argv[1]);
-        cv::Mat edges, gray;
-        cv::cvtColor(image, gray, CV_BGR2GRAY);
-        cv::Canny(gray, edges, 150, 200, 3);
-    cv::vector<cv::Vec4i> lines;
-      cv::HoughLinesP(edges, lines, 1, CV_PI/2, 50, 50, 4);
-      for( size_t i = 0; i < lines.size(); i++ )
-      {
-      cv::Vec4i l = lines[i];
-      cv::line(image, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 1, CV_AA);
-      }
-      cv::imshow("image", image);
-      cv::waitKey(0);*/
     amu::CommandLine options(argv, "[options]\n");
 
     amu::VideoReader video;
@@ -237,7 +167,7 @@ int main(int argc, char** argv) {
 
     if(options.Size() != 0) options.Usage();
 
-    cv::Mat image;// = cv::imread(argv[1]);
+    cv::Mat image;
 
     while(video.HasNext()) {
         video.ReadFrame(image);
