@@ -1,8 +1,12 @@
+// Play videos (repere videos too) 
+// Please read README.txt for information and build instructions.
 #include <opencv2/opencv.hpp>
-
 #include "video.h"
 #include "commandline.h"
 
+
+
+// Main function: plots frames and prints its corresponding num_frame and time
 int main(int argc, char** argv) {
     amu::CommandLine options(argv, "[options]\n");
 
@@ -16,10 +20,4 @@ int main(int argc, char** argv) {
         player.Show();
     }
 
-    /*cv::Mat image;
-    while(video.ReadFrame(image)) {
-        std::cout << video.GetIndex() << " " << video.GetTime() << "\n";
-        cv::imshow("video", image);
-        cv::waitKey(10);
-    }*/
 }
