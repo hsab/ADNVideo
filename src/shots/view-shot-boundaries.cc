@@ -1,11 +1,14 @@
+// View Shot boundary detection results 
+// Please read README.txt for information and build instructions.
+
 #include <iostream>
 #include <algorithm>
-
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
 #include "video.h"
 
+
+// This function plots 4 frames before and after the specified frame number (or time)
 void ShowTiles(amu::VideoReader& video, double frame, bool isTime = false) {
     if(isTime) {
         video.SeekTime(frame);
@@ -14,7 +17,6 @@ void ShowTiles(amu::VideoReader& video, double frame, bool isTime = false) {
             return;
         }
         frame = video.GetIndex() - 1;
-        std::cout << frame << "\n";
     }
     if(frame > 3) video.Seek((int) (frame - 4));
     if(fabs(frame - video.GetIndex()) > 25) {
@@ -22,7 +24,10 @@ void ShowTiles(amu::VideoReader& video, double frame, bool isTime = false) {
         return;
     }
     cv::Mat current;
-    cv::Size size = video.GetSize();
+    cv::Size size2 = video.GetSize() ;
+    cv::Size size;
+    size.height =size2.height/4;
+    size.width =size2.width/4;
     cv::Mat image(size * 3, CV_8UC3);
     for(int x = 0; x < 3; x++) {
         for(int y = 0; y < 3; y++) {
@@ -37,16 +42,20 @@ void ShowTiles(amu::VideoReader& video, double frame, bool isTime = false) {
             }
         }
     }
-    cv::imshow("tiles", image);
+    cv::imshow("shot boundary viewer", image);
     cv::waitKey(-1);
 }
 
+// Main function: Takes a frame number or time,
+// shows the for frames before and after the specifed frame :
 int main(int argc, char** argv) {
 
     amu::CommandLine options(argv, "[options]\n");
+    // if specified time instead of a frame number
     options.AddUsage("  --time                            specify that shot boundaries are in seconds\n");
     bool isTime = options.IsSet("--time");
-
+    
+	//load video
     amu::VideoReader video;
     if(!video.Configure(options)) return 1;
     if(options.Size() != 0) options.Usage();
@@ -55,8 +64,10 @@ int main(int argc, char** argv) {
     while(std::getline(std::cin, line)) {
         std::stringstream reader(line);
         double frame; double similarity;
+        // read the frame number of time
         reader >> frame >> similarity;
         std::cout << line << "\n";
+        // show frames
         ShowTiles(video, frame, isTime);
     }
 
