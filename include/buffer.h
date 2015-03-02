@@ -4,7 +4,7 @@
 
 /** Simple data structure for fixed-size circular arrays
   Buffer<int> tab(3);
-  for(int i = 0; i < 10; i++) tab.append(i);
+  for(int i = 0; i < 10; i++) tab.push(i);
   std::cout << tab[0] << " " << tab[1] << " " << tab[2] << "\n";
   std::cout << tab[-1] << " " << tab[-2] << " " << tab[-3] << "\n"; // reverse order
    */
