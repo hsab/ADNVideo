@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
     if(!video.Configure(options)) {
         return 1;
     }
-	// if no option print use options
+	// if no option print the option-usage 
     if(options.Size() != 0) options.Usage();
     
 	// shot boundaries detection parameters 
