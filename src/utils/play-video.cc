@@ -6,7 +6,7 @@
 
 
 
-// Main function: plots frames and prints its corresponding num_frame and time
+// Main function: plots each frame and prints its corresponding num_frame and time
 int main(int argc, char** argv) {
     amu::CommandLine options(argv, "[options]\n");
 
