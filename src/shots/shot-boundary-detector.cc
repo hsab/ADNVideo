@@ -1,3 +1,5 @@
+// See Shot boundary detection in videos or list of images.
+// Please read README.txt for information and build instructions.
 #include <iostream>
 #include <algorithm>
 
@@ -8,6 +10,7 @@
 #include "repere.h"
 #include "commandline.h"
 
+// This function calculates the BGR histrgram of the image
 void BGRhistogram(const cv::Mat& image, cv::Mat& histogram) {
     int numImages = 1;
     int channels[] = {0, 1, 2};
@@ -21,12 +24,14 @@ void BGRhistogram(const cv::Mat& image, cv::Mat& histogram) {
     cv::normalize(histogram, histogram);
 }
 
+// This function calculates the HSV histrgram of the image
 void HSVhistogram(const cv::Mat& image, cv::Mat& histogram) {
     static cv::Mat hsv;
     cv::cvtColor(image, hsv, CV_BGR2HSV);
     BGRhistogram(hsv, histogram);
 }
 
+// This function calculates histrgram of gradian directions of the image
 void DirectionHistogram(const cv::Mat& image, cv::Mat& histogram) {
     cv::Mat gray, gradients[2], gradient;
     cv::cvtColor(image, gray, CV_RGB2GRAY);
@@ -46,10 +51,12 @@ void DirectionHistogram(const cv::Mat& image, cv::Mat& histogram) {
     cv::normalize(histogram, histogram);
 }
 
+// This function calculates the Manhattan histrgram of 2 histograms
 double ManhattanDistance(const cv::Mat& a, const cv::Mat& b) {
     return cv::sum(cv::abs(a - b))[0];
 }
 
+// This function calculates the average distance cut of a list of histograms (window)
 double AverageDistanceCut(const amu::Buffer<cv::Mat>& histogram) {
     double sum = 0;
     int num = histogram.size();
@@ -61,6 +68,7 @@ double AverageDistanceCut(const amu::Buffer<cv::Mat>& histogram) {
     return sum / ((num / 2)* (num / 2));
 }
 
+// This function returns the Median element and it indice 
 double Median(const amu::Buffer<double>& values) {
     int num = values.size();
     double sorted[num];
@@ -68,23 +76,29 @@ double Median(const amu::Buffer<double>& values) {
         sorted[i] = values[i];
     }
     size_t n = num / 2;
-    //std::nth_element(&sorted[0], &sorted[n], &sorted[num]);
     std::sort(&sorted[0], &sorted[num]);
     return sorted[n];
 }
 
+// Main function: Takes the entire video or sequence of images,
+// returns shot boundaries detected  in the form :
+// Video_name start_time end_time shot shot_Id start_frame end_frame middle_frame start_time end_time middle_time score
+// score is the break distance
+
 int main(int argc, char** argv) {
-
+	 
     amu::CommandLine options(argv, "[options]\n");
-
+    
+    // open video
     amu::VideoReader video;
     if(!video.Configure(options)) {
         return 1;
     }
-
+	// if no option print use options
     if(options.Size() != 0) options.Usage();
-
-    int window = 9;
+    
+	// shot boundaries detection parameters 
+    int window = 9; //measure the boundary break on a window 
     int factor = 2;
     double threshold = 1;
 
@@ -97,13 +111,14 @@ int main(int argc, char** argv) {
     cv::Mat original;
     bool aboveMedian = false;
     double max = 0;
+    //pairs (numFrame, time)
     std::pair<int, double> argmax;
     std::pair<int, double> lastFrame(-1, 0);
     std::pair<int, double> lastVideoFrame(-1, 0);
     cv::Mat image;
     int shotId = 0;
 
-    while(video.HasNext() || distances.size() > 0) {
+    while(video.HasNext() || distances.size() > 0) { //still frames or window not empty 
         if(video.HasNext() && video.ReadFrame(image)) {
             if(lastFrame.first == -1) lastFrame = std::pair<int, double>(video.GetIndex(), video.GetTime());
             if(lastVideoFrame.first != -1 && video.GetIndex() - lastVideoFrame.first > 10) { // reset
@@ -146,7 +161,7 @@ int main(int argc, char** argv) {
                 max = distance;
                 argmax = index;
             }
-            if(distance <= median * 2 || distance < threshold) {
+            if(distance <= median * 2 || distance < threshold) { // detected break 
                 aboveMedian = false;
                 std::cout << video.GetShowName() << " " << lastFrame.second << " " << argmax.second << " shot shot_" << shotId << " ";
                 shotId++;
@@ -158,7 +173,7 @@ int main(int argc, char** argv) {
         }
     }
     if(lastFrame.first == -1) lastFrame = lastVideoFrame;
-    if(lastVideoFrame != lastFrame) {
+    if(lastVideoFrame != lastFrame) { // last break is the end of video or images-list
         argmax = lastVideoFrame;
         std::cout << video.GetShowName() << " " << lastFrame.second << " " << argmax.second << " shot shot_" << shotId << " ";
         std::cout << lastFrame.first << " " << argmax.first << " " << (lastFrame.first + argmax.first) / 2  << " "
