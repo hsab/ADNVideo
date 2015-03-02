@@ -81,7 +81,7 @@ double Median(const amu::Buffer<double>& values) {
 }
 
 // Main function: Takes the entire video or sequence of images,
-// returns shot boundaries detected  in the form :
+// returns shot boundaries detected on the console output as :
 // Video_name start_time end_time shot shot_Id start_frame end_frame middle_frame start_time end_time middle_time score
 // score is the break distance
 
