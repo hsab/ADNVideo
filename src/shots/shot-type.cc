@@ -17,7 +17,8 @@ int main(int argc, char** argv) {
     amu::VideoReader video;
     if(!video.Configure(options)) return 1;
     if(options.Size() != 0 || (annotationFile == "" && shotFile == "") || (annotationFile != "" && shotFile != "")) options.Usage();
-
+	//if(options.Size() != 0 || (annotationFile == "" && shotFile == "")) options.Usage();
+	
     std::map<int, amu::ShotType> shotTypes;
     if(annotationFile != "") {
         shotTypes = amu::ShotType::Read(annotationFile, video.GetShowName());
@@ -32,20 +33,20 @@ int main(int argc, char** argv) {
     amu::LibLinearClassifier classifier("model");
 
     cv::Mat image;
-    for(std::map<int, amu::ShotType>::const_iterator shot = shotTypes.begin(); shot != shotTypes.end(); shot++) {
+   /* for(std::map<int, amu::ShotType>::const_iterator shot = shotTypes.begin(); shot != shotTypes.end(); shot++) {
         video.Seek(shot->first);
         if(!video.ReadFrame(image) || image.empty()) {
             std::cerr << "ERROR: reading frame " << video.GetIndex() << "\n";
             continue;
         }
         std::vector<float> features = extractor.Compute(image);
-        std::cerr << shot->second.label << " " << classifier.Classify(features) << "\n";
+        std::cerr << shot->second.label << "  " << classifier.Classify(features) << "\n";
 
         std::cout << shot->second.label;
         for(size_t i = 0; i < features.size(); i++) {
             std::cout << " " << i + 1 << ":" << features[i];
         }
         std::cout << "\n";
-    }
+    }*/
     return 0;
 }
