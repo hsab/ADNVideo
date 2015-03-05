@@ -151,8 +151,8 @@ void DrawRectangles(cv::Mat& image) {
       }
       cv::imshow("image", image);
 
-    cv::waitKey(0);
-          FindRectangles(horizontal, vertical, image) ;
+	cv::waitKey(0);
+		FindRectangles(horizontal, vertical, image) ;
 
 }
 
