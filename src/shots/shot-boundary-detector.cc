@@ -101,7 +101,6 @@ int main(int argc, char** argv) {
     if(options.Size() != 0) options.Usage();
     
 	// shot boundaries detection parameters 
-	std::cout <<"window = "<<window<<std::endl;
     int factor = 2;
     double threshold = 1;
 
