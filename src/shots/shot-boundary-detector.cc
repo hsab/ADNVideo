@@ -89,7 +89,6 @@ int main(int argc, char** argv) {
 	
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --window                          specify window size for boundary breaks search\n");
-    //window = options.IsSet("--window");
     int window = options.Read("--window", 9);
     
     // open video
