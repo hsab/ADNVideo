@@ -101,7 +101,7 @@ namespace amu {
                 }
                 double scale = options.Get<double>("--scale", 1.0);
                 if(scale != 1.0) size = cv::Size(size.width * scale, size.height * scale);
-
+                int window = options.Get<double>("--window", 9);
                 frameSkip = options.Get("--frame-skip", 0);
                 deinterlace = options.IsSet("--deinterlace");
                 double start = options.Get("--start", 0.0);

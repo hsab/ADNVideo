@@ -85,8 +85,12 @@ double Median(const amu::Buffer<double>& values) {
 // Video_name start_time end_time shot shot_Id start_frame end_frame middle_frame start_time end_time middle_time score
 // score is the break distance
 int main(int argc, char** argv) {
-	 
+	
+	
     amu::CommandLine options(argv, "[options]\n");
+    options.AddUsage("  --window                          specify window size for boundary breaks search\n");
+    //window = options.IsSet("--window");
+    int window = options.Read("--window", 9);
     
     // open video
     amu::VideoReader video;
@@ -97,7 +101,7 @@ int main(int argc, char** argv) {
     if(options.Size() != 0) options.Usage();
     
 	// shot boundaries detection parameters 
-    int window = 9; //measure the boundary break on a window 
+	std::cout <<"window = "<<window<<std::endl;
     int factor = 2;
     double threshold = 1;
 
