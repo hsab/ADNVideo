@@ -94,7 +94,6 @@ namespace amu {
 					cv::rectangle(image, cv::Rect(subshot.x, subshot.y, subshot.width, subshot.height), cv::Scalar(0, 0, 255), 2);
 					cv::imshow("splits", image);
 					cv::waitKey(0);
-					cv::imwrite("/home/meriem/Bureau/test.png", image);
 				}
 			}
         }
