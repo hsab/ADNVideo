@@ -43,7 +43,8 @@ void ShowTiles(amu::VideoReader& video, double frame, bool isTime = false) {
         }
     }
     cv::imshow("shot boundary viewer", image);
-    cv::waitKey(-1);
+    cv::waitKey(0);
+    cv::destroyWindow("shot boundary viewer");
 }
 
 // Main function: Takes a frame number or time,
@@ -61,12 +62,13 @@ int main(int argc, char** argv) {
     if(options.Size() != 0) options.Usage();
 
     std::string line;
+	std::cout << "Please enter frame_number or time" << "\n";
+
     while(std::getline(std::cin, line)) {
+		std::cout << "Please enter frame_number or time" << "\n";
         std::stringstream reader(line);
         double frame; double similarity;
-        // read the frame number of time
         reader >> frame >> similarity;
-        std::cout << line << "\n";
         // show frames
         ShowTiles(video, frame, isTime);
     }
