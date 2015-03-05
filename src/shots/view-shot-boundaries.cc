@@ -47,7 +47,7 @@ void ShowTiles(amu::VideoReader& video, double frame, bool isTime = false) {
 }
 
 // Main function: Takes a frame number or time,
-// shows the for frames before and after the specifed frame :
+// shows the four frames before and after the specifed frame :
 int main(int argc, char** argv) {
 
     amu::CommandLine options(argv, "[options]\n");
