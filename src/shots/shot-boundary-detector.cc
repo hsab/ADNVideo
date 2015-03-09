@@ -90,20 +90,29 @@ int main(int argc, char** argv) {
 	
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --window                          specify window size for boundary breaks search (default 9)\n");
+    options.AddUsage("  --scale                           scale picture according to this factor after resizing (default 1.0)\n");
     
     // read configuration file 
     config_t cfg;
     config_setting_t *w;
+    config_setting_t *s;
     config_init(&cfg);
     int window = 9;
+    double scale=1.0;
+    
     if (config_read_file(&cfg, "../../include/configure.cfg") == CONFIG_TRUE) {
       w = config_lookup(&cfg, "shot_boundary.window");
-      window=config_setting_get_int(w);
+      s = config_lookup(&cfg, "shot_boundary.scale");
+      window = config_setting_get_int(w);
+      scale = config_setting_get_float(s);
 	}
 	config_destroy(&cfg);
 	
     window = options.Read("--window", window);
-        
+    scale = options.Read("--scale", scale);    
+    
+    
+    std::cout << "scale" << scale<<std::endl;
     // open video
     amu::VideoReader video;
     if(!video.Configure(options)) {
@@ -129,11 +138,13 @@ int main(int argc, char** argv) {
     std::pair<int, double> argmax;
     std::pair<int, double> lastFrame(-1, 0);
     std::pair<int, double> lastVideoFrame(-1, 0);
-    cv::Mat image;
+    cv::Mat image, resized;
     int shotId = 0;
-
+	cv::Size video_size = video.GetSize() ;
     while(video.HasNext() || distances.size() > 0) { //still frames or window not empty 
         if(video.HasNext() && video.ReadFrame(image)) {
+			cv::resize(image, resized, cv::Size(scale * video_size.width, scale *video_size.height));
+			image=resized;			
             if(lastFrame.first == -1) lastFrame = std::pair<int, double>(video.GetIndex(), video.GetTime());
             if(lastVideoFrame.first != -1 && video.GetIndex() - lastVideoFrame.first > 10) { // reset
                 argmax = lastVideoFrame;

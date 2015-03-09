@@ -104,7 +104,7 @@ namespace amu {
 
 // Main function: Takes the shot boundaries detections and shows template split candidates
 // templates : text file of split templates for 1024x576 frames
-//             split_name number_split coor_x coor_y width hight coor_x coor_y width hight ... coor_x coor_y width hight
+//             split_name number_split coor_x coor_y width height coor_x coor_y width height ... coor_x coor_y width hight
 // prints numframe middle shot 
 // if split candidates then prints split_ids and split_scores
 int main(int argc, char** argv) {
