@@ -9,6 +9,7 @@
 #include "buffer.h"
 #include "repere.h"
 #include "commandline.h"
+#include <libconfig.h>
 
 // This function calculates the BGR histrgram of the image
 void BGRhistogram(const cv::Mat& image, cv::Mat& histogram) {
@@ -88,9 +89,21 @@ int main(int argc, char** argv) {
 	
 	
     amu::CommandLine options(argv, "[options]\n");
-    options.AddUsage("  --window                          specify window size for boundary breaks search\n");
-    int window = options.Read("--window", 9);
+    options.AddUsage("  --window                          specify window size for boundary breaks search (default 9)\n");
     
+    // read configuration file 
+    config_t cfg;
+    config_setting_t *w;
+    config_init(&cfg);
+    int window = 9;
+    if (config_read_file(&cfg, "../../include/configure.cfg") == CONFIG_TRUE) {
+      w = config_lookup(&cfg, "shot_boundary.window");
+      window=config_setting_get_int(w);
+	}
+	config_destroy(&cfg);
+	
+    window = options.Read("--window", window);
+        
     // open video
     amu::VideoReader video;
     if(!video.Configure(options)) {

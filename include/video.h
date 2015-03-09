@@ -101,7 +101,7 @@ namespace amu {
                 }
                 double scale = options.Get<double>("--scale", 1.0);
                 if(scale != 1.0) size = cv::Size(size.width * scale, size.height * scale);
-                int window = options.Get<double>("--window", 9);
+                int window = options.Get<double>("--window", 7);
                 frameSkip = options.Get("--frame-skip", 0);
                 deinterlace = options.IsSet("--deinterlace");
                 double start = options.Get("--start", 0.0);
@@ -119,6 +119,8 @@ namespace amu {
                 }
                 if(failIfNotLoaded && numActive == 0) {
                     options.Usage();
+                    std::cerr << "ERROR: can only specify one of video, repere-video and image-list\n";
+
                     return false;
                 }
 
@@ -151,7 +153,10 @@ namespace amu {
             }
 
             bool LoadVideo(const std::string& filename) {
-                if(video.open(filename) == false) return false;
+                if(video.open(filename) == false) {
+					std::cerr << "ERROR: Could not read video \n";
+					return false;
+					}
                 type = VideoType_Video;
                 loaded = true;
                 videoFinished = false;
