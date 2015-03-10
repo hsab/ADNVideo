@@ -160,8 +160,11 @@ namespace amu {
         OCR(const std::string& datapath="", const std::string& lang="fra") : imageWidth(0), imageHeight(0) {
             if(datapath != "") {
                 setenv("TESSDATA_PREFIX", std::string(datapath + "/../").c_str(), 1);
+                std::cout <<datapath + "/../" <<std::endl;
             }
-            tess.Init("OCR", lang.c_str(), tesseract::OEM_DEFAULT); 
+            tess.Init(NULL,lang.c_str(), tesseract::OEM_DEFAULT);
+            //tess.Init("OCR", lang.c_str(), tesseract::OEM_DEFAULT); 
+
             SetMixedCase();
         }
 
@@ -273,21 +276,28 @@ int main(int argc, char** argv) {
     bool ignore_accents = options.IsSet("--ignore-accents");
     bool sharpen = options.IsSet("--sharpen");
     bool show = options.IsSet("--show");
+    
+   
 
-    amu::OCR ocr(dataPath, lang);
+	//amu::OCR ocr(dataPath, lang);
+	amu::OCR ocr("/home/meriem/work/repere/OCR/tessdata", lang);
+    
+
     if(upper_case) ocr.SetUpperCase(ignore_accents);
     else ocr.SetMixedCase(ignore_accents);
 
     amu::VideoReader video;
     if(!video.Configure(options)) return 1;
     if(options.Size() != 0) options.Usage();
-
+	
+	
+	
     std::vector<std::string> remaining;
     std::vector<amu::Rect> rects = amu::Rect::ReadAll(std::cin, remaining);
     //std::vector<amu::Rect> rects = amu::Rect::ReadAll2(std::cin);
     std::stable_sort(rects.begin(), rects.end(), amu::RectLess());
     std::cerr << "read " << rects.size() << " rectangles\n";
-
+	std::cout <<"holss" <<std::endl;
     size_t current = 0;
     int frame = 0;
 

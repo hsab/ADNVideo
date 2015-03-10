@@ -143,7 +143,7 @@ int main(int argc, char** argv) {
 	cv::Size video_size = video.GetSize() ;
     while(video.HasNext() || distances.size() > 0) { //still frames or window not empty 
         if(video.HasNext() && video.ReadFrame(image)) {
-			cv::resize(image, resized, cv::Size(scale * video_size.width, scale *video_size.height));
+			cv::resize(image, resized, cv::Size(scale * video_size.width, scale *video_size.height), CV_INTER_NN);
 			image=resized;			
             if(lastFrame.first == -1) lastFrame = std::pair<int, double>(video.GetIndex(), video.GetTime());
             if(lastVideoFrame.first != -1 && video.GetIndex() - lastVideoFrame.first > 10) { // reset
