@@ -85,6 +85,8 @@ namespace amu {
                 std::string idx = options.Get("--idx", std::string(""));
                 std::string uem = options.Get("--uem", std::string(""));
                 showname = options.Get("--uem-show", std::string(""));
+                std::string maskFile = options.Get("--mask", std::string(""));
+
                 std::string size_string = options.Get("--size", std::string(""));
                 if(size_string != "") {
                     size_t xLocation = size_string.find("x");
@@ -101,7 +103,8 @@ namespace amu {
                 }
                 double scale = options.Get<double>("--scale", 1.0);
                 if(scale != 1.0) size = cv::Size(size.width * scale, size.height * scale);
-                int window = options.Get<double>("--window", 7);
+                int window = options.Get<double>("--window", 9);
+                
                 frameSkip = options.Get("--frame-skip", 0);
                 deinterlace = options.IsSet("--deinterlace");
                 double start = options.Get("--start", 0.0);

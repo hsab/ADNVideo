@@ -160,7 +160,6 @@ namespace amu {
         OCR(const std::string& datapath="", const std::string& lang="fra") : imageWidth(0), imageHeight(0) {
             if(datapath != "") {
                 setenv("TESSDATA_PREFIX", std::string(datapath + "/../").c_str(), 1);
-                std::cout <<datapath + "/../" <<std::endl;
             }
             tess.Init(NULL,lang.c_str(), tesseract::OEM_DEFAULT);
             //tess.Init("OCR", lang.c_str(), tesseract::OEM_DEFAULT); 
@@ -264,6 +263,7 @@ int main(int argc, char** argv) {
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --data <directory>                tesseract model directory (containing tessdata/)\n");
     options.AddUsage("  --lang <language>                 tesseract model language (default fra)\n");
+//    options.AddUsage("  --mask                            use mask for text box search\n");
     options.AddUsage("  --upper-case                      contains only upper case characters\n");
     options.AddUsage("  --ignore-accents                  do not predict letters with diacritics\n");
     options.AddUsage("  --sharpen                         sharpen image before processing\n");
@@ -276,8 +276,10 @@ int main(int argc, char** argv) {
     bool ignore_accents = options.IsSet("--ignore-accents");
     bool sharpen = options.IsSet("--sharpen");
     bool show = options.IsSet("--show");
-    
-   
+  //  std::string maskFile = options.Get<std::string>("--mask", "");
+
+	//cv::Mat mask;
+	//mask = imread(maskFile, CV_LOAD_IMAGE_COLOR); 
 
 	//amu::OCR ocr(dataPath, lang);
 	amu::OCR ocr("/home/meriem/work/repere/OCR/tessdata", lang);
@@ -297,12 +299,10 @@ int main(int argc, char** argv) {
     //std::vector<amu::Rect> rects = amu::Rect::ReadAll2(std::cin);
     std::stable_sort(rects.begin(), rects.end(), amu::RectLess());
     std::cerr << "read " << rects.size() << " rectangles\n";
-	std::cout <<"holss" <<std::endl;
     size_t current = 0;
     int frame = 0;
 
-    cv::Mat resized;
-
+    cv::Mat resized, image;
     for(current = 0; current < rects.size(); current++) {
         amu::Result result;
         result.confidence = 0;
@@ -310,17 +310,24 @@ int main(int argc, char** argv) {
         double time = (rects[current].start + rects[current].end) / 2;
         video.SeekTime(time);
         if(abs(video.GetTime() - time) < 1 && video.HasNext()) {
-            video.ReadFrame(resized);
-
+			
+            video.ReadFrame(image);
+            //cv::And(image, mask,image, NULL);
+            cv::resize(image, resized,cv::Size(1024,576));
+            
+            
             cv::Rect rect = amu::Rect(rects[current], zoom);
-            if(show) cv::imshow("original", resized(rect));
+            if(show) {
+				cv::imshow("original", resized(rect));
+				cv::waitKey(0);
+				cv::destroyWindow("original");
+			}
 
             if(sharpen) {
                 cv::Mat blured;
                 cv::GaussianBlur(resized, blured, cv::Size(0, 0), 3);
                 cv::addWeighted(resized, 1.5, blured, -0.5, 0, blured);
             }
-
             cv::Mat cropped = resized(rect);
 
             /*cv::Mat gray, grad_x, grad_y, abs_grad_x, abs_grad_y, grad;
@@ -354,7 +361,6 @@ int main(int argc, char** argv) {
 
             //break;
         }
-        std::cerr << frame << " " << video.GetTime() << " " << result.text << "\n";
         for(size_t i = 0; i < rects[current].text.size(); i++) {
             if(amu::StartsWith(rects[current].text[i], "<StringInfo name=\"Text\">")) {
                 //std::cout << rects[current].text[i] << "\n";
@@ -368,11 +374,12 @@ int main(int argc, char** argv) {
         //std::cerr << frame << "/" << numFrames <<"\n";
             if(show) {
                 //cv::imshow("binarized", cropped);
-                cv::waitKey(0);
+                //cv::waitKey(0);
             }
     }
     for(size_t i = 0; i < remaining.size(); i++) {
-        std::cout << remaining[i] << "\n";
+        std::cout <<remaining[i] << "\n";
+
     }
     return 0;
 }

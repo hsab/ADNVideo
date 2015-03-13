@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
     int window = 9;
     double scale=1.0;
     
-    if (config_read_file(&cfg, "../../include/configure.cfg") == CONFIG_TRUE) {
+    if (config_read_file(&cfg, "../../configure/configure.cfg") == CONFIG_TRUE) {
       w = config_lookup(&cfg, "shot_boundary.window");
       s = config_lookup(&cfg, "shot_boundary.scale");
       window = config_setting_get_int(w);
@@ -112,7 +112,6 @@ int main(int argc, char** argv) {
     scale = options.Read("--scale", scale);    
     
     
-    std::cout << "scale" << scale<<std::endl;
     // open video
     amu::VideoReader video;
     if(!video.Configure(options)) {
@@ -143,8 +142,9 @@ int main(int argc, char** argv) {
 	cv::Size video_size = video.GetSize() ;
     while(video.HasNext() || distances.size() > 0) { //still frames or window not empty 
         if(video.HasNext() && video.ReadFrame(image)) {
-			cv::resize(image, resized, cv::Size(scale * video_size.width, scale *video_size.height), CV_INTER_NN);
-			image=resized;			
+			//cv::resize(image, resized, cv::Size(scale * video_size.width, scale *video_size.height), CV_INTER_NN);
+			//cv::resize(image, resized, cv::Size(scale * video_size.width, scale *video_size.height));
+			//image=resized;			
             if(lastFrame.first == -1) lastFrame = std::pair<int, double>(video.GetIndex(), video.GetTime());
             if(lastVideoFrame.first != -1 && video.GetIndex() - lastVideoFrame.first > 10) { // reset
                 argmax = lastVideoFrame;
