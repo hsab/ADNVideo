@@ -82,15 +82,6 @@ namespace amu {
                 return output.str();
             }
 
-            /*static std::vector<amu::Rect> ReadAll2(std::istream& input) {
-                std::vector<amu::Rect> rects;
-                Node* root = amu::ParseXML(input);
-                if(root == NULL) {
-                    return rects;
-                }
-                root->Print();
-                return rects;
-            }*/
 
             static std::vector<amu::Rect> ReadAll(std::istream& input, std::vector<std::string>& tail, int x_offset = 4, int y_offset = -1) {
                 std::vector<amu::Rect> rects;
@@ -102,7 +93,6 @@ namespace amu {
                 while(!input.eof()) {
                     std::string line;
                     if(!std::getline(input, line)) break;
-                    //std::cerr << line << "\n";
                     line_num ++;
                     if(amu::StartsWith(line, "<Eid ")) {
                         std::string positionString = line.substr(std::string("<Eid name=\"TextDetection\" taskName=\"TextDetectionTask\" position=\"").length());
@@ -162,7 +152,6 @@ namespace amu {
                 setenv("TESSDATA_PREFIX", std::string(datapath + "/../").c_str(), 1);
             }
             tess.Init(NULL,lang.c_str(), tesseract::OEM_DEFAULT);
-            //tess.Init("OCR", lang.c_str(), tesseract::OEM_DEFAULT); 
 
             SetMixedCase();
         }
@@ -223,37 +212,6 @@ namespace amu {
             return result;
         }
 
-        Result RefineAndProcess(amu::Rect rect, double factor = 1, int y_start = -4, int y_end = 4, int y_step = 2) {
-            Result argmax;
-            int argmax_q = 0;
-            int argmax_d = 0;
-            argmax.confidence = -1;
-            for(int q = y_start; q <= y_end; q += y_step) {
-                for(int d = y_start; d <= y_end; d += y_step) {
-                    amu::Rect modified(amu::Rect(rect.x, rect.y + q, rect.width, rect.height + d), factor);
-                    if(modified.x < 0) { modified.width += modified.x; modified.x = 0; }
-                    if(modified.y < 0) { modified.height += modified.y; modified.y = 0; }
-                    if(modified.x + modified.width > imageWidth) modified.width = imageWidth - modified.x;
-                    if(modified.y + modified.height > imageHeight) modified.height = imageHeight - modified.x;
-                    if(modified.width <= 0 || modified.height <= 0) {
-                        std::cerr << "skipping rectangle " << modified.x << " " << modified.y << " " << modified.width << " " << modified.height << "\n";
-                        continue;
-                    }
-                    SetRectangle(modified);
-                    Result result = Process();
-                    if(result.confidence > argmax.confidence) {
-                        //std::cerr << result.confidence << " " << tess.GetUTF8Text() << "\n";
-                        argmax = result;
-                        argmax_q = q;
-                        argmax_d = d;
-                    }
-                }
-            }
-            // reposition rectangle in case we need to extract a lattice
-            SetRectangle(amu::Rect(amu::Rect(rect.x, rect.y + argmax_q, rect.width, rect.height + argmax_d), factor));
-            return argmax;
-        }
-
     };
 
 }
@@ -263,7 +221,7 @@ int main(int argc, char** argv) {
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --data <directory>                tesseract model directory (containing tessdata/)\n");
     options.AddUsage("  --lang <language>                 tesseract model language (default fra)\n");
-//    options.AddUsage("  --mask                            use mask for text box search\n");
+    options.AddUsage("  --mask                            use mask for text box search\n");
     options.AddUsage("  --upper-case                      contains only upper case characters\n");
     options.AddUsage("  --ignore-accents                  do not predict letters with diacritics\n");
     options.AddUsage("  --sharpen                         sharpen image before processing\n");
@@ -276,15 +234,18 @@ int main(int argc, char** argv) {
     bool ignore_accents = options.IsSet("--ignore-accents");
     bool sharpen = options.IsSet("--sharpen");
     bool show = options.IsSet("--show");
-  //  std::string maskFile = options.Get<std::string>("--mask", "");
+    std::string maskFile = options.Get<std::string>("--mask", "");
+	cv::Mat mask;
 
-	//cv::Mat mask;
-	//mask = imread(maskFile, CV_LOAD_IMAGE_COLOR); 
-
-	//amu::OCR ocr(dataPath, lang);
-	amu::OCR ocr("/home/meriem/work/repere/OCR/tessdata", lang);
-    
-
+	bool isMask=false;
+	if (maskFile!=""){
+		isMask=true;
+		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
+		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
+		cv::resize(mask, mask,cv::Size(1024,576));
+		}
+	
+	amu::OCR ocr(dataPath, lang);		    
     if(upper_case) ocr.SetUpperCase(ignore_accents);
     else ocr.SetMixedCase(ignore_accents);
 
@@ -296,12 +257,10 @@ int main(int argc, char** argv) {
 	
     std::vector<std::string> remaining;
     std::vector<amu::Rect> rects = amu::Rect::ReadAll(std::cin, remaining);
-    //std::vector<amu::Rect> rects = amu::Rect::ReadAll2(std::cin);
     std::stable_sort(rects.begin(), rects.end(), amu::RectLess());
     std::cerr << "read " << rects.size() << " rectangles\n";
     size_t current = 0;
     int frame = 0;
-
     cv::Mat resized, image;
     for(current = 0; current < rects.size(); current++) {
         amu::Result result;
@@ -309,77 +268,41 @@ int main(int argc, char** argv) {
         result.text = "TESSERACT_FAILED";
         double time = (rects[current].start + rects[current].end) / 2;
         video.SeekTime(time);
-        if(abs(video.GetTime() - time) < 1 && video.HasNext()) {
-			
+		cv::Rect rect = amu::Rect(rects[current], zoom);
+		
+        if(abs(video.GetTime() - time) < 1 && video.HasNext()) {	
             video.ReadFrame(image);
-            //cv::And(image, mask,image, NULL);
             cv::resize(image, resized,cv::Size(1024,576));
-            
-            
-            cv::Rect rect = amu::Rect(rects[current], zoom);
-            if(show) {
-				cv::imshow("original", resized(rect));
-				cv::waitKey(0);
-				cv::destroyWindow("original");
-			}
-
+            if (isMask) {
+				cv::bitwise_and(resized, mask, resized);
+				
+			}					
             if(sharpen) {
                 cv::Mat blured;
                 cv::GaussianBlur(resized, blured, cv::Size(0, 0), 3);
                 cv::addWeighted(resized, 1.5, blured, -0.5, 0, blured);
             }
             cv::Mat cropped = resized(rect);
-
-            /*cv::Mat gray, grad_x, grad_y, abs_grad_x, abs_grad_y, grad;
-            cv::cvtColor(cropped, gray, CV_BGR2GRAY);
-            cv::Sobel(gray, grad_x, CV_16S, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT );
-            cv::Sobel(gray, grad_y, CV_16S, 0, 1, 3, 1, 0, cv::BORDER_DEFAULT );
-            cv::convertScaleAbs( grad_x, abs_grad_x );
-            cv::convertScaleAbs( grad_y, abs_grad_y );
-            cv::imshow("o", cropped);
-            grad = cv::max(abs_grad_x, abs_grad_y);
-            cv::Mat tmp;
-
-            cv::threshold(grad, grad, 32, 255, cv::THRESH_BINARY_INV);
-            //cv::erode(grad, grad, cv::Mat());
-            //cv::erode(grad, grad, cv::Mat());
-            cv::imshow("x", grad);
-
-            std::vector < std::vector<cv::Point2i> > blobs;
-            amu::Binarize::FindBlobs(grad & 1, blobs);
-            cv::Mat blobShow(cv::Size(grad.cols, grad.rows), CV_8UC3);
-            amu::Binarize::DrawBlobs(blobShow, blobs);
-            cv::imshow("blobs", blobShow);*/
-
-
-            //cv::imshow("y", grad2);
-            //cv::waitKey(0);
-
-            
             ocr.SetImage(cropped);
             result = ocr.Process();
-
-            //break;
+            std::cout << "<box>\n";
+            std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
+            std::cout <<"  <position_X> "<<rect.x<< " </position_X>\n";
+            std::cout <<"  <position_Y> "<<rect.y<< " </position_Y>\n";
+            std::cout <<"  <position_width> "<<rect.width<< " </position_width>\n";
+            std::cout <<"  <position_height> "<<rect.height<< " </position_height>\n";
+            std::cout <<"  <confidence> "<<result.confidence  << " </confidence>\n";
+            std::cout <<"  <text> " <<result.text << " </text>\n";
+            std::cout << "</box>\n";
+            
         }
-        for(size_t i = 0; i < rects[current].text.size(); i++) {
-            if(amu::StartsWith(rects[current].text[i], "<StringInfo name=\"Text\">")) {
-                //std::cout << rects[current].text[i] << "\n";
-                //std::cout << "<StringInfo time=\"" << amu::Rect::StringFromTime(time) << "\" name=\"TesseractText\">" << result.text << "</StringInfo>\n";
-                std::cout << "<StringInfo name=\"Text\">" << result.text << "</StringInfo>\n";
-                std::cerr << frame << " " << video.GetTime() << " " << result.text << "\n";
-            } else {
-                std::cout << rects[current].text[i] << "\n";
-            }
-        }
-        //std::cerr << frame << "/" << numFrames <<"\n";
-            if(show) {
-                //cv::imshow("binarized", cropped);
-                //cv::waitKey(0);
-            }
+            
+        if(show) {
+			cv::imshow("original", resized(rect));
+			cv::waitKey(0);
+			cv::destroyWindow("original");
+		}
     }
-    for(size_t i = 0; i < remaining.size(); i++) {
-        std::cout <<remaining[i] << "\n";
-
-    }
+	
     return 0;
 }
