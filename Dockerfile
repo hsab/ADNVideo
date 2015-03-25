@@ -21,13 +21,13 @@ RUN cd /opt/ && ldconfig && unzip download && cd /opt/opencv-2.4.10 && cmake . &
 RUN cd /opt/ && git clone https://github.com/meriembendris/opencv-utils.git
 
 # Compilation 
-RUN cd /opt/opencv-utils/src/shots &&  g++ -D__STDC_CONSTANT_MACROS subshot-detector.cc -o subshot-detector `pkg-config --cflags --libs opencv`  -I../../include -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz
+RUN cd /opt/opencv-utils/src/shots &&  g++ -D__STDC_CONSTANT_MACROS subshot-detector.cc -o subshot-detector `pkg-config --cflags --libs opencv`  -I../../include -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz 
 
 RUN cd /opt/opencv-utils/src/shots &&  g++ -D__STDC_CONSTANT_MACROS shot-type.cc -o shot-type `pkg-config --cflags --libs opencv`  -I../../include -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz
 
 RUN cd /opt/opencv-utils/src/shots &&  g++ -D__STDC_CONSTANT_MACROS subshot-from-template.cc -o subshot-from-template `pkg-config --cflags --libs opencv`  -I../../include -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz
 
-RUN cd /opt/opencv-utils/src/shots &&  g++ -D__STDC_CONSTANT_MACROS  view-shot-boundaries.cc -o view-shot-boundaries `pkg-config --cflags --libs opencv`  -I../../include -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz
+RUN cd /opt/opencv-utils/src/shots &&  g++ -D__STDC_CONSTANT_MACROS  view-shot-boundaries.cc -o view-shot-boundaries `pkg-config --cflags --libs opencv`  -I../../include -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++
 
 RUN cd /opt/opencv-utils/src/shots &&  g++ -D__STDC_CONSTANT_MACROS view-shot-clustering.cc -o view-shot-clustering `pkg-config --cflags --libs opencv`  -I../../include -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz
 

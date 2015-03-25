@@ -340,7 +340,7 @@ int sauvola(cv::Mat im_thr, int video_depth=256){
 
 
 
-bool in_rects(cv::Rect rect, std::vector<cv::Rect> rects)
+bool in_rects(cv::Rect rect, std::vector<cv::Rect> rects, int * idx)
 {
 	int x,y, width, height;
 	cv::Rect intersection;
@@ -358,7 +358,9 @@ bool in_rects(cv::Rect rect, std::vector<cv::Rect> rects)
 		area_3= intersection.width*intersection.height;
 		float recouvrement=area_3/(area_1 + area_2 - area_3);
 		if (recouvrement>0.5) {
+			*idx=i;
 			return true;
+			
 			};
 		}
 	
@@ -368,7 +370,6 @@ bool in_rects(cv::Rect rect, std::vector<cv::Rect> rects)
 
 
 void show_contours(cv::Mat image , std::vector<std::vector<cv::Point> > contours, std::vector<cv::Vec4i> hierarchy){
-	
 	cv::Mat drawing = cv::Mat::zeros(image.size(), CV_8UC3 );
 	for( int i = 0; i< contours.size(); i++ ){
        cv::drawContours( drawing, contours, i, (255,255,255), 2, 8, hierarchy, 0, cv::Point() );
@@ -379,13 +380,13 @@ void show_contours(cv::Mat image , std::vector<std::vector<cv::Point> > contours
 
 
 // coarse spatial detection of boxes
-std::vector<cv::Rect> find_boxes(cv::Mat im, int frameNum, cv::Mat frame_BW, cv::Mat im_mask, bool isMask){ 
+std::vector<cv::Rect> find_boxes(cv::Mat im,  cv::Mat frame_BW, cv::Mat im_mask, bool isMask){ 
 	std::vector<cv::Rect> rects;	
 	
 	double y_min_size_text=	3;
 	double x_min_size_text = 34;
 	float coef_increase_thr_otsu = 1.42;
-	float ratio_width_height = 2;//2.275;
+	float ratio_width_height = 2.275;
 
     int i, j;
     std::vector<std::vector<cv::Point> > contours;
@@ -397,48 +398,42 @@ std::vector<cv::Rect> find_boxes(cv::Mat im, int frameNum, cv::Mat frame_BW, cv:
 			    
 	// contours detection
 	cv::findContours(im, contours, hierarchy, CV_RETR_LIST, CV_LINK_RUNS, cv::Point(0, 0) );
-	std::cout << "contours : "<<contours.size() <<std::endl;
-    show_contours(im , contours, hierarchy);
+	
+	//show contours
+    //show_contours(im , contours, hierarchy);
 
     
     //coarse detection
-
-
 	for( int n = 0; n< contours.size(); n++ ){
-		
+		//corners coordinates initialization
 		int y_min=s.height-2;
 		int x_min=s.width-2;
 		int y_max=2;
 		int x_max=2;
 		
+		
 		std::vector<cv::Point> current_contour=contours[n];
+		
+		// sort coordinates in order to make each pair of consecutive points a line in the contour
 		std::stable_sort(current_contour.begin(), current_contour.end(), cmp_points2);
 		
-		for(i=0; i<current_contour.size(); i=i+2 ) {         // each pair of consecutive points is a line in the contour
+		for(i=0; i<current_contour.size(); i=i+2 ) { 
             cv::Point p1 = current_contour[i];
             cv::Point p2 = current_contour[i+1];   
-            std::cout << p1.x << " "<<p2.x <<std::endl;
-           if ((p2.x - p1.x) >= x_min_size_text){              // if the line has a width greater than the minimum width
-                if (p1.y < y_min) y_min = p1.y;  // find the top left corner
-                if (p1.x < x_min) x_min = p1.x;  // find the top left corner
-                if (p2.y > y_max) y_max = p2.y;  // find the bottom right corner
-                if (p2.x > x_max) x_max = p2.x;  // find the bottom right corner
+			if ((p2.x - p1.x) >= x_min_size_text){ // find corners if width's line is greater than the minimum
+                if (p1.y < y_min) y_min = p1.y;   // top left corner
+                if (p1.x < x_min) x_min = p1.x;   // top left corner
+                if (p2.y > y_max) y_max = p2.y;   // bottom right corner
+                if (p2.x > x_max) x_max = p2.x;   // bottom right corner
             }
         } 
-        
-        x_min = x_min + 2 + 1;                        // offset due to previous operation                                    
-        x_max = x_max + 2 + 1;  
-        y_min = y_min + 1;                                               
-        y_max = y_max + 1;
-        
         
         if (y_min<2) y_min=2;
         if (x_min<2) x_min=2;
         if (y_max>s.height-2) y_max=s.height-2;
         if (x_max>s.width-2) x_max=s.width-2;
         
-         if (y_max-y_min>=y_min_size_text && (float)(x_max-x_min)>=ratio_width_height*(float)(y_max-y_min)){ //if the box has good size
-			 
+        if (y_max-y_min>=y_min_size_text && (float)(x_max-x_min)>=ratio_width_height*(float)(y_max-y_min)){ //if the box has good size 
             int y_min_final=y_min;
             int x_min_final=x_min;
             int y_max_final=y_max;
@@ -448,57 +443,34 @@ std::vector<cv::Rect> find_boxes(cv::Mat im, int frameNum, cv::Mat frame_BW, cv:
 			// 1 if texts are written in white, put 0 if there are written in black, put -1 if the color has to be detected, default -1
 
             
-            cv::Rect roi(x_min-2, y_min-2, x_max-x_min+4, y_max-y_min+4);
-            cv::Mat im_temp = frame_BW(roi);
-           int threshold_found = -1;            
-           int nb_cc=0;
-            
-           threshold_found = sauvola(im_temp);          
-           std::cout << "threshold_found "<<threshold_found<<std::endl;
-
-
-	
-	
-            //if (param->type_threshold==-1) {
-            //     threshold_found = cvThreshold(im_temp, im_temp, param->max_thr, param->max_thr, CV_THRESH_TOZERO+CV_THRESH_OTSU);
-             //    threshold_found = param->coef_increase_thr_otsu*threshold_found;
-            //}
-            //else if (param->type_threshold==-2) threshold_found = sauvola(im_temp, param->max_thr+1);
-            //else if (param->type_threshold==-3) threshold_found = wolf(im_temp, param->max_thr+1);
-            //else threshold_found=param->type_threshold;
-            
+           cv::Rect roi(x_min-2, y_min-2, x_max-x_min+4, y_max-y_min+4);
+           cv::Mat im_temp = frame_BW(roi);
+           int threshold_found = -1;                      
+           threshold_found = sauvola(im_temp);          	
                
             //if (threshold_found!=0)  {
 			//	refine_detection(&threshold_found, &ymin, &ymax, &xmin, &xmax, frame_BW, &ymin_final, &ymax_final, &xmin_final, &xmax_final, param);
             //}
 
-            if (y_max_final-y_min_final>=y_min_size_text && (float)(x_max_final-x_min_final)>=ratio_width_height*(float)(y_max_final-y_min_final) && threshold_found!=0){    //if the box has the good geometry
-            	y_min_final=y_min_final-2;
-                x_min_final=x_min_final-2;
-                y_max_final=y_max_final+2;
-                x_max_final=x_max_final+2;                
-                
-                if (y_min_final<0)                    y_min_final=0;  
-                if (x_min_final<0)                    x_min_final=0;
-                if (y_max_final>=s.height)    y_max_final=s.height;
-                if (x_max_final>=s.width)     x_max_final=s.width;
-                
+            if (threshold_found!=0){   
+            	y_min_final=y_min_final-2;  if (y_min_final<0) y_min_final=0;  
+                x_min_final=x_min_final-2;  if (x_min_final<0) x_min_final=0;
+                y_max_final=y_max_final+4;  if (y_max_final>=s.height) y_max_final=s.height;
+                x_max_final=x_max_final+4;  if (x_max_final>=s.width) x_max_final=s.width;
+    
                 cv::Rect roi2(x_min_final, y_min_final, x_max_final-x_min_final, y_max_final-y_min_final);
 				cv::Mat im_box = frame_BW(roi2);
                 cv::Size s2=im_box.size();
-                cv::rectangle(im_box,cv::Point(0,0),cv::Point(s2.width-1,s2.height-1),cv::Scalar(0,0,0,0),1,4,0);
-                cv::rectangle(im_box,cv::Point(1,1),cv::Point(s2.width-2,s2.height-2),cv::Scalar(0,0,0,0),1,4,0);  
-                
+			
 				cv::Rect rect ;
 			    rect.x =x_min_final;
 			    rect.y =y_min_final;
 			    rect.width = x_max_final -x_min_final ;
 			    rect.height = y_max_final -y_min_final;
+				int idx;
+				if (rects.size()==0 || (!in_rects(rect, rects, &idx))) rects.push_back(rect);
+				else rects[idx] = rects[idx] | rect; // if rect is in rects than update the rectangle as the union
                 
-                //cv::Point p=in_rects(rect, rects);
-                
-				if (rects.size()==0 || (!in_rects(rect, rects))) rects.push_back(rect);
-				else std::cout <<"yes"<<std::endl; //rects[p.x] = rects[p.x] | rect;
             }		 
 			 
 		}
@@ -550,7 +522,7 @@ int main(int argc, char** argv) {
 	if (maskFile!=""){
 		isMask=true;
 		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
-		
+		cv::resize(mask,mask,cv::Size(1024,576));
 		}
 	
 	amu::OCR ocr(dataPath, lang);		    
@@ -563,58 +535,54 @@ int main(int argc, char** argv) {
     
     
 	cv::Mat image, image_BW, resized;
-	image = cv::imread("/home/meriem/work/repere/data/BFMTV_BFMStory_2011-05-11_175900_13551.jpg", CV_LOAD_IMAGE_COLOR); 
-	cv::resize(image,image,cv::Size(720,576));
-	resized=image;
-
-	//while(video.HasNext()) { 
-     //   if(video.ReadFrame(image)) {
-	//}
-	//}	
 	
-			// apply mask if it exists
-
+	int frame = 0;
+	while(video.HasNext()) { 
+        if(video.ReadFrame(image)) {	
+				cv::resize(image,resized,cv::Size(1024,576));
+			
+				// apply mask if it exists
 				if (isMask) {
 				cv::bitwise_and(resized, mask, resized);	
-			}
-			
-			
-			cv::cvtColor(resized, image_BW, CV_RGB2GRAY);		
-            cv::Mat im=image_BW;
-            im=sobel_filter_H(image_BW);			
-	
-		    im = dilataion_erosion(im);
-
-			im = delete_horizontal_bar(im);
-
-			im = delete_vertical_bar(im);
-
-				
-			int frame = 0;
-			std::vector<cv::Rect> rects = find_boxes(im, frame, image_BW, mask, isMask);
-
-
-			
-			
-			for (int i=0; i<rects.size();i++) {
-				cv::Rect roi(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
-				std::cout << rects[i].x<< " "<< rects[i].y << " "<<rects[i].width <<" "<<rects[i].height<< std::endl;
-				cv::Mat im_box = resized(roi);
-                cv::imshow("original", im_box);
-				cv::waitKey(0);
-				cv::destroyWindow("original");
-			    
-			    }
-			    
-			
-            /*
-            spatial_detection_box(im, seq_box, frameNum, frame_BW, frame, frame, im_mask, param); 	// Detect boxes spatial position
-            temporal_detection_box(seq_box, seq_box_final, frameNum, frame_BW, im_mask, param);     // Temporal tracking of the boxes
- */
-			
-			
-			
+				}
 		
-	
+				cv::cvtColor(resized, image_BW, CV_RGB2GRAY);		
+				cv::Mat im=image_BW;
+				im=sobel_filter_H(image_BW);			
+				im = dilataion_erosion(im);
+				im = delete_horizontal_bar(im);
+				im = delete_vertical_bar(im);
+				std::vector<cv::Rect> rects = find_boxes(im, image_BW, mask, isMask);
+				      
+				
+				float time =video.GetTime();
+				for (int i=0; i<rects.size();i++) {
+					amu::Result result;
+					result.confidence = 0;
+					result.text = "TESSERACT_FAILED";
+					cv::Rect roi(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
+					cv::Mat im_box = resized(roi);
+					ocr.SetImage(im_box);
+					result = ocr.Process();
+					
+					std::cout << "<box>\n";
+					std::cout <<"  <position_X> "<<rects[i].x<< " </position_X>\n";
+					std::cout <<"  <position_Y> "<<rects[i].y<< " </position_Y>\n";
+					std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
+					std::cout <<"  <width> "<<rects[i].width<< " </width>\n";
+					std::cout <<"  <height> "<<rects[i].height<< " </height>\n";
+					std::cout <<"  <confidence> "<<result.confidence  << " </confidence>\n";
+					std::cout <<"  <text> " <<result.text << " </text>\n";
+					std::cout << "</box>\n";
+					
+					if(show) {
+						cv::imshow("original", im_box);
+						cv::waitKey(400);
+						cv::destroyWindow("original");
+					}
+				}
+			
+		}
+	}
     return 0;
 }
