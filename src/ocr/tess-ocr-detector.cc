@@ -539,6 +539,7 @@ int main(int argc, char** argv) {
 	int frame = 0;
 	while(video.HasNext()) { 
         if(video.ReadFrame(image)) {	
+				
 				cv::resize(image,resized,cv::Size(1024,576));
 			
 				// apply mask if it exists
@@ -557,6 +558,7 @@ int main(int argc, char** argv) {
 				
 				float time =video.GetTime();
 				for (int i=0; i<rects.size();i++) {
+					
 					amu::Result result;
 					result.confidence = 0;
 					result.text = "TESSERACT_FAILED";
@@ -577,6 +579,7 @@ int main(int argc, char** argv) {
 					
 					if(show) {
 						cv::imshow("original", im_box);
+						cv::imwrite("test.png", im_box);
 						cv::waitKey(400);
 						cv::destroyWindow("original");
 					}
