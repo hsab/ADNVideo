@@ -37,5 +37,15 @@ tess-ocr: src/ocr/tess-ocr.cc
 clean:
 	rm -rf  bin/*
 
+
+
+
+clean: ocr
+	rm -rf  bin/tess-ocr-image bin/tess-ocr-detector bin/tess-ocr
+
+clean: shots
+	rm -rf  bin/shot-boundary-detector bin/view-shot-boundaries bin/subshot-from-template
+
+
 mrproper: clean
 	rm -rf  bin/*
