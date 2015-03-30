@@ -4,6 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <libconfig.h>
 
 
 // tesseract
@@ -24,121 +25,6 @@
 
 namespace amu {
 
-    class Rect {
-        public:
-            double start, end;
-            int x, y, width, height;
-            std::vector<std::string> text;
-
-            Rect() : start(0), end(0), x(0), y(0), width(0), height(0) { }
-
-            Rect(const Rect& other, double factor = 1) : start(other.start), end(other.end), x(other.x * factor), y(other.y * factor), width(other.width * factor), height(other.height * factor), text(other.text) { }
-
-            Rect(int _x, int _y, int _width, int _height) : start(0), end(0), x(_x), y(_y), width(_width), height(_height) { }
-
-            Rect(double _start, double _end, int _x, int _y, int _width, int _height, std::vector<std::string> _text = std::vector<std::string>()) : start(_start), end(_end), x(_x), y(_y), width(_width), height(_height), text(_text) { }
-
-            operator cv::Rect() {
-                return cv::Rect(x, y, width, height);
-            }
-
-            static double TimeFromString(const std::string &text) {
-                // PT1M57.040S
-                if(text.length() < 3 || text[0] != 'P' || text[1] != 'T' || text[text.length() - 1] != 'S') {
-                    std::cerr << "ERROR: cannot parse time \"" << text << "\"\n";
-                    return 0;
-                }
-                int hLocation = text.find('H');
-                int mLocation = text.find('M');
-                double hours = 0, minutes = 0, seconds = 0;
-                if(hLocation != -1) {
-                    hours = strtod(text.c_str() + 2, NULL);
-                    if(mLocation != -1) {
-                        minutes = strtod(text.c_str() + hLocation + 1, NULL);
-                        seconds = strtod(text.c_str() + mLocation + 1, NULL);
-                    } else {
-                        std::cerr << "ERROR: cannot parse time \"" << text << "\"\n";
-                    }
-                } else {
-                    if(mLocation != -1) {
-                        minutes = strtod(text.c_str() + 2, NULL);
-                        seconds = strtod(text.c_str() + mLocation + 1, NULL);
-                    } else {
-                        seconds = strtod(text.c_str() + 2, NULL);
-                    }
-                }
-                return 3600 * hours + 60 * minutes + seconds;
-            }
-
-            static std::string StringFromTime(double time) {
-                int hours = ((int) time) / 3600;
-                int minutes = (((int) time) / 60) % 60;
-                double seconds = time - hours * 3600 - minutes * 60;
-                std::stringstream output;
-                output << "PT";
-                if(hours != 0) output << hours << "H";
-                if(minutes != 0) output << minutes << "M";
-                char* remainder = NULL;
-                asprintf(&remainder, "%.03fS", seconds);
-                output << remainder;
-                free(remainder);
-                return output.str();
-            }
-
-
-            static std::vector<amu::Rect> ReadAll(std::istream& input, std::vector<std::string>& tail, int x_offset = 4, int y_offset = -1) {
-                std::vector<amu::Rect> rects;
-                std::vector<std::string> text;
-                double time = -1;
-                double duration = -1;
-                int x = -1, y = -1, width = -1, height = -1;
-                int line_num = 0;
-                while(!input.eof()) {
-                    std::string line;
-                    if(!std::getline(input, line)) break;
-                    line_num ++;
-                    if(amu::StartsWith(line, "<Eid ")) {
-                        std::string positionString = line.substr(std::string("<Eid name=\"TextDetection\" taskName=\"TextDetectionTask\" position=\"").length());
-                        size_t timeEnd = positionString.find('"'); 
-                        std::string timeString = positionString.substr(0, timeEnd);
-                        time = TimeFromString(timeString);
-                        size_t positionStart = timeEnd + std::string("\" position=\"").length();
-                        size_t positionEnd = positionString.find('"', positionStart + 1);
-                        std::string durationString = positionString.substr(positionStart, positionEnd - positionStart);
-                        duration = TimeFromString(durationString);
-                    } else if(amu::StartsWith(line, "<IntegerInfo name=\"Position_X\">")) {
-                        x = strtol(line.substr(std::string("<IntegerInfo name=\"Position_X\">").length()).c_str(), NULL, 10);
-                    } else if(amu::StartsWith(line, "<IntegerInfo name=\"Position_Y\">")) {
-                        y = strtol(line.substr(std::string("<IntegerInfo name=\"Position_Y\">").length()).c_str(), NULL, 10);
-                    } else if(amu::StartsWith(line, "<IntegerInfo name=\"Width\">")) {
-                        width = strtol(line.substr(std::string("<IntegerInfo name=\"Width\">").length()).c_str(), NULL, 10);
-                    } else if(amu::StartsWith(line, "<IntegerInfo name=\"Height\">")) {
-                        height = strtol(line.substr(std::string("<IntegerInfo name=\"Height\">").length()).c_str(), NULL, 10);
-                    }
-                    text.push_back(line);
-                    if(line == "</Eid>") {
-                        if(time == -1 || duration == -1 || x == -1 || y == -1 || width == -1 || height == -1) {
-                            std::cerr << "WARNING: incomplete rectangle ending at line " << line_num << "\n";
-                        }
-                        rects.push_back(amu::Rect(time, time + duration, x + x_offset, y + y_offset, width - x_offset, height - y_offset, text));
-                        x = y = width = height = -1;
-                        time = -1;
-                        duration = -1;
-                        text.clear();
-                    }
-                }
-                tail = text;
-                return rects;
-            }
-    };
-
-    struct RectLess {
-        bool operator ()(Rect const& a, Rect const& b) const {
-            if(a.start < b.start) return true;
-            return false;
-        }
-    };
-
     class Result {
         public:
             std::string text;
@@ -151,11 +37,8 @@ namespace amu {
         tesseract::TessBaseAPI tess; 
         public:
         OCR(const std::string& datapath="", const std::string& lang="fra") : imageWidth(0), imageHeight(0) {
-            if(datapath != "") {
-                setenv("TESSDATA_PREFIX", std::string(datapath + "/../").c_str(), 1);
-            }
+            if(datapath != "") setenv("TESSDATA_PREFIX", std::string(datapath + "/../").c_str(), 1);
             tess.Init(NULL,lang.c_str(), tesseract::OEM_DEFAULT);
-
             SetMixedCase();
         }
 
@@ -185,10 +68,6 @@ namespace amu {
         Result Process(cv::Mat& image) {
             SetImage(image);
             return Process();
-        }
-
-        void SetRectangle(const Rect& rect) {
-            tess.SetRectangle(rect.x, rect.y, rect.width, rect.height);
         }
 
         static std::string ProtectNewLines(const std::string& text) {
@@ -385,8 +264,7 @@ std::vector<cv::Rect> find_boxes(cv::Mat im,  cv::Mat frame_BW, cv::Mat im_mask,
 	
 	double y_min_size_text=	3;
 	double x_min_size_text = 34;
-	float coef_increase_thr_otsu = 1.42;
-	float ratio_width_height = 2.275;
+	float ratio_width_height = 3.24;
 
     int i, j;
     std::vector<std::vector<cv::Point> > contours;
@@ -439,19 +317,11 @@ std::vector<cv::Rect> find_boxes(cv::Mat im,  cv::Mat frame_BW, cv::Mat im_mask,
             int y_max_final=y_max;
             int x_max_final=x_max;
 
-            //text color detection (black on white or vice versa)
-			// 1 if texts are written in white, put 0 if there are written in black, put -1 if the color has to be detected, default -1
-
-            
-           cv::Rect roi(x_min-2, y_min-2, x_max-x_min+4, y_max-y_min+4);
-           cv::Mat im_temp = frame_BW(roi);
-           int threshold_found = -1;                      
-           threshold_found = sauvola(im_temp);          	
+			cv::Rect roi(x_min-2, y_min-2, x_max-x_min+4, y_max-y_min+4);
+			cv::Mat im_temp = frame_BW(roi);
+			int threshold_found = -1;                      
+			threshold_found = sauvola(im_temp);          	
                
-            //if (threshold_found!=0)  {
-			//	refine_detection(&threshold_found, &ymin, &ymax, &xmin, &xmax, frame_BW, &ymin_final, &ymax_final, &xmin_final, &xmax_final, param);
-            //}
-
             if (threshold_found!=0){   
             	y_min_final=y_min_final-2;  if (y_min_final<0) y_min_final=0;  
                 x_min_final=x_min_final-2;  if (x_min_final<0) x_min_final=0;
@@ -507,8 +377,10 @@ int main(int argc, char** argv) {
     options.AddUsage("  --ignore-accents                  do not predict letters with diacritics\n");
     options.AddUsage("  --sharpen                         sharpen image before processing\n");
     options.AddUsage("  --show                            show image beeing processed\n");
+    options.AddUsage("  --step                            specify processing every step frame (default 1)\n");
 
-    double zoom = options.Read("--scale", 1.0); // from video.Configure()
+
+    double zoom = options.Read("--scale", 1.0); 
     std::string dataPath = options.Get<std::string>("--data", "");
     std::string lang = options.Get<std::string>("--lang", "fra");
     bool upper_case = options.IsSet("--upper-case");
@@ -516,15 +388,38 @@ int main(int argc, char** argv) {
     bool sharpen = options.IsSet("--sharpen");
     bool show = options.IsSet("--show");
     std::string maskFile = options.Get<std::string>("--mask", "");
-	cv::Mat mask;
+    
+    
+    
+     // read configuration file 
+    config_t cfg;
+    config_setting_t *s;
+    config_init(&cfg);
+    int step=1;
+    
+    if (config_read_file(&cfg, "configure/configure.cfg") == CONFIG_TRUE) {
+      s = config_lookup(&cfg, "ocr.step");
+      step = config_setting_get_int(s);
+	}
+	config_destroy(&cfg);
+    
+    step = options.Read("--step", step);
 
+	cv::Mat mask;
 	bool isMask=false;
+	
 	if (maskFile!=""){
 		isMask=true;
 		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
 		cv::resize(mask,mask,cv::Size(1024,576));
-		}
-	
+	}
+		
+	std::cout << "STEP = " <<step <<std::endl;;
+		
+		
+		
+	std::cout << "<?xml version=\"1.0\" ?>\n";
+	std::cout << "<boxes>\n";
 	amu::OCR ocr(dataPath, lang);		    
     if(upper_case) ocr.SetUpperCase(ignore_accents);
     else ocr.SetMixedCase(ignore_accents);
@@ -533,20 +428,13 @@ int main(int argc, char** argv) {
     if(!video.Configure(options)) return 1;
     if(options.Size() != 0) options.Usage();
     
-    
 	cv::Mat image, image_BW, resized;
-	
-	int frame = 0;
-	while(video.HasNext()) { 
-        if(video.ReadFrame(image)) {	
-				
+	while(video.HasNext()) {
+        if(video.ReadFrame(image)) {		
 				cv::resize(image,resized,cv::Size(1024,576));
-			
 				// apply mask if it exists
-				if (isMask) {
-				cv::bitwise_and(resized, mask, resized);	
-				}
-		
+				if (isMask) cv::bitwise_and(resized, mask, resized);	
+				
 				cv::cvtColor(resized, image_BW, CV_RGB2GRAY);		
 				cv::Mat im=image_BW;
 				im=sobel_filter_H(image_BW);			
@@ -555,7 +443,6 @@ int main(int argc, char** argv) {
 				im = delete_vertical_bar(im);
 				std::vector<cv::Rect> rects = find_boxes(im, image_BW, mask, isMask);
 				      
-				
 				float time =video.GetTime();
 				for (int i=0; i<rects.size();i++) {
 					
@@ -568,9 +455,9 @@ int main(int argc, char** argv) {
 					result = ocr.Process();
 					
 					std::cout << "<box>\n";
+					std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
 					std::cout <<"  <position_X> "<<rects[i].x<< " </position_X>\n";
 					std::cout <<"  <position_Y> "<<rects[i].y<< " </position_Y>\n";
-					std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
 					std::cout <<"  <width> "<<rects[i].width<< " </width>\n";
 					std::cout <<"  <height> "<<rects[i].height<< " </height>\n";
 					std::cout <<"  <confidence> "<<result.confidence  << " </confidence>\n";
@@ -579,13 +466,15 @@ int main(int argc, char** argv) {
 					
 					if(show) {
 						cv::imshow("original", im_box);
-						cv::imwrite("test.png", im_box);
-						cv::waitKey(400);
+						cv::waitKey(600);
 						cv::destroyWindow("original");
 					}
 				}
 			
 		}
+	if (step >1) video.SeekTime(video.GetTime()+0.04*(step-1));
 	}
+	std::cout << "</boxes>\n";
+	
     return 0;
 }

@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -lexpat -ltesseract -w
+CFLAGS=-W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -lexpat -ltesseract 
 PROGS_shot:= shot-boundary-detector view-shot-boundaries subshot-from-template
 PROGS_tess:= tess-ocr-image tess-ocr-detector tess-ocr
 
@@ -36,15 +36,6 @@ tess-ocr: src/ocr/tess-ocr.cc
 
 clean:
 	rm -rf  bin/*
-
-
-
-
-clean: ocr
-	rm -rf  bin/tess-ocr-image bin/tess-ocr-detector bin/tess-ocr
-
-clean: shots
-	rm -rf  bin/shot-boundary-detector bin/view-shot-boundaries bin/subshot-from-template
 
 
 mrproper: clean

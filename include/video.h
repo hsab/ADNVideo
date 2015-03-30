@@ -60,19 +60,20 @@ namespace amu {
                 options.AddUsage("Options for reading video\n"
                         "  --video <filename>                video file (cannot be used at the same time as image lists)\n"
                         "  --repere-video <filename>         MPG video file read with repere-extract-keyframe, requires idx\n"
-                        "  --image-list <filename>           file containing on each line a frame number and an image filename, requires idx\n"
-                        "  --image-dir <dirname>             directory name appended to image names (defaults to dir of image-list)\n"
-                        "  --idx <filename>                  idx file for mapping frame numbers to times\n"
-                        "  --uem <filename>                  file containing a list of segments associated with a show name\n"
-                        "  --uem-show <showname>             show name for reading uem (defaults to basename of video/image-list)\n"
-                        "  --size <int>x<int>                resize pictures to this size if specified\n"
-                        "  --scale <double>                  scale picture according to this factor after resizing (default 1.0)\n"
-                        "  --frame-skip <int>                skip n frames after reading a frame (default 0)\n"
-                        "  --deinterlace                     discard even lines on picture\n"
-                        "  --start <double>                  start video at that time (also applied to uem segments)\n"
-                        "  --end <double>                    end video at that time\n"
-                        "  --start-frame <int>               start video at that frame number\n"
-                        "  --end-frame <int>                 end video at that frame\n");
+//                        "  --image-list <filename>           file containing on each line a frame number and an image filename, requires idx\n"
+//                        "  --image-dir <dirname>             directory name appended to image names (defaults to dir of image-list)\n"
+                        "  --idx <filename>                  idx file for mapping frame numbers and times\n"
+//                        "  --uem <filename>                  file containing a list of segments associated with a show name\n"
+//                        "  --uem-show <showname>             show name for reading uem (defaults to basename of video/image-list)\n"
+//                        "  --size <int>x<int>                resize pictures to this size if specified\n"
+//                        "  --scale <double>                  scale picture according to this factor after resizing (default 1.0)\n"
+//                        "  --frame-skip <int>                skip n frames after reading a frame (default 0)\n"
+//                        "  --deinterlace                     discard even lines on picture\n"
+//                        "  --start <double>                  start video at that time (also applied to uem segments)\n"
+//                        "  --end <double>                    end video at that time\n"
+//                        "  --start-frame <int>               start video at that frame number\n"
+//                        "  --end-frame <int>                 end video at that frame\n"
+                        );
             }
 
             bool Configure(CommandLine& options, bool failIfNotLoaded = true) {
@@ -103,7 +104,9 @@ namespace amu {
                 }
                 double scale = options.Get<double>("--scale", 1.0);
                 if(scale != 1.0) size = cv::Size(size.width * scale, size.height * scale);
-                int window = options.Get<double>("--window", 9);
+                int window = options.Get("--window", 9);
+                
+                int step = options.Get("--step", 1);
                 
                 frameSkip = options.Get("--frame-skip", 0);
                 deinterlace = options.IsSet("--deinterlace");

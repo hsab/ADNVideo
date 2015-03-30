@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
     int window = 9;
     double scale=1.0;
     
-    if (config_read_file(&cfg, "../../configure/configure.cfg") == CONFIG_TRUE) {
+    if (config_read_file(&cfg, "configure/configure.cfg") == CONFIG_TRUE) {
       w = config_lookup(&cfg, "shot_boundary.window");
       s = config_lookup(&cfg, "shot_boundary.scale");
       window = config_setting_get_int(w);
@@ -125,7 +125,6 @@ int main(int argc, char** argv) {
 
     amu::Buffer<cv::Mat> histogram(window); // histograms
     amu::Buffer<std::pair<int, double> > frameNum(window); // frame number corresponding to an histogram
-
     amu::Buffer<double> distances(window * 8); // histogram distance
     amu::Buffer<std::pair<int, double> > indices(window * 8); // frame number corresponding to distances
 
