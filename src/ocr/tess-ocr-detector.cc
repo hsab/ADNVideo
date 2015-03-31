@@ -413,9 +413,7 @@ int main(int argc, char** argv) {
 		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
 		cv::resize(mask,mask,cv::Size(1024,576));
 	}
-		
-	std::cout << "STEP = " <<step <<std::endl;;
-		
+				
 		
 		
 	std::cout << "<?xml version=\"1.0\" ?>\n";

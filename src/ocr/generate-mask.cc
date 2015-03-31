@@ -1,3 +1,5 @@
+// generate masks text regions for OCR 
+// Please read README.txt for information and build instructions.
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -17,10 +19,7 @@ Rect box;
 bool drawing_box = false;
 
 
-
 void my_mouse_callback( int event, int x, int y, int flags, void* param );
-
-
 void draw_box(Mat * img, Rect rect){
   rectangle(*img, Point(box.x, box.y), Point(box.x+box.width,box.y+box.height),Scalar(0,0,255) ,2);
   Rect rect2=Rect(box.x,box.y,box.width,box.height);
@@ -60,12 +59,7 @@ void my_mouse_callback( int event, int x, int y, int flags, void* param){
           
           break;
 		case CV_EVENT_RBUTTONDOWN: {
-			Size s = frame->size();
-			Mat atom_image = Mat::zeros(s.height,s.width, CV_8UC3 );
-			rectangle(atom_image,  box, Scalar(255,255,255), -1, 8, 0);
-			imwrite("images/mask.png", atom_image);
 			ok=false;
-			cv::destroyWindow("Box Example");
 			break; 
 			}
 		   break; 	
@@ -78,15 +72,18 @@ void my_mouse_callback( int event, int x, int y, int flags, void* param){
    }
 }
 
-   
+  
     
     
-    
-int main() {
+int main(int argc,char **argv){
+	   if(argc != 3){
+        std::cerr << "usage: " << argv[0] << " image.png output_mask.png" << std::endl;
+        return 1;
+		}
 	  String name = "Box Example";
 	  namedWindow( name );
 	  box = Rect(0,0,1,1);
-	  Mat image = imread("../repere/data/vlcsnap-2015-03-30-12h17m52s24.png");
+	  Mat image = imread(argv[1]);
 	  Mat temp = image.clone();
 	  
 	  setMouseCallback(name, my_mouse_callback, &image);
@@ -98,5 +95,11 @@ int main() {
 		break;
 	  }
 	  
+	  cv::destroyWindow("Box Example");
+	  Size s = image.size();
+	  Mat atom_image = Mat::zeros(s.height,s.width, CV_8UC3 );
+	  rectangle(atom_image,  box, Scalar(255,255,255), -1, 8, 0);
+	  imwrite(argv[2], atom_image);
+			
 	  return 0;
 }
