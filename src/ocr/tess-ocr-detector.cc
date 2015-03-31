@@ -411,13 +411,11 @@ int main(int argc, char** argv) {
 	if (maskFile!=""){
 		isMask=true;
 		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
-		cv::resize(mask,mask,cv::Size(1024,576));
+		//cv::resize(mask,mask,cv::Size(1024,576));
 	}
 				
 		
 		
-	std::cout << "<?xml version=\"1.0\" ?>\n";
-	std::cout << "<boxes>\n";
 	amu::OCR ocr(dataPath, lang);		    
     if(upper_case) ocr.SetUpperCase(ignore_accents);
     else ocr.SetMixedCase(ignore_accents);
@@ -426,10 +424,13 @@ int main(int argc, char** argv) {
     if(!video.Configure(options)) return 1;
     if(options.Size() != 0) options.Usage();
     
+	std::cout << "<?xml version=\"1.0\" ?>\n";
+	std::cout << "<boxes>\n";
 	cv::Mat image, image_BW, resized;
 	while(video.HasNext()) {
         if(video.ReadFrame(image)) {		
-				cv::resize(image,resized,cv::Size(1024,576));
+				//cv::resize(image,resized,cv::Size(1024,576));
+				resized =image;
 				// apply mask if it exists
 				if (isMask) cv::bitwise_and(resized, mask, resized);	
 				

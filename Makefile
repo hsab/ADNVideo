@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -lexpat -ltesseract 
+CFLAGS= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -lexpat -ltesseract -w
 PROGS_shot:= shot-boundary-detector view-shot-boundaries subshot-from-template
-PROGS_tess:= tess-ocr-image tess-ocr-detector tess-ocr
+PROGS_tess:= tess-ocr-detector generate-mask tess-ocr-image  tess-ocr 
 
 all: $(PROGS_shot) $(PROGS_tess)
 
@@ -31,7 +31,8 @@ tess-ocr-detector: src/ocr/tess-ocr-detector.cc
 tess-ocr: src/ocr/tess-ocr.cc 
 	$(CC) src/ocr/tess-ocr.cc -o  bin/$@  $(CFLAGS)
 
-
+generate-mask: src/ocr/generate-mask.cc 
+	$(CC) src/ocr/generate-mask.cc -o  bin/$@  $(CFLAGS)
 
 
 clean:
