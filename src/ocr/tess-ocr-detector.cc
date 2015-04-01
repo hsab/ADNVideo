@@ -1,3 +1,9 @@
+// OCR in videos.
+// Please read README.txt for information and build instructions.
+// Text boxes detection based on coarse detection discribed in "From Text Detection in Videos to Person Identification"
+
+
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -98,7 +104,7 @@ namespace amu {
 
 }
 
-
+// horizontal Sobel filter
 cv::Mat sobel_filter_H(cv::Mat image){                                   
     cv::Mat  image_sobel_h;
     cv::Sobel(image, image_sobel_h,CV_16S, 1, 0, 1, 1, 0, cv::BORDER_DEFAULT );                                 
@@ -114,8 +120,7 @@ cv::Mat dilataion_erosion(cv::Mat image){
 
 	cv::Mat element = cv::getStructuringElement( cv::MORPH_RECT, 
 					  cv::Size(3, 1), 
-					  cv::Point(1,0));
-					  
+					  cv::Point(1,0));				  
 	cv::dilate(image, image, element, cv::Point(1,0) , 19); 
 	cv::erode(image, image, element, cv::Point(1,0) , 19); 
     return image;
@@ -123,7 +128,7 @@ cv::Mat dilataion_erosion(cv::Mat image){
 
 
 
-
+// delete horizontal bars 
 cv::Mat delete_horizontal_bar(cv::Mat image){
 	
 	
@@ -139,7 +144,7 @@ cv::Mat delete_horizontal_bar(cv::Mat image){
 
 
 
-
+// delete vertical bars 
 cv::Mat delete_vertical_bar(cv::Mat image){
 	cv::Size s = image.size();
 	double x_min_size_text = 34;
@@ -153,21 +158,15 @@ cv::Mat delete_vertical_bar(cv::Mat image){
 }
 
 
-//find the nearest integer of a float   
+// find the nearest integer of a float   
 int round_me(float x) {                                   
      if ((int)(x+0.5)==(int)(x)) return (int)(x);
      else return (int)(x+1);
 }
 
 
-
-bool cmp_points(cv::Point pt1, cv::Point pt2) { 
-		    int y_diff = pt1.y - pt2.y;
-			int x_diff = pt1.x - pt2.x;
-			return (y_diff ? y_diff : x_diff);
-		}
-
-bool  cmp_points2(cv::Point pt1, cv::Point pt2){
+// compare 2 points in order to sort them from top left to bottom right
+bool  cmp_points(cv::Point pt1, cv::Point pt2){
 	if(pt1.y!=pt2.y)
 		return (pt1.y<pt2.y);
 	else
@@ -175,21 +174,23 @@ bool  cmp_points2(cv::Point pt1, cv::Point pt2){
 }
 
 
-// Find global threshold with Sauvola binarisation algorithm
+// Sauvola binarisation algorithm
 int sauvola(cv::Mat im_thr, int video_depth=256){
-    float k_sauvola=0.5;
-	cv::Size s = im_thr.size();
-	bitwise_not(im_thr,im_thr);	
 	
+    float k_sauvola=0.5;
+   	float ecart_type_sauv=0.0;
 	float mean_sauv=0.0;
 	float total_px_sauv=0;
 	int nb_px_sauv=0;
     int val=0;
+    
+	cv::Size s = im_thr.size();
+	bitwise_not(im_thr,im_thr);	
+	
+
     float connect[video_depth];
     int x,y,i;
-    for(i=0;i<video_depth;i++){
-    	connect[i]=0;
-    }
+    for(i=0;i<video_depth;i++)	connect[i]=0;
     
 	for (x=0;x<s.width;x++){
 		for (y=0;y<s.height;y++){
@@ -208,17 +209,16 @@ int sauvola(cv::Mat im_thr, int video_depth=256){
 	}	
 	mean_sauv=total_px_sauv/nb_px_sauv;
 	
-	float ecart_type_sauv=0.0;
 	for(i=0;i<video_depth-1;i++) ecart_type_sauv+=(connect[i]*(i-mean_sauv)*(i-mean_sauv));
-	
 	ecart_type_sauv/=total_px_sauv;
 	ecart_type_sauv=sqrt(ecart_type_sauv);
-	float thr_sauv=mean_sauv*(1+k_sauvola*(ecart_type_sauv/(video_depth/2)-1));  // Tsauvola = m (1 + k(s/R -1))	
+	float thr_sauv=mean_sauv*(1+k_sauvola*(ecart_type_sauv/(video_depth/2)-1)); 	
+	
 	return 255-round_me(thr_sauv);
 }
 
 
-
+// is a rectangle in the list 
 bool in_rects(cv::Rect rect, std::vector<cv::Rect> rects, int * idx)
 {
 	int x,y, width, height;
@@ -238,30 +238,30 @@ bool in_rects(cv::Rect rect, std::vector<cv::Rect> rects, int * idx)
 		float recouvrement=area_3/(area_1 + area_2 - area_3);
 		if (recouvrement>0.5) {
 			*idx=i;
-			return true;
-			
-			};
+			return true;		
+			}
 		}
-	
 	return false;
-	
-	}
-
-
-void show_contours(cv::Mat image , std::vector<std::vector<cv::Point> > contours, std::vector<cv::Vec4i> hierarchy){
-	cv::Mat drawing = cv::Mat::zeros(image.size(), CV_8UC3 );
-	for( int i = 0; i< contours.size(); i++ ){
-       cv::drawContours( drawing, contours, i, (255,255,255), 2, 8, hierarchy, 0, cv::Point() );
-     }
-	cv::imshow( "Contours", drawing );
-	cv::waitKey(0);
 }
 
 
-// coarse spatial detection of boxes
+// display contours 
+void show_contours(cv::Mat image , std::vector<std::vector<cv::Point> > contours, std::vector<cv::Vec4i> hierarchy){
+	cv::Mat drawing = cv::Mat::zeros(image.size(), CV_8UC3 );
+	for( int i = 0; i< contours.size(); i++ )  cv::drawContours( drawing, contours, i, (255,255,255), 2, 8, hierarchy, 0, cv::Point() );
+	cv::imshow( "Contours", drawing );
+	cv::waitKey(0);
+	cv::destroyWindow("Contours");
+
+}
+
+
+// Text boxes detection based on coarse detection discribed in "From Text Detection in Videos to Person Identification"
 std::vector<cv::Rect> find_boxes(cv::Mat im,  cv::Mat frame_BW, cv::Mat im_mask, bool isMask){ 
+	
 	std::vector<cv::Rect> rects;	
 	
+	// Thresholds from the LOOV tool
 	double y_min_size_text=	3;
 	double x_min_size_text = 34;
 	float ratio_width_height = 3.24;
@@ -274,15 +274,16 @@ std::vector<cv::Rect> find_boxes(cv::Mat im,  cv::Mat frame_BW, cv::Mat im_mask,
 	cv::rectangle(im,cv::Point(0,0),cv::Point(s.width-1,s.height-1),cv::Scalar(0,0,0,0),2,4,0) ;    
     
 			    
-	// contours detection
+	// detect contours
 	cv::findContours(im, contours, hierarchy, CV_RETR_LIST, CV_LINK_RUNS, cv::Point(0, 0) );
 	
 	//show contours
     //show_contours(im , contours, hierarchy);
 
     
-    //coarse detection
+    // coarse detection
 	for( int n = 0; n< contours.size(); n++ ){
+		
 		//corners coordinates initialization
 		int y_min=s.height-2;
 		int x_min=s.width-2;
@@ -293,7 +294,7 @@ std::vector<cv::Rect> find_boxes(cv::Mat im,  cv::Mat frame_BW, cv::Mat im_mask,
 		std::vector<cv::Point> current_contour=contours[n];
 		
 		// sort coordinates in order to make each pair of consecutive points a line in the contour
-		std::stable_sort(current_contour.begin(), current_contour.end(), cmp_points2);
+		std::stable_sort(current_contour.begin(), current_contour.end(), cmp_points);
 		
 		for(i=0; i<current_contour.size(); i=i+2 ) { 
             cv::Point p1 = current_contour[i];
@@ -305,42 +306,48 @@ std::vector<cv::Rect> find_boxes(cv::Mat im,  cv::Mat frame_BW, cv::Mat im_mask,
                 if (p2.x > x_max) x_max = p2.x;   // bottom right corner
             }
         } 
-        
+        // avoid taking image corners
         if (y_min<2) y_min=2;
         if (x_min<2) x_min=2;
         if (y_max>s.height-2) y_max=s.height-2;
         if (x_max>s.width-2) x_max=s.width-2;
         
-        if (y_max-y_min>=y_min_size_text && (float)(x_max-x_min)>=ratio_width_height*(float)(y_max-y_min)){ //if the box has good size 
+        if (y_max-y_min>=y_min_size_text && (float)(x_max-x_min)>=ratio_width_height*(float)(y_max-y_min)){ //if the box has good geometry 
+			
             int y_min_final=y_min;
             int x_min_final=x_min;
             int y_max_final=y_max;
             int x_max_final=x_max;
+            int threshold_found = -1;                      
 
+			// increase image box search
 			cv::Rect roi(x_min-2, y_min-2, x_max-x_min+4, y_max-y_min+4);
+			
 			cv::Mat im_temp = frame_BW(roi);
-			int threshold_found = -1;                      
 			threshold_found = sauvola(im_temp);          	
                
-            if (threshold_found!=0){   
+            if (threshold_found!=0){ // if threshold found
             	y_min_final=y_min_final-2;  if (y_min_final<0) y_min_final=0;  
                 x_min_final=x_min_final-2;  if (x_min_final<0) x_min_final=0;
                 y_max_final=y_max_final+4;  if (y_max_final>=s.height) y_max_final=s.height;
                 x_max_final=x_max_final+4;  if (x_max_final>=s.width) x_max_final=s.width;
-    
-                cv::Rect roi2(x_min_final, y_min_final, x_max_final-x_min_final, y_max_final-y_min_final);
-				cv::Mat im_box = frame_BW(roi2);
-                cv::Size s2=im_box.size();
-			
+				
 				cv::Rect rect ;
 			    rect.x =x_min_final;
 			    rect.y =y_min_final;
 			    rect.width = x_max_final -x_min_final ;
 			    rect.height = y_max_final -y_min_final;
-				int idx;
+   				int idx;
+
+			    
+			    // cut the image rectangle
+                cv::Rect roi2(rect.x, rect.y, rect.width, rect.height);
+				cv::Mat im_box = frame_BW(roi2);	
+				
+				// add the rectangle to the list 
+				// if the rectangle is in the list, update the rectangle as the union
 				if (rects.size()==0 || (!in_rects(rect, rects, &idx))) rects.push_back(rect);
-				else rects[idx] = rects[idx] | rect; // if rect is in rects than update the rectangle as the union
-                
+				else rects[idx] = rects[idx] | rect;              
             }		 
 			 
 		}
@@ -351,24 +358,12 @@ return rects;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Main function: Takes a video 
+// returns OCR results on text boxes
+// Text boxes are detected following the method discribed in "From Text Detection in Videos to Person Identification"
 int main(int argc, char** argv) {
 
+	// Usages
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --data <directory>                tesseract model directory (containing tessdata/)\n");
     options.AddUsage("  --lang <language>                 tesseract model language (default fra)\n");
@@ -391,7 +386,7 @@ int main(int argc, char** argv) {
     
     
     
-     // read configuration file 
+    // read configuration file 
     config_t cfg;
     config_setting_t *s;
     config_init(&cfg);
@@ -401,13 +396,12 @@ int main(int argc, char** argv) {
       s = config_lookup(&cfg, "ocr.step");
       step = config_setting_get_int(s);
 	}
-	config_destroy(&cfg);
-    
+	config_destroy(&cfg);    
     step = options.Read("--step", step);
 
+	// read the mask if it exists
 	cv::Mat mask;
-	bool isMask=false;
-	
+	bool isMask=false;	
 	if (maskFile!=""){
 		isMask=true;
 		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
@@ -415,44 +409,66 @@ int main(int argc, char** argv) {
 	}
 				
 		
-		
+	// set the Tesseract options
 	amu::OCR ocr(dataPath, lang);		    
     if(upper_case) ocr.SetUpperCase(ignore_accents);
     else ocr.SetMixedCase(ignore_accents);
-
+	
+	// load video
     amu::VideoReader video;
     if(!video.Configure(options)) return 1;
     if(options.Size() != 0) options.Usage();
     
+    
 	std::cout << "<?xml version=\"1.0\" ?>\n";
 	std::cout << "<boxes>\n";
 	cv::Mat image, image_BW, resized;
+	
+	
 	while(video.HasNext()) {
         if(video.ReadFrame(image)) {		
 				//cv::resize(image,resized,cv::Size(1024,576));
 				resized =image;
+				
 				// apply mask if it exists
 				if (isMask) cv::bitwise_and(resized, mask, resized);	
 				
 				cv::cvtColor(resized, image_BW, CV_RGB2GRAY);		
 				cv::Mat im=image_BW;
-				im=sobel_filter_H(image_BW);			
+				
+				// apply horozontal sobel filter
+				im=sobel_filter_H(image_BW);
+				
+				// apply horizontal dilatation and erosion
 				im = dilataion_erosion(im);
+				
+				// delete horizontal bars
 				im = delete_horizontal_bar(im);
+				
+				// delete vertical  bars
 				im = delete_vertical_bar(im);
+				
+				// find text boxes
 				std::vector<cv::Rect> rects = find_boxes(im, image_BW, mask, isMask);
 				      
+				// Apply Tesseract in boxes and print the results 
 				float time =video.GetTime();
-				for (int i=0; i<rects.size();i++) {
+				for (int i=0; i<rects.size();i++) {	
 					
+					// initialize tesseract parameters
 					amu::Result result;
 					result.confidence = 0;
 					result.text = "TESSERACT_FAILED";
+					
+					// image box
 					cv::Rect roi(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
 					cv::Mat im_box = resized(roi);
+					
+					// apply the OCR 
 					ocr.SetImage(im_box);
 					result = ocr.Process();
 					
+					// print the results 
 					std::cout << "<box>\n";
 					std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
 					std::cout <<"  <position_X> "<<rects[i].x<< " </position_X>\n";
@@ -463,16 +479,19 @@ int main(int argc, char** argv) {
 					std::cout <<"  <text> " <<result.text << " </text>\n";
 					std::cout << "</box>\n";
 					
+					// display the text box image is show is true
 					if(show) {
 						cv::imshow("original", im_box);
 						cv::waitKey(600);
 						cv::destroyWindow("original");
 					}
-				}
-			
+				}	
 		}
+		
+	//	seek to time + step
 	if (step >1) video.SeekTime(video.GetTime()+0.04*(step-1));
 	}
+	
 	std::cout << "</boxes>\n";
 	
     return 0;
