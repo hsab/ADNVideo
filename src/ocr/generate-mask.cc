@@ -99,13 +99,13 @@ int main(int argc,char **argv){
 	
 	
 	
-	Mat temp = image;
+	Mat temp = image.clone();
 	
 	//Set mouse handler for the window 
 	setMouseCallback(name, my_mouse_callback, &image);
 	// display until rectangle confirmation 
 	while(ok){
-		temp = image;
+		temp = image.clone();
 		if (drawing_box) draw_box(&temp, box);
 		imshow(name, temp);
 		if (waitKey(15) ==0) break;
