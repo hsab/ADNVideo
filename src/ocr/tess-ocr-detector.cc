@@ -20,7 +20,6 @@
 // accurate frame reading
 #include "repere.h"
 #include "binarize.h"
-#include "xml.h"
 
 #include <algorithm> 
 #include <functional> 
