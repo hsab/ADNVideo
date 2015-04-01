@@ -216,6 +216,11 @@ namespace amu {
 
 }
 
+
+
+// Main function: 
+// input : video and text boxes in XML file 
+// returns OCR results on text boxes
 int main(int argc, char** argv) {
 
     amu::CommandLine options(argv, "[options]\n");
