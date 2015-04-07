@@ -150,7 +150,6 @@ int main(int argc, char** argv) {
             }
         } while(numNegative < negatives);
 
-        //cv::imshow("image", image);
-        //cv::waitKey(0);
+
     }
 }

@@ -12,7 +12,7 @@ Building opencv-utils requires the following software installed:
     - G++ 4.8 or later
     - ffmpeg or libav development packages: libavcodec-dev, libavformat-dev, libswscale-dev
     - OpenCV 2.4 or later
-    - Libconfig
+    - Libconfig 1.4 or later
 
 For OCR tools :
     - Tesseract 3.0
