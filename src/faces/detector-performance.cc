@@ -5,6 +5,10 @@
 #include "face.h"
 #include <floatfann.h>
 
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
 namespace amu {
     class FannClassifier {
         private:
@@ -129,6 +133,8 @@ int main(int argc, char** argv) {
     options.AddUsage("  --ann <path>                      path to fann model\n");
     options.AddUsage("  --show                            show detections\n");
     std::string xgtfFilename = options.Get<std::string>("--xgtf", "");
+    
+    
     int window = options.Get("--window", 32);
     double grow = options.Get("--grow", 1.5);
     std::string hogModelFile = options.Get<std::string>("--model", "");
@@ -164,12 +170,14 @@ int main(int argc, char** argv) {
 
     double numRef = 0, numHyp = 0, numCorrect = 0, numHypHaar = 0, numCorrectHaar = 0, numHypBoth = 0, numCorrectBoth = 0;
 
+	std::ofstream myfile;
+	myfile.open ("peroformance.txt", std::ios::app);
     cv::Mat image;
     cv::Size size = video.GetSize();
     for(std::map<int, std::vector<int> >::iterator frame = frames.begin(); frame != frames.end(); frame++) {
         video.Seek(frame->first);
         video.ReadFrame(image);
-        std::cerr << frame->first << "\n";
+        cv::resize(image,image,cv::Size(1024, 576));
         for(size_t p = 0; p < frame->second.size(); p++) {
             Person& person = persons[frame->second[p]];
             amu::Scale(person.rect, scale);
@@ -188,23 +196,46 @@ int main(int argc, char** argv) {
             }
             amu::Shrink(centered, grow);
             person.rect = centered;
-           // if(show) cv::rectangle(image, centered, cv::Scalar(0, 255, 0), 1);
+            //if(show) cv::rectangle(image, centered, cv::Scalar(0, 255, 0), 1);
         }
 
         std::vector<cv::Rect> found;
         cv::Size padding(cv::Size(0, 0));
         cv::Size winStride(cv::Size(4, 4));
         hog.detectMultiScale(image, found, hitThreshold, winStride, padding, 1.1, groupThreshold);
-        std::cout <<"found.size() " <<found.size()<<std::endl;
+        
         for(size_t i = 0; i < found.size(); i++) {
             //if(found[i].width < 64) continue;
             cv::Mat face(image, found[i]);
+		    std::stringstream ss1,ss2; 
+			ss1 << frame->first;
+			std::string str_frame = ss1.str();
+			ss2 << i;
+			std::string str_i = ss2.str();
+			std::string name = str_frame + 	"_"+ str_i + ".png";
+			
+			
+			cv::imwrite(name,face);
+			
+            bool ok=false;
+            for(size_t p = 0; p < frame->second.size(); p++) {
+                if((persons[frame->second[p]].rect & found[i]).area() > persons[frame->second[p]].rect.area() / 2
+                        && (persons[frame->second[p]].rect & found[i]).area() > found[i].area() / 2) {
+                    ok = true;
+                    break;
+                }
+            }
+            
+            std::cout << frame->first <<"_"<<i<<" "<<found[i].x << " " <<found[i].y  << " " <<found[i].width  << " " <<found[i].height << " "<<ok<<std::endl;
+            
             cv::resize(face, face, cv::Size(window, window));
             std::vector<float> descriptorsValues;
             std::vector<cv::Point> locations;
             hog.compute(face, descriptorsValues, cv::Size(0,0), cv::Size(0,0), locations);
             double score = ann.Classify(descriptorsValues);
-            std::cout << found[i] << " " <<score << "\n";
+            
+            
+
             cv::rectangle(image, found[i], cv::Scalar(0, 0, 0), 1);
             if(score < 0.5) continue;
 
@@ -267,11 +298,15 @@ int main(int argc, char** argv) {
     }
     double recall = numCorrect / numRef;
     double precision = numCorrect / numHyp;
-    std::cout << "HOG: " << numRef << " " << numHyp << " " << numCorrect << " r=" << recall << " p=" << precision << " f=" << (2 * precision * recall) / (precision + recall) << "\n";
+    myfile<<xgtfFilename <<"\n";
+    myfile << "HOG: " << numRef << " " << numHyp << " " << numCorrect << " r=" << recall << " p=" << precision << " f=" << (2 * precision * recall) / (precision + recall) << "\n";
     recall = numCorrectHaar / numRef;
     precision = numCorrectHaar / numHypHaar;
-    std::cout << "HAAR: " << numRef << " " << numHypHaar << " " << numCorrectHaar << " r=" << recall << " p=" << precision << " f=" << (2 * precision * recall) / (precision + recall) << "\n";
+    myfile <<  "HAAR: " << numRef << " " << numHypHaar << " " << numCorrectHaar << " r=" << recall << " p=" << precision << " f=" << (2 * precision * recall) / (precision + recall) << "\n";
     recall = numCorrectBoth / numRef;
     precision = numCorrectBoth / numHypBoth;
-    std::cout << "BOTH: " << numRef << " " << numHypBoth << " " << numCorrectBoth << " r=" << recall << " p=" << precision << " f=" << (2 * precision * recall) / (precision + recall) << "\n";
+    myfile <<  "BOTH: " << numRef << " " << numHypBoth << " " << numCorrectBoth << " r=" << recall << " p=" << precision << " f=" << (2 * precision * recall) / (precision + recall) << "\n";
+    myfile.close();
+    return 0;
+    
 }
