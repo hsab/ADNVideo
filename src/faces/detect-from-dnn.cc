@@ -165,7 +165,7 @@ int main(int argc, char** argv) {
         cv::Size winStride(cv::Size(4, 4));
         hog.detectMultiScale(image, found, hitThreshold, winStride, padding, 1.1, groupThreshold);
         for(size_t i = 0; i < found.size(); i++) {    
-            if(show) cv::rectangle(image, found[i], cv::Scalar(0, 0, 255), 1);       
+            //if(show) cv::rectangle(image, found[i], cv::Scalar(0, 0, 255), 1);       
             std::cout <<found[i].x << " " <<found[i].y  << " " <<found[i].width  << " " <<found[i].height <<std::endl;
 
         }      
