@@ -489,7 +489,10 @@ int main(int argc, char** argv) {
 					std::cout <<"  <confidence> "<<result.confidence  << " </confidence>\n";
 					std::cout <<"  <text> " <<result.text << " </text>\n";
 					std::cout << "</box>\n";
+		
 					
+					
+			
     box_node=xmlNewChild(root_node, NULL, BAD_CAST "box", BAD_CAST NULL);
 	char buffer[100];
 
@@ -526,11 +529,7 @@ int main(int argc, char** argv) {
 	delete [] cstr;	
 	
 	xmlSaveFormatFileEnc("toto.xml", doc, "UTF-8", 1);
-    				
-					
-					
-					
-					
+    	
 					
 					
 					// display the text box image is show is true
