@@ -82,7 +82,6 @@ namespace amu {
                 return output.str();
             }
 
-
             static std::vector<amu::Rect> ReadAll(std::istream& input, std::vector<std::string>& tail, int x_offset = 4, int y_offset = -1) {
                 std::vector<amu::Rect> rects;
                 std::vector<std::string> text;

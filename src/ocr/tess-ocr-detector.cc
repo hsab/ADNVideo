@@ -11,6 +11,10 @@
 #include <fstream>
 #include <algorithm>
 #include <libconfig.h>
+#include <stdio.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+
 
 
 // tesseract
@@ -42,7 +46,7 @@ namespace amu {
         tesseract::TessBaseAPI tess; 
         public:
         OCR(const std::string& datapath="", const std::string& lang="fra") : imageWidth(0), imageHeight(0) {
-            if(datapath != "") setenv("TESSDATA_PREFIX", std::string(datapath + "/../").c_str(), 1);
+            if(datapath != "") setenv("TESSDATA_PREFIX", std::string(datapath + "/").c_str(), 1);
             tess.Init(NULL,lang.c_str(), tesseract::OEM_DEFAULT);
             SetMixedCase();
         }
@@ -422,7 +426,15 @@ int main(int argc, char** argv) {
 	std::cout << "<?xml version=\"1.0\" ?>\n";
 	std::cout << "<boxes>\n";
 	cv::Mat image, image_BW, resized;
-	
+
+	//XML output
+	xmlDocPtr doc = NULL;      
+    xmlNodePtr root_node = NULL, node = NULL, box_node = NULL;
+    doc = xmlNewDoc(BAD_CAST "1.0");
+    root_node = xmlNewNode(NULL, BAD_CAST "root");
+    xmlDocSetRootElement(doc, root_node);
+
+
 	
 	while(video.HasNext()) {
         if(video.ReadFrame(image)) {		
@@ -478,6 +490,49 @@ int main(int argc, char** argv) {
 					std::cout <<"  <text> " <<result.text << " </text>\n";
 					std::cout << "</box>\n";
 					
+    box_node=xmlNewChild(root_node, NULL, BAD_CAST "box", BAD_CAST NULL);
+	char buffer[100];
+
+	sprintf(buffer, "%f",video.GetTime());
+	node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo", (const xmlChar *) buffer);
+	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "time");
+
+	
+	sprintf(buffer, "%d",rects[i].x);
+	node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
+	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_X");
+	
+	sprintf(buffer, "%d",rects[i].y);	
+    node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
+	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_Y");
+	
+	sprintf(buffer, "%d",rects[i].width);
+	node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
+    xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Width");
+    
+	sprintf(buffer, "%d",rects[i].height);
+	node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
+    xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Height");
+    
+    sprintf(buffer, "%f",result.confidence );
+    node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo",(const xmlChar *) buffer);
+	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Confidence");
+    
+	std::string str = result.text;
+	char *cstr = new char[str.length() + 1];
+	strcpy(cstr, str.c_str());
+    node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo",(const xmlChar *) cstr);
+	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "text");
+	delete [] cstr;	
+	
+	xmlSaveFormatFileEnc("toto.xml", doc, "UTF-8", 1);
+    				
+					
+					
+					
+					
+					
+					
 					// display the text box image is show is true
 					if(show) {
 						cv::imshow("original", im_box);
@@ -492,6 +547,9 @@ int main(int argc, char** argv) {
 	}
 	
 	std::cout << "</boxes>\n";
+	xmlFreeDoc(doc);
+    xmlCleanupParser();
+    xmlMemoryDump();
 	
     return 0;
 }
