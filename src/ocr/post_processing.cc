@@ -86,12 +86,13 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 	box b; 
     xmlNode *cur =NULL;
     xmlNode *cur_node =NULL;
+    xmlAttrPtr attr;
     cur = root_element->xmlChildrenNode;
 	while (cur != NULL)  {
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"box")){           
 			cur_node=cur->xmlChildrenNode;
 			while (cur_node != NULL){
-				xmlAttrPtr attr = cur_node->properties; 
+				attr = cur_node->properties; 
 				if (attr != NULL){
 					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Position_X")))  {std::string sName((char*) cur_node->children->content); b.position_X=::atof(sName.c_str());}
 					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Position_Y")))  {std::string sName((char*) cur_node->children->content); b.position_Y=::atof(sName.c_str());}
@@ -118,74 +119,92 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 
 
  
- int main(int argc, char **argv){
-    
+int main(int argc, char **argv){
     if (argc != 2)  {
 		std::cout<< "Usage "<< argv[0] <<" result.xml (OCR XML output file)" <<std::endl;
-		return 0;
-		}
+		exit(1);
+	}
    
   	xmlDoc *doc = NULL;
     xmlNode *root_element = NULL;
 	doc = xmlReadFile(argv[1], NULL, 0);
-    
-	std::vector<box> boxes;
-    std::vector<box> boxes_t;
     if (doc == NULL){
        printf("error: could not parse file %s\n", argv[1]);
-       exit(-1);
+       exit(1);
     }
 
     
+	std::vector<box> boxes;
+    std::vector<box> boxes_t;
+    
+    
     root_element = xmlDocGetRootElement(doc); 
+	
     boxes=ReadXML(root_element);
+
 	xmlFreeDoc(doc);       // free document
     xmlCleanupParser();    // Free globals
     	
-	
 	boxes_t=boxes;
-	box box_1=boxes[1];
-	cv::Rect r1, r2, intersection;
-	r1.x=box_1.position_X;
-	r1.y=box_1.position_Y;
-	r1.width=box_1.width;
-	r1.height=box_1.height;
-	float area_1, area_2, area_3;
-	area_1= r1.width*r1.height;
-	size_t lv_distance;
-	bool change = true;
+	for (int i=0; i< boxes.size();i++)   std::cout <<boxes[i].text << std::endl;
 	
 	
-	for (int i =1; i<boxes_t.size(); i++) {
-		r2.x=boxes_t[i].position_X;
-		r2.y=boxes_t[i].position_Y;
-		r2.width=boxes_t[i].width;
-		r2.height=boxes_t[i].height;
-		area_2= r2.width*r2.height;
-		intersection= r1&r2;
-		area_3= intersection.width*intersection.height;
-		float recouvrement=area_3/(area_1 + area_2 - area_3);
-		
-		lv_distance= LevenshteinDistance(box_1.text,boxes_t[i].text);
-		
-		
-		if ((recouvrement>0.90) & (lv_distance<10)){
-			
-			std::cout<< "lv "<<lv_distance<<std::endl;
-			std::cout<< "time "<<boxes[i].time<<std::endl;
-			std::cout<<"position_X "<< boxes[i].position_X<<std::endl;
-			std::cout<< "position_Y " <<boxes[i].position_Y<<std::endl;
-			std::cout<< "width "<<boxes[i].width<<std::endl;
-			std::cout<< "height "<<boxes[i].height<<std::endl;
-			std::cout<< "confidence "<<boxes[i].confidence<<std::endl;
-			std::cout<< "text " <<boxes[i].text<<std::endl;
-		}
-		
-	}
+	while (boxes_t.size()>1) {
+					std::vector<box> b;
+					box box_1=boxes_t[0];
+					b.push_back(boxes_t[0]);
+					boxes_t.erase (boxes_t.begin());
+					OCR_track track;
+					cv::Rect r1, r2, intersection;
+					r1.x=box_1.position_X;
+					r1.y=box_1.position_Y;
+					r1.width=box_1.width;
+					r1.height=box_1.height;
+					
+					float area_1, area_2, area_3;
+					area_1= r1.width*r1.height;
+					size_t lv_distance;
+					bool ok = true;
+					double recouvrement=0.0;
+					int i=0;
+					while (ok){
+						if 	(boxes_t[i].time != b[b.size()-1].time) {
+							r2.x=boxes_t[i].position_X; r2.y=boxes_t[i].position_Y;	r2.width=boxes_t[i].width;	r2.height=boxes_t[i].height;	
+							area_2= r2.width*r2.height;
+							intersection= r1&r2;
+							area_3= intersection.width*intersection.height;
+							recouvrement=area_3/(area_1 + area_2 - area_3);
+							lv_distance= LevenshteinDistance(box_1.text,boxes_t[i].text);
+							if ((recouvrement>0.9) & (lv_distance<15)){
+								std::cout <<"hola" <<std::endl;
+								b.push_back(boxes_t[i]);
+								boxes_t.erase (boxes_t.begin()+i);	
+								i--;
+							}		
+						}	
+						i++;
+						if ((boxes_t[i].time > b[b.size()-1].time +5 ) || i==boxes_t.size()-1)ok =false;
+					}
 
-	
-		std::string s0 = "ONSULTANT FOOTBALL RMC SPORT";
-        std::string s1 = "CONSULTANT FOOTBALL RMC SPORT";
-		std::cout << "distance between " << s0 << " and " << s1 << " : "  << LevenshteinDistance(s0,s1) << std::endl;
-        return 0;
+					track.start=b[0].time;
+					track.end=b[b.size()-1].time;
+					for (int j=0; j<b.size(); j++) {
+						if (b[j].confidence > track.confidence){
+							track.confidence=b[j].confidence;
+							track.text=b[j].text;
+							track.position_X=b[j].position_X;
+							track.width=b[j].width;
+							track.position_Y=b[j].position_Y;
+							track.height=b[j].height;
+							}
+						}
+						
+						std::cout <<track.start << " " <<track.end <<" " <<track.text <<std::endl; 
+
+		}
+
+
+
+
+	return 0;
 }

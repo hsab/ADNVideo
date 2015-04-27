@@ -1746,31 +1746,5 @@
     <FloatInfo attribute="Confidence">0.850000</FloatInfo>
     <FloatInfo attribute="text">CONSULTANT TOOTBALL RMC SPORT</FloatInfo>
   </box>
-  <box>
-    <FloatInfo attribute="time">3.920000</FloatInfo>
-    <IntegerInfo attribute="Position_X">102</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">309</IntegerInfo>
-    <IntegerInfo attribute="Width">140</IntegerInfo>
-    <IntegerInfo attribute="Height">22</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.880000</FloatInfo>
-    <FloatInfo attribute="text">DANIEL RIOLD</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">3.920000</FloatInfo>
-    <IntegerInfo attribute="Position_X">101</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">331</IntegerInfo>
-    <IntegerInfo attribute="Width">240</IntegerInfo>
-    <IntegerInfo attribute="Height">16</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
-    <FloatInfo attribute="text">CONSULTANT TOOTBALL RMC SPORT</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">3.960000</FloatInfo>
-    <IntegerInfo attribute="Position_X">102</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">309</IntegerInfo>
-    <IntegerInfo attribute="Width">140</IntegerInfo>
-    <IntegerInfo attribute="Height">22</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.880000</FloatInfo>
-    <FloatInfo attribute="text">DANIEL RIOLD</FloatInfo>
-  </box>
+
 </root>

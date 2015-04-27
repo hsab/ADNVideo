@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <box>
+    <FloatInfo attribute="time">85.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">118</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">369</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.820000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE :'IÇES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">85.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.870000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">85.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.870000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">85.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">85.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.840000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">85.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">86.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.840000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">86.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">86.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.880000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LESCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">86.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">87.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">87.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">87.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.880000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LESCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">87.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">87.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.840000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">87.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">88.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : L'ES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">88.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">88.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">88.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">89.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.810000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : L'ESFCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">89.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">89.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.870000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : CES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">89.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">89.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.870000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">89.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">90.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.840000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES-CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">90.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">90.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.840000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES-CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">90.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">91.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.870000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">91.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">91.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">91.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">91.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.790000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE :YIÇES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">91.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">92.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.780000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE :YIÇESCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">92.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">92.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.870000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">92.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">93.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : L'ESCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">93.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">93.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.840000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LESYCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">93.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">93.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.820000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE :'IÇES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">93.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">94.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.820000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LESYCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">94.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">94.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">118</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">369</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.840000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES-CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">94.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">95.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">118</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">369</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.840000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES-CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">95.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">95.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES-CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">95.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.870000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">95.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.840000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES-CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">95.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTlCRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">96.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.830000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : L'ESYCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">96.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">96.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.820000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : L'ESYCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">96.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">97.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.820000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : L'ESYCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">97.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">97.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : L'ESCHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">97.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">97.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : LES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">97.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.870000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">98.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : L'ES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">98.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">98.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">370</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">HAUSSE OU CHOMAGE EN OCTOBRE : L'ES'CHEFS</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">98.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">394</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">O'ENTREPRISES RECLAMENT UN "PACK ANTICRISE"</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">99.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">456</IntegerInfo>
+    <IntegerInfo attribute="Width">369</IntegerInfo>
+    <IntegerInfo attribute="Height">19</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.450000</FloatInfo>
+    <FloatInfo attribute="text">@SURE E14 ÉHÊEÉEF  ÊÉÎÊÊISZ 2 LI?</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">99.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">482</IntegerInfo>
+    <IntegerInfo attribute="Width">383</IntegerInfo>
+    <IntegerInfo attribute="Height">15</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.580000</FloatInfo>
+    <FloatInfo attribute="text">ii iiiîiiiiêiiiâ'Pë iii-ET iiiîiiîiiii 2ifÎii'iÊ iiiiëiiiëi'</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">102.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">132</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">388</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.650000</FloatInfo>
+    <FloatInfo attribute="text">BiJOUTIEB TUE A CANNESNUSILLABEÎAWOLLES</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">102.600000</FloatInfo>
+    <IntegerInfo attribute="Position_X">132</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">469</IntegerInfo>
+    <IntegerInfo attribute="Width">372</IntegerInfo>
+    <IntegerInfo attribute="Height">24</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.580000</FloatInfo>
+    <FloatInfo attribute="text">COMMENT MEEUX PROEOEB IES COMMERCES?</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">103.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">122</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">396</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.720000</FloatInfo>
+    <FloatInfo attribute="text">BIJOUTIER TUE A CANNES/FUSILLAOE ATVITROLLES:</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">103.000000</FloatInfo>
+    <IntegerInfo attribute="Position_X">122</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">373</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.830000</FloatInfo>
+    <FloatInfo attribute="text">COMMENT MIEUX PROTEGER LES COMMERCES '_'</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">103.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">118</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">396</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.790000</FloatInfo>
+    <FloatInfo attribute="text">BIJOUÎIER TUE A CANNES/FUSILIAOEA'VITROLLES:</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">103.400000</FloatInfo>
+    <IntegerInfo attribute="Position_X">118</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">468</IntegerInfo>
+    <IntegerInfo attribute="Width">373</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.850000</FloatInfo>
+    <FloatInfo attribute="text">COMMENT MIEUX PROTEGER LES COMMERCES?</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">103.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">397</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.790000</FloatInfo>
+    <FloatInfo attribute="text">BIJOUTIER TUE A CANNES/FUSILLADE A'VITROLLES:</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">103.800000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">469</IntegerInfo>
+    <IntegerInfo attribute="Width">374</IntegerInfo>
+    <IntegerInfo attribute="Height">24</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">COMMENT MIEUX PROTEGER LES COMMERCES?</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">104.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">442</IntegerInfo>
+    <IntegerInfo attribute="Width">397</IntegerInfo>
+    <IntegerInfo attribute="Height">25</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.810000</FloatInfo>
+    <FloatInfo attribute="text">BIJOUTIEII TUE A CANNES/FUSILLADE A'VITROLLES:</FloatInfo>
+  </box>
+  <box>
+    <FloatInfo attribute="time">104.200000</FloatInfo>
+    <IntegerInfo attribute="Position_X">117</IntegerInfo>
+    <IntegerInfo attribute="Position_Y">469</IntegerInfo>
+    <IntegerInfo attribute="Width">374</IntegerInfo>
+    <IntegerInfo attribute="Height">24</IntegerInfo>
+    <FloatInfo attribute="Confidence">0.860000</FloatInfo>
+    <FloatInfo attribute="text">COMMENT MIEUX PROTEGER LES COMMERCES?</FloatInfo>
+  </box>
+</root>
