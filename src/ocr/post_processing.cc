@@ -6,8 +6,7 @@ using namespace std;
 // Martin Ettl, 2012-10-05
  
 
-size_t uiLevenshteinDistance(const std::string &s1, const std::string &s2)
-{
+size_t uiLevenshteinDistance(const std::string &s1, const std::string &s2){
   const size_t m(s1.size());
   const size_t n(s2.size());
  
