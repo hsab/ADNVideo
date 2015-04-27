@@ -6,7 +6,7 @@
     <IntegerInfo attribute="Position_Y">309</IntegerInfo>
     <IntegerInfo attribute="Width">140</IntegerInfo>
     <IntegerInfo attribute="Height">22</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.810000</FloatInfo>
+    <FloatInfo attribute="Confidence">0.830000</FloatInfo>
     <FloatInfo attribute="text">DANIEL RIOLO</FloatInfo>
   </box>
   <box>
@@ -16,105 +16,24 @@
     <IntegerInfo attribute="Width">240</IntegerInfo>
     <IntegerInfo attribute="Height">16</IntegerInfo>
     <FloatInfo attribute="Confidence">0.730000</FloatInfo>
-    <FloatInfo attribute="text">CONSULTANT rl'IDTEAll RMC SPIJRT</FloatInfo>
+    <FloatInfo attribute="text">CONSULTANT mDTaAll RMC SPORT</FloatInfo>
   </box>
   <box>
-    <FloatInfo attribute="time">4.040000</FloatInfo>
+    <FloatInfo attribute="time">0.080000</FloatInfo>
     <IntegerInfo attribute="Position_X">102</IntegerInfo>
     <IntegerInfo attribute="Position_Y">309</IntegerInfo>
     <IntegerInfo attribute="Width">140</IntegerInfo>
     <IntegerInfo attribute="Height">22</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.810000</FloatInfo>
+    <FloatInfo attribute="Confidence">0.830000</FloatInfo>
     <FloatInfo attribute="text">DANIEL RIOLO</FloatInfo>
   </box>
   <box>
-    <FloatInfo attribute="time">4.040000</FloatInfo>
+    <FloatInfo attribute="time">0.080000</FloatInfo>
     <IntegerInfo attribute="Position_X">101</IntegerInfo>
     <IntegerInfo attribute="Position_Y">331</IntegerInfo>
     <IntegerInfo attribute="Width">240</IntegerInfo>
     <IntegerInfo attribute="Height">16</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.730000</FloatInfo>
-    <FloatInfo attribute="text">CONSULTANT rOOTBAll RMC SPORT</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">24.040000</FloatInfo>
-    <IntegerInfo attribute="Position_X">101</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">311</IntegerInfo>
-    <IntegerInfo attribute="Width">219</IntegerInfo>
-    <IntegerInfo attribute="Height">21</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.760000</FloatInfo>
-    <FloatInfo attribute="text">JEAN-MICHEL LAROUE</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">24.040000</FloatInfo>
-    <IntegerInfo attribute="Position_X">102</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">339</IntegerInfo>
-    <IntegerInfo attribute="Width">209</IntegerInfo>
-    <IntegerInfo attribute="Height">11</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.600000</FloatInfo>
-    <FloatInfo attribute="text">"Haunmmmn" .mm</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">28.040000</FloatInfo>
-    <IntegerInfo attribute="Position_X">101</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">309</IntegerInfo>
-    <IntegerInfo attribute="Width">219</IntegerInfo>
-    <IntegerInfo attribute="Height">22</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.760000</FloatInfo>
-    <FloatInfo attribute="text">JEAN-MICHEL LARQUE</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">28.040000</FloatInfo>
-    <IntegerInfo attribute="Position_X">101</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">331</IntegerInfo>
-    <IntegerInfo attribute="Width">210</IntegerInfo>
-    <IntegerInfo attribute="Height">16</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.730000</FloatInfo>
-    <FloatInfo attribute="text">CONSULTANT FOOTBAll EFMTV</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">32.040000</FloatInfo>
-    <IntegerInfo attribute="Position_X">101</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">309</IntegerInfo>
-    <IntegerInfo attribute="Width">219</IntegerInfo>
-    <IntegerInfo attribute="Height">22</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.770000</FloatInfo>
-    <FloatInfo attribute="text">JEAN-MICHEL LARIIUE</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">32.040000</FloatInfo>
-    <IntegerInfo attribute="Position_X">101</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">331</IntegerInfo>
-    <IntegerInfo attribute="Width">210</IntegerInfo>
-    <IntegerInfo attribute="Height">16</IntegerInfo>
     <FloatInfo attribute="Confidence">0.740000</FloatInfo>
-    <FloatInfo attribute="text">CONSULTANT rOOTBAll EFMTV</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">36.040000</FloatInfo>
-    <IntegerInfo attribute="Position_X">101</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">309</IntegerInfo>
-    <IntegerInfo attribute="Width">219</IntegerInfo>
-    <IntegerInfo attribute="Height">22</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.780000</FloatInfo>
-    <FloatInfo attribute="text">JEAN-MICHEL LARIIUE</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">36.040000</FloatInfo>
-    <IntegerInfo attribute="Position_X">101</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">331</IntegerInfo>
-    <IntegerInfo attribute="Width">211</IntegerInfo>
-    <IntegerInfo attribute="Height">16</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.750000</FloatInfo>
-    <FloatInfo attribute="text">CONSULTANT rOOTEALL EFNITV</FloatInfo>
-  </box>
-  <box>
-    <FloatInfo attribute="time">44.040000</FloatInfo>
-    <IntegerInfo attribute="Position_X">238</IntegerInfo>
-    <IntegerInfo attribute="Position_Y">334</IntegerInfo>
-    <IntegerInfo attribute="Width">45</IntegerInfo>
-    <IntegerInfo attribute="Height">10</IntegerInfo>
-    <FloatInfo attribute="Confidence">0.750000</FloatInfo>
-    <FloatInfo attribute="text">\lv</FloatInfo>
+    <FloatInfo attribute="text">CONSULTANT mDTaAll RMC SPIJNT</FloatInfo>
   </box>
 </root>

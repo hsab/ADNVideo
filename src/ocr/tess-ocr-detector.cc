@@ -376,10 +376,12 @@ int main(int argc, char** argv) {
     options.AddUsage("  --sharpen                         sharpen image before processing\n");
     options.AddUsage("  --show                            show image beeing processed\n");
     options.AddUsage("  --step                            specify processing every step frame (default 1)\n");
+    options.AddUsage("  --output                          specify name of the XML output file\n");
 
 
     double zoom = options.Read("--scale", 1.0); 
     std::string dataPath = options.Get<std::string>("--data", "");
+    std::string output = options.Get<std::string>("--output", "output.xml");
     std::string lang = options.Get<std::string>("--lang", "fra");
     bool upper_case = options.IsSet("--upper-case");
     bool ignore_accents = options.IsSet("--ignore-accents");
@@ -422,9 +424,6 @@ int main(int argc, char** argv) {
     if(!video.Configure(options)) return 1;
     if(options.Size() != 0) options.Usage();
     
-    
-	std::cout << "<?xml version=\"1.0\" ?>\n";
-	std::cout << "<boxes>\n";
 	cv::Mat image, image_BW, resized;
 
 	//XML output
@@ -433,7 +432,7 @@ int main(int argc, char** argv) {
     doc = xmlNewDoc(BAD_CAST "1.0");
     root_node = xmlNewNode(NULL, BAD_CAST "root");
     xmlDocSetRootElement(doc, root_node);
-
+    
 
 	
 	while(video.HasNext()) {
@@ -478,65 +477,63 @@ int main(int argc, char** argv) {
 					// apply the OCR 
 					ocr.SetImage(im_box);
 					result = ocr.Process();
-					
-					// print the results 
-					std::cout << "<box>\n";
-					std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
-					std::cout <<"  <position_X> "<<rects[i].x<< " </position_X>\n";
-					std::cout <<"  <position_Y> "<<rects[i].y<< " </position_Y>\n";
-					std::cout <<"  <width> "<<rects[i].width<< " </width>\n";
-					std::cout <<"  <height> "<<rects[i].height<< " </height>\n";
-					std::cout <<"  <confidence> "<<result.confidence  << " </confidence>\n";
-					std::cout <<"  <text> " <<result.text << " </text>\n";
-					std::cout << "</box>\n";
-		
-					
-					
-			
-    box_node=xmlNewChild(root_node, NULL, BAD_CAST "box", BAD_CAST NULL);
-	char buffer[100];
 
-	sprintf(buffer, "%f",video.GetTime());
-	node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo", (const xmlChar *) buffer);
-	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "time");
+					box_node=xmlNewChild(root_node, NULL, BAD_CAST "box", BAD_CAST NULL);
+					char buffer[100];
 
-	
-	sprintf(buffer, "%d",rects[i].x);
-	node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
-	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_X");
-	
-	sprintf(buffer, "%d",rects[i].y);	
-    node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
-	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_Y");
-	
-	sprintf(buffer, "%d",rects[i].width);
-	node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
-    xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Width");
-    
-	sprintf(buffer, "%d",rects[i].height);
-	node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
-    xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Height");
-    
-    sprintf(buffer, "%f",result.confidence );
-    node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo",(const xmlChar *) buffer);
-	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Confidence");
-    
-	std::string str = result.text;
-	char *cstr = new char[str.length() + 1];
-	strcpy(cstr, str.c_str());
-    node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo",(const xmlChar *) cstr);
-	xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "text");
-	delete [] cstr;	
-	
-	xmlSaveFormatFileEnc("toto.xml", doc, "UTF-8", 1);
-    	
+					sprintf(buffer, "%f",video.GetTime());
+					node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo", (const xmlChar *) buffer);
+					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "time");
+
 					
+					sprintf(buffer, "%d",rects[i].x);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
+					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_X");
 					
+					sprintf(buffer, "%d",rects[i].y);	
+					node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
+					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_Y");
+					
+					sprintf(buffer, "%d",rects[i].width);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
+					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Width");
+					
+					sprintf(buffer, "%d",rects[i].height);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
+					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Height");
+					
+					sprintf(buffer, "%f",result.confidence );
+					node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo",(const xmlChar *) buffer);
+					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Confidence");
+					
+					std::string str = result.text;
+					char *cstr = new char[str.length() + 1];
+					strcpy(cstr, str.c_str());
+					node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo",(const xmlChar *) cstr);
+					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "text");
+					delete [] cstr;	
+					
+					char *o_file = new char[output.length() + 1];
+					strcpy(o_file, output.c_str());					
+					xmlSaveFormatFileEnc(o_file, doc, "UTF-8", 1);
+					delete [] o_file ;	
 					// display the text box image is show is true
 					if(show) {
 						cv::imshow("original", im_box);
+						std::cout << "<box>\n";
+						std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
+						std::cout <<"  <position_X> "<<rects[i].x<< " </position_X>\n";
+						std::cout <<"  <position_Y> "<<rects[i].y<< " </position_Y>\n";
+						std::cout <<"  <width> "<<rects[i].width<< " </width>\n";
+						std::cout <<"  <height> "<<rects[i].height<< " </height>\n";
+						std::cout <<"  <confidence> "<<result.confidence  << " </confidence>\n";
+						std::cout <<"  <text> " <<result.text << " </text>\n";
+						std::cout << "</box>\n";
+					
 						cv::waitKey(600);
 						cv::destroyWindow("original");
+						
+						
 					}
 				}	
 		}
@@ -544,9 +541,7 @@ int main(int argc, char** argv) {
 	//	seek to time + step
 	if (step >1) video.SeekTime(video.GetTime()+0.04*(step-1));
 	}
-	
-	std::cout << "</boxes>\n";
-	xmlFreeDoc(doc);
+		xmlFreeDoc(doc);
     xmlCleanupParser();
     xmlMemoryDump();
 	

@@ -84,6 +84,8 @@ namespace amu {
                 std::string imageList = options.Get("--image-list", std::string(""));
                 std::string imageDir = options.Get("--image-dir", amu::DirName(imageList));
                 std::string idx = options.Get("--idx", std::string(""));
+                std::string output = options.Get("--output", std::string("output.xml"));
+
                 std::string uem = options.Get("--uem", std::string(""));
                 showname = options.Get("--uem-show", std::string(""));
                 std::string maskFile = options.Get("--mask", std::string(""));
