@@ -26,7 +26,7 @@
 
     class box {
         public:
-            double time;
+            long double time;
             double position_X;
             double position_Y;
 			double width;
@@ -82,37 +82,29 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 
        
  std::vector<box>ReadXML(xmlNode * root_element) {
-	
 	std::vector<box> boxes;
 	box b; 
     xmlNode *cur =NULL;
     xmlNode *cur_node =NULL;
-    xmlAttrPtr attr;
     cur = root_element->xmlChildrenNode;
-    
 	while (cur != NULL)  {
-
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"box")){           
 			cur_node=cur->xmlChildrenNode;
-			while (cur_node != NULL){
-				attr = cur_node->properties; 
-				if (attr != NULL){
-							
-					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Position_X")))  {std::string sName((char*) cur_node->children->content); b.position_X=::atof(sName.c_str());}
-					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Position_Y")))  {std::string sName((char*) cur_node->children->content); b.position_Y=::atof(sName.c_str());}
-					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"time")))  {std::string sName((char*) cur_node->children->content); b.time=::atof(sName.c_str());}
-					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Width")))  {std::string sName((char*) cur_node->children->content); b.width=::atof(sName.c_str());}
-					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Height")))  {std::string sName((char*) cur_node->children->content); b.height=::atof(sName.c_str());}
-					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Confidence")))  {std::string sName((char*) cur_node->children->content); b.confidence=::atof(sName.c_str());}
-					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"text")))  {
-							std::string sName((char*) cur_node->children->content);
+			while (cur_node != NULL){						
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Position_X"))  {std::string sName((char*) cur_node->children->content); b.position_X=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Position_Y"))  {std::string sName((char*) cur_node->children->content); b.position_Y=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Time"))  {std::string sName((char*) cur_node->children->content); b.time=::atof(sName.c_str());			
+							std::cout<< b.time<<" " <<sName.c_str()<<std::endl; 
+							}						
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Width"))  {std::string sName((char*) cur_node->children->content); b.width=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Height"))  {std::string sName((char*) cur_node->children->content); b.height=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Confidence"))  {std::string sName((char*) cur_node->children->content); b.confidence=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Text"))  {std::string sName((char*) cur_node->children->content);
 							b.text=sName; 
-							boxes.push_back(b);              
+							boxes.push_back(b);
 						}
-				}
-				cur_node = cur_node->next;
-			}
-				
+						cur_node = cur_node->next;
+			}			   
 		}	
 		cur = cur->next;
     }
@@ -142,13 +134,24 @@ int main(int argc, char **argv){
     
     
     root_element = xmlDocGetRootElement(doc); 
-	
+    
     boxes=ReadXML(root_element);
 
 	xmlFreeDoc(doc);       // free document
     xmlCleanupParser();    // Free globals
     	
-	boxes_t=boxes;
+    /*for (int i=0; i<boxes.size();i++) {
+		std::cout << boxes[i].time<<std::endl;
+		std::cout << boxes[i].position_X <<std::endl;
+		std::cout << boxes[i].position_Y<<std::endl;
+		std::cout << boxes[i].width<<std::endl;
+		std::cout << boxes[i].height<<std::endl;
+		std::cout << boxes[i].confidence <<std::endl;
+		std::cout << boxes[i].text<<std::endl;
+		
+	}
+    	*/
+	/*boxes_t=boxes;
 	
 	
 	std::vector<box> b;
@@ -183,8 +186,9 @@ int main(int argc, char **argv){
 							//std::cout<<intersection.x << " " << intersection.y<< " "<<intersection.width <<" " <<intersection.height<<std::endl;
 							//std::cout<<area_1 << " " << area_2<< " "<<area_3 <<" " <<recouvrement <<" "<<lv_distance<<std::endl;
 							
-							
-							if ((recouvrement>0.1) & (lv_distance<10)){
+							int t =std::abs(b[b.size()-1].text.size() - boxes_t[i].text.size());
+											
+							if ((recouvrement>0.2) &(lv_distance /boxes_t[i].text.size() <5) & (t<5)){
 								
 								b.push_back(boxes_t[i]);
 								boxes_t.erase (boxes_t.begin()+i);	
@@ -202,6 +206,16 @@ int main(int argc, char **argv){
 					track.end=b[b.size()-1].time;
 					track.confidence=0;
 					track.text="TESSERCAT_FAILED";
+					std::vector<std::string> f1;
+					std::vector<int> f2;
+					f1[0]=b[0].text;
+					f2[0]=1;
+					//for (int j=1; j<b.size(); j++) {
+					//	for (int k=0; k<f1.size(); k++) {	
+					//	}
+					//}
+
+					
 					for (int j=0; j<b.size(); j++) {
 						if (b[j].confidence > track.confidence){
 							track.confidence=b[j].confidence;
@@ -212,12 +226,13 @@ int main(int argc, char **argv){
 							track.height=b[j].height;
 							}
 						}
-
-
-						std::cout <<track.start << " " <<track.end <<" " <<track.confidence <<" " <<track.text <<std::endl; 
-
+					
+					
+						if ((track.end - track.start >0)& (track.text!= "TESSERCAT_FAILED")) {
+							std::cout <<track.start << " " <<track.end <<" " <<track.confidence <<" " <<track.text <<std::endl; 
+						}						
 		}
-
+*/
 
 	return 0;
 }

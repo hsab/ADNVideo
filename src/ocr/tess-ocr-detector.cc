@@ -482,35 +482,35 @@ int main(int argc, char** argv) {
 					char buffer[100];
 
 					sprintf(buffer, "%f",video.GetTime());
-					node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo", (const xmlChar *) buffer);
-					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "time");
+					node = xmlNewChild(box_node, NULL, BAD_CAST "Time", (const xmlChar *) buffer);
+					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "time");
 
 					
 					sprintf(buffer, "%d",rects[i].x);
-					node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
-					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_X");
+					node = xmlNewChild(box_node, NULL, BAD_CAST "Position_X", (const xmlChar *) buffer);
+					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_X");
 					
 					sprintf(buffer, "%d",rects[i].y);	
-					node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
-					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_Y");
+					node = xmlNewChild(box_node, NULL, BAD_CAST "Position_Y", (const xmlChar *) buffer);
+					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_Y");
 					
 					sprintf(buffer, "%d",rects[i].width);
-					node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
-					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Width");
+					node = xmlNewChild(box_node, NULL, BAD_CAST "Width", (const xmlChar *) buffer);
+					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Width");
 					
 					sprintf(buffer, "%d",rects[i].height);
-					node = xmlNewChild(box_node, NULL, BAD_CAST "IntegerInfo", (const xmlChar *) buffer);
-					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Height");
+					node = xmlNewChild(box_node, NULL, BAD_CAST "Height", (const xmlChar *) buffer);
+					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Height");
 					
 					sprintf(buffer, "%f",result.confidence );
-					node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo",(const xmlChar *) buffer);
-					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Confidence");
+					node = xmlNewChild(box_node, NULL, BAD_CAST "Confidence",(const xmlChar *) buffer);
+					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Confidence");
 					
 					std::string str = result.text;
 					char *cstr = new char[str.length() + 1];
 					strcpy(cstr, str.c_str());
-					node = xmlNewChild(box_node, NULL, BAD_CAST "FloatInfo",(const xmlChar *) cstr);
-					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "text");
+					node = xmlNewChild(box_node, NULL, BAD_CAST "Text",(const xmlChar *) cstr);
+					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "text");
 					delete [] cstr;	
 					
 					// display the text box image is show is true
