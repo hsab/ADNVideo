@@ -82,18 +82,22 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 
        
  std::vector<box>ReadXML(xmlNode * root_element) {
+	
 	std::vector<box> boxes;
 	box b; 
     xmlNode *cur =NULL;
     xmlNode *cur_node =NULL;
     xmlAttrPtr attr;
     cur = root_element->xmlChildrenNode;
+    
 	while (cur != NULL)  {
+
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"box")){           
 			cur_node=cur->xmlChildrenNode;
 			while (cur_node != NULL){
 				attr = cur_node->properties; 
 				if (attr != NULL){
+							
 					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Position_X")))  {std::string sName((char*) cur_node->children->content); b.position_X=::atof(sName.c_str());}
 					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Position_Y")))  {std::string sName((char*) cur_node->children->content); b.position_Y=::atof(sName.c_str());}
 					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"time")))  {std::string sName((char*) cur_node->children->content); b.time=::atof(sName.c_str());}
@@ -102,10 +106,9 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"Confidence")))  {std::string sName((char*) cur_node->children->content); b.confidence=::atof(sName.c_str());}
 					   if ((!xmlStrcmp(xmlGetProp(cur_node, attr->name), (const xmlChar *)"text")))  {
 							std::string sName((char*) cur_node->children->content);
-							b.text=sName; 							
+							b.text=sName; 
 							boxes.push_back(b);              
 						}
-						
 				}
 				cur_node = cur_node->next;
 			}
@@ -146,21 +149,18 @@ int main(int argc, char **argv){
     xmlCleanupParser();    // Free globals
     	
 	boxes_t=boxes;
-	for (int i=0; i< boxes.size();i++)   std::cout <<boxes[i].text << std::endl;
 	
 	
+	std::vector<box> b;
+	box box_1;
 	while (boxes_t.size()>1) {
-					std::vector<box> b;
-					box box_1=boxes_t[0];
-					b.push_back(boxes_t[0]);
+					b.clear();
+					box_1=boxes_t[0];
 					boxes_t.erase (boxes_t.begin());
+					b.push_back(box_1);
 					OCR_track track;
 					cv::Rect r1, r2, intersection;
-					r1.x=box_1.position_X;
-					r1.y=box_1.position_Y;
-					r1.width=box_1.width;
-					r1.height=box_1.height;
-					
+					r1.x=box_1.position_X; r1.y=box_1.position_Y; r1.width=box_1.width;	r1.height=box_1.height;			
 					float area_1, area_2, area_3;
 					area_1= r1.width*r1.height;
 					size_t lv_distance;
@@ -170,24 +170,38 @@ int main(int argc, char **argv){
 					while (ok){
 						if 	(boxes_t[i].time != b[b.size()-1].time) {
 							r2.x=boxes_t[i].position_X; r2.y=boxes_t[i].position_Y;	r2.width=boxes_t[i].width;	r2.height=boxes_t[i].height;	
+							
 							area_2= r2.width*r2.height;
 							intersection= r1&r2;
+							
 							area_3= intersection.width*intersection.height;
 							recouvrement=area_3/(area_1 + area_2 - area_3);
-							lv_distance= LevenshteinDistance(box_1.text,boxes_t[i].text);
-							if ((recouvrement>0.9) & (lv_distance<15)){
-								std::cout <<"hola" <<std::endl;
+							lv_distance= LevenshteinDistance(b[b.size()-1].text,boxes_t[i].text);
+							
+							//std::cout<<r1.x << " " << r1.y<< " "<<r1.width <<" " <<r1.height<<std::endl;
+							//std::cout<<r2.x << " " << r2.y<< " "<<r2.width <<" " <<r2.height<<std::endl;
+							//std::cout<<intersection.x << " " << intersection.y<< " "<<intersection.width <<" " <<intersection.height<<std::endl;
+							//std::cout<<area_1 << " " << area_2<< " "<<area_3 <<" " <<recouvrement <<" "<<lv_distance<<std::endl;
+							
+							
+							if ((recouvrement>0.1) & (lv_distance<10)){
+								
 								b.push_back(boxes_t[i]);
 								boxes_t.erase (boxes_t.begin()+i);	
 								i--;
 							}		
 						}	
 						i++;
-						if ((boxes_t[i].time > b[b.size()-1].time +5 ) || i==boxes_t.size()-1)ok =false;
+						
+						
+						if ((boxes_t[i].time > b[b.size()-1].time +5) || i==boxes_t.size()-1) ok =false;
+						
 					}
-
+					
 					track.start=b[0].time;
 					track.end=b[b.size()-1].time;
+					track.confidence=0;
+					track.text="TESSERCAT_FAILED";
 					for (int j=0; j<b.size(); j++) {
 						if (b[j].confidence > track.confidence){
 							track.confidence=b[j].confidence;
@@ -198,12 +212,11 @@ int main(int argc, char **argv){
 							track.height=b[j].height;
 							}
 						}
-						
-						std::cout <<track.start << " " <<track.end <<" " <<track.text <<std::endl; 
+
+
+						std::cout <<track.start << " " <<track.end <<" " <<track.confidence <<" " <<track.text <<std::endl; 
 
 		}
-
-
 
 
 	return 0;

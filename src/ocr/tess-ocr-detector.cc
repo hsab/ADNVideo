@@ -100,6 +100,7 @@ namespace amu {
             amu::Trim(result.text);
             delete text;
             result.confidence = tess.MeanTextConf() / 100.0;
+            if (result.text=="") result.text = "TESSERACT_FAILED";
             return result;
         }
 
@@ -467,8 +468,7 @@ int main(int argc, char** argv) {
 					
 					// initialize tesseract parameters
 					amu::Result result;
-					result.confidence = 0;
-					result.text = "TESSERACT_FAILED";
+
 					
 					// image box
 					cv::Rect roi(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
@@ -513,10 +513,6 @@ int main(int argc, char** argv) {
 					xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "text");
 					delete [] cstr;	
 					
-					char *o_file = new char[output.length() + 1];
-					strcpy(o_file, output.c_str());					
-					xmlSaveFormatFileEnc(o_file, doc, "UTF-8", 1);
-					delete [] o_file ;	
 					// display the text box image is show is true
 					if(show) {
 						cv::imshow("original", im_box);
@@ -541,7 +537,15 @@ int main(int argc, char** argv) {
 	//	seek to time + step
 	if (step >1) video.SeekTime(video.GetTime()+0.04*(step-1));
 	}
-		xmlFreeDoc(doc);
+	
+	
+	char *o_file = new char[output.length() + 1];
+	strcpy(o_file, output.c_str());					
+	xmlSaveFormatFileEnc(o_file, doc, "UTF-8", 1);
+	delete [] o_file ;	
+					
+					
+	xmlFreeDoc(doc);
     xmlCleanupParser();
     xmlMemoryDump();
 	
