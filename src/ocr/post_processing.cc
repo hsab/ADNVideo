@@ -26,7 +26,7 @@
 
     class box {
         public:
-            long double time;
+            double time;
             double position_X;
             double position_Y;
 			double width;
@@ -94,7 +94,7 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Position_X"))  {std::string sName((char*) cur_node->children->content); b.position_X=::atof(sName.c_str());}
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Position_Y"))  {std::string sName((char*) cur_node->children->content); b.position_Y=::atof(sName.c_str());}
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Time"))  {std::string sName((char*) cur_node->children->content); b.time=::atof(sName.c_str());			
-							std::cout<< b.time<<" " <<sName.c_str()<<std::endl; 
+							//printf("%>2f %s\n",  b.time, sName.c_str());
 							}						
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Width"))  {std::string sName((char*) cur_node->children->content); b.width=::atof(sName.c_str());}
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Height"))  {std::string sName((char*) cur_node->children->content); b.height=::atof(sName.c_str());}
@@ -140,22 +140,12 @@ int main(int argc, char **argv){
 	xmlFreeDoc(doc);       // free document
     xmlCleanupParser();    // Free globals
     	
-    /*for (int i=0; i<boxes.size();i++) {
-		std::cout << boxes[i].time<<std::endl;
-		std::cout << boxes[i].position_X <<std::endl;
-		std::cout << boxes[i].position_Y<<std::endl;
-		std::cout << boxes[i].width<<std::endl;
-		std::cout << boxes[i].height<<std::endl;
-		std::cout << boxes[i].confidence <<std::endl;
-		std::cout << boxes[i].text<<std::endl;
+    	
+	boxes_t=boxes;
 		
-	}
-    	*/
-	/*boxes_t=boxes;
-	
-	
 	std::vector<box> b;
 	box box_1;
+	std::vector<OCR_track> tracks;
 	while (boxes_t.size()>1) {
 					b.clear();
 					box_1=boxes_t[0];
@@ -170,52 +160,49 @@ int main(int argc, char **argv){
 					bool ok = true;
 					double recouvrement=0.0;
 					int i=0;
-					while (ok){
+
+					while (ok & i<boxes_t.size()){
+
 						if 	(boxes_t[i].time != b[b.size()-1].time) {
 							r2.x=boxes_t[i].position_X; r2.y=boxes_t[i].position_Y;	r2.width=boxes_t[i].width;	r2.height=boxes_t[i].height;	
-							
 							area_2= r2.width*r2.height;
 							intersection= r1&r2;
 							
-							area_3= intersection.width*intersection.height;
-							recouvrement=area_3/(area_1 + area_2 - area_3);
-							lv_distance= LevenshteinDistance(b[b.size()-1].text,boxes_t[i].text);
 							
+							area_3= intersection.width*intersection.height;
+							
+							recouvrement=area_3/(area_1 + area_2 - area_3);
+
+							
+							lv_distance= LevenshteinDistance(b[b.size()-1].text,boxes_t[i].text);
 							//std::cout<<r1.x << " " << r1.y<< " "<<r1.width <<" " <<r1.height<<std::endl;
 							//std::cout<<r2.x << " " << r2.y<< " "<<r2.width <<" " <<r2.height<<std::endl;
 							//std::cout<<intersection.x << " " << intersection.y<< " "<<intersection.width <<" " <<intersection.height<<std::endl;
 							//std::cout<<area_1 << " " << area_2<< " "<<area_3 <<" " <<recouvrement <<" "<<lv_distance<<std::endl;
 							
 							int t =std::abs(b[b.size()-1].text.size() - boxes_t[i].text.size());
-											
+
+
 							if ((recouvrement>0.2) &(lv_distance /boxes_t[i].text.size() <5) & (t<5)){
 								
 								b.push_back(boxes_t[i]);
 								boxes_t.erase (boxes_t.begin()+i);	
 								i--;
-							}		
-						}	
+							
+							}
+		
+						}
+
 						i++;
-						
+
 						
 						if ((boxes_t[i].time > b[b.size()-1].time +5) || i==boxes_t.size()-1) ok =false;
-						
 					}
-					
+
 					track.start=b[0].time;
 					track.end=b[b.size()-1].time;
 					track.confidence=0;
 					track.text="TESSERCAT_FAILED";
-					std::vector<std::string> f1;
-					std::vector<int> f2;
-					f1[0]=b[0].text;
-					f2[0]=1;
-					//for (int j=1; j<b.size(); j++) {
-					//	for (int k=0; k<f1.size(); k++) {	
-					//	}
-					//}
-
-					
 					for (int j=0; j<b.size(); j++) {
 						if (b[j].confidence > track.confidence){
 							track.confidence=b[j].confidence;
@@ -227,12 +214,70 @@ int main(int argc, char **argv){
 							}
 						}
 					
-					
-						if ((track.end - track.start >0)& (track.text!= "TESSERCAT_FAILED")) {
+						if ((track.end - track.start >=0)& (track.text!= "TESSERCAT_FAILED") & ( track.text.size()>3)) {
 							std::cout <<track.start << " " <<track.end <<" " <<track.confidence <<" " <<track.text <<std::endl; 
+							tracks.push_back(track);
 						}						
+						
+						
 		}
-*/
+		
+		
+		
+
+		
+		// write in the XML Format 
+		xmlDocPtr doc_output = NULL;      
+		xmlNodePtr root_node_output = NULL, node_output = NULL, box_node_output = NULL;
+		doc_output = xmlNewDoc(BAD_CAST "1.0");
+		root_node_output = xmlNewNode(NULL, BAD_CAST "root");
+		xmlDocSetRootElement(doc_output, root_node_output);
+
+    		for (int i=0;i<tracks.size();i++ ){
+					box_node_output=xmlNewChild(root_node_output, NULL, BAD_CAST "box", BAD_CAST NULL);
+					char buffer[100];
+
+					sprintf(buffer, "%f",tracks[i].start);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Start", (const xmlChar *) buffer);
+					//xmlNewProp(node_output, BAD_CAST "attribute", BAD_CAST "time");
+
+					sprintf(buffer, "%f",tracks[i].end);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "End", (const xmlChar *) buffer);
+					//xmlNewProp(node_output, BAD_CAST "attribute", BAD_CAST "time");
+
+					
+					sprintf(buffer, "%d",tracks[i].position_X);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Position_X", (const xmlChar *) buffer);
+					//xmlNewProp(node_output, BAD_CAST "attribute", BAD_CAST "Position_X");
+					
+					sprintf(buffer, "%d",tracks[i].position_Y);	
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Position_Y", (const xmlChar *) buffer);
+					//xmlNewProp(node_output, BAD_CAST "attribute", BAD_CAST "Position_Y");
+					
+					sprintf(buffer, "%d",tracks[i].width);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Width", (const xmlChar *) buffer);
+					//xmlNewProp(node_output, BAD_CAST "attribute", BAD_CAST "Width");
+					
+					sprintf(buffer, "%d",tracks[i].height);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Height", (const xmlChar *) buffer);
+					//xmlNewProp(node_output, BAD_CAST "attribute", BAD_CAST "Height");
+					
+					sprintf(buffer, "%f",tracks[i].confidence );
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Confidence",(const xmlChar *) buffer);
+					//xmlNewProp(node_output, BAD_CAST "attribute", BAD_CAST "Confidence");
+					
+					std::string str = tracks[i].text;
+					char *cstr = new char[str.length() + 1];
+					strcpy(cstr, str.c_str());
+					node_output = xmlNewChild(box_node_output, NULL, BAD_CAST "Text",(const xmlChar *) cstr);
+					//xmlNewProp(node_output, BAD_CAST "attribute", BAD_CAST "text");
+					delete [] cstr;	
+				}
+		xmlSaveFormatFileEnc("output.filtred.xml", doc_output, "UTF-8", 1);
+		
+	xmlFreeDoc(doc_output);
+    xmlCleanupParser();
+    xmlMemoryDump();
 
 	return 0;
 }
