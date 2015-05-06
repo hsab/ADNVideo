@@ -276,8 +276,7 @@ std::vector<cv::Rect> find_boxes(cv::Mat im,  cv::Mat frame_BW, cv::Mat im_mask,
     
 	cv::Size s = im.size();
 	cv::rectangle(im,cv::Point(0,0),cv::Point(s.width-1,s.height-1),cv::Scalar(0,0,0,0),2,4,0) ;    
-    
-			    
+  
 	// detect contours
 	cv::findContours(im, contours, hierarchy, CV_RETR_LIST, CV_LINK_RUNS, cv::Point(0, 0) );
 	
@@ -379,17 +378,20 @@ int main(int argc, char** argv) {
     options.AddUsage("  --step                            specify processing every step frame (default 1)\n");
     options.AddUsage("  --output                          specify name of the XML output file\n");
 
-
+	// if no option print the option-usage 
+    if(options.Size() == 0){ 
+		options.Usage();
+		}
+		
     double zoom = options.Read("--scale", 1.0); 
     std::string dataPath = options.Get<std::string>("--data", "");
-    std::string output = options.Get<std::string>("--output", "output.xml");
+    std::string output = options.Get<std::string>("--output", "ocr_results.xml");
     std::string lang = options.Get<std::string>("--lang", "fra");
     bool upper_case = options.IsSet("--upper-case");
     bool ignore_accents = options.IsSet("--ignore-accents");
     bool sharpen = options.IsSet("--sharpen");
     bool show = options.IsSet("--show");
     std::string maskFile = options.Get<std::string>("--mask", "");
-    
     
     
     // read configuration file 
@@ -483,37 +485,29 @@ int main(int argc, char** argv) {
 
 					sprintf(buffer, "%f",video.GetTime());
 					node = xmlNewChild(box_node, NULL, BAD_CAST "Time", (const xmlChar *) buffer);
-					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "time");
-
 					
 					sprintf(buffer, "%d",rects[i].x);
 					node = xmlNewChild(box_node, NULL, BAD_CAST "Position_X", (const xmlChar *) buffer);
-					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_X");
 					
 					sprintf(buffer, "%d",rects[i].y);	
 					node = xmlNewChild(box_node, NULL, BAD_CAST "Position_Y", (const xmlChar *) buffer);
-					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Position_Y");
 					
 					sprintf(buffer, "%d",rects[i].width);
 					node = xmlNewChild(box_node, NULL, BAD_CAST "Width", (const xmlChar *) buffer);
-					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Width");
 					
 					sprintf(buffer, "%d",rects[i].height);
 					node = xmlNewChild(box_node, NULL, BAD_CAST "Height", (const xmlChar *) buffer);
-					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Height");
 					
 					sprintf(buffer, "%f",result.confidence );
 					node = xmlNewChild(box_node, NULL, BAD_CAST "Confidence",(const xmlChar *) buffer);
-					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "Confidence");
 					
 					std::string str = result.text;
 					char *cstr = new char[str.length() + 1];
 					strcpy(cstr, str.c_str());
 					node = xmlNewChild(box_node, NULL, BAD_CAST "Text",(const xmlChar *) cstr);
-					//xmlNewProp(node, BAD_CAST "attribute", BAD_CAST "text");
 					delete [] cstr;	
 					
-					// display the text box image is show is true
+					// display the text box image is show 
 					if(show) {
 						cv::imshow("original", im_box);
 						std::cout << "<box>\n";

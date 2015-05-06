@@ -1,9 +1,9 @@
 CC=g++
 CFLAGS_SHOT= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -w
-CFLAGS_OCR= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -ltesseract `xml2-config --cflags --libs` -w
+CFLAGS_OCR= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -ltesseract `xml2-config --cflags --libs` -w 
 
 PROGS_shot:= shot-boundary-detector view-shot-boundaries subshot-from-template
-PROGS_tess:= tess-ocr-detector generate-mask 
+PROGS_tess:= tess-ocr-detector generate-mask tracking-tess-ocr-detector
 PROGS_utils:= play-video
 
 all: $(PROGS_shot) $(PROGS_tess) $(PROGS_utils)
@@ -33,11 +33,12 @@ tess-ocr-detector: src/ocr/tess-ocr-detector.cc
 generate-mask: src/ocr/generate-mask.cc 
 	$(CC) src/ocr/generate-mask.cc -o  bin/$@  $(CFLAGS_OCR)
 
+tracking-tess-ocr-detector: src/ocr/tracking-tess-ocr-detector.cc 
+	$(CC) src/ocr/tracking-tess-ocr-detector.cc -o  bin/$@  $(CFLAGS_OCR)
 
 
 play-video: src/utils/play-video.cc 
 	$(CC) src/utils/play-video.cc -o  bin/$@  $(CFLAGS_SHOT)
-
 
 clean:
 	rm -rf  bin/*

@@ -91,7 +91,11 @@ int main(int argc, char** argv) {
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --window                          specify window size for boundary breaks search (default 9)\n");
     options.AddUsage("  --scale                           scale picture according to this factor after resizing (default 1.0)\n");
+	
+	// if no option print the option-usage 
+    if(options.Size() == 0) options.Usage();
     
+        
     // read configuration file 
     config_t cfg;
     config_setting_t *w;
@@ -116,9 +120,7 @@ int main(int argc, char** argv) {
     if(!video.Configure(options)) {
         return 1;
     }
-	// if no option print the option-usage 
-    if(options.Size() != 0) options.Usage();
-    
+
 	// shot boundaries detection parameters 
     int factor = 2;
     double threshold = 1;
