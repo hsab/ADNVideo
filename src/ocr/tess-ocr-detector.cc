@@ -365,7 +365,8 @@ return rects;
 // returns OCR results on text boxes
 // Text boxes are detected following the method discribed in "From Text Detection in Videos to Person Identification"
 int main(int argc, char** argv) {
-
+	
+    std::cout<<"*********** Text boxes detection and tracking ***********"<<std::endl;	
 	// Usages
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --data <directory>                tesseract model directory (containing tessdata/)\n");

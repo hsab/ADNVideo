@@ -87,6 +87,7 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
     xmlNode *cur =NULL;
     xmlNode *cur_node =NULL;
     cur = root_element->xmlChildrenNode;
+    
 	while (cur != NULL)  {
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"box")){           
 			cur_node=cur->xmlChildrenNode;
@@ -102,6 +103,7 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Text"))  {std::string sName((char*) cur_node->children->content);
 							b.text=sName; 
 							boxes.push_back(b);
+
 						}
 						cur_node = cur_node->next;
 			}			   
@@ -115,11 +117,12 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 
  
 int main(int argc, char **argv){
-	
+
+    std::cout<<"*********** Text boxes tracking ***********"<<std::endl;	
 	// Usages
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --input                           specify the input XML file (OCR results)\n");
-    options.AddUsage("  --output                          specify the output XML file (Text boxes tracking)\n");
+    options.AddUsage("  --output                          specify the output XML file (default ocr_results.xml) \n");
     
 	// if no option print the option-usage 
     if(options.Size() == 0)	options.Usage();
@@ -134,7 +137,7 @@ int main(int argc, char **argv){
     xmlNode *root_element = NULL;
 	doc = xmlReadFile(i_file, NULL, 0);
     if (doc == NULL){
-       std::cout<<"error: could not parse file "<< input <<std::endl;
+       std::cerr<<"error: could not parse file "<< input <<std::endl;
        exit(1);
     }
 	delete [] i_file ;	
@@ -143,10 +146,12 @@ int main(int argc, char **argv){
     std::vector<box> boxes_t;
     
     
+
     root_element = xmlDocGetRootElement(doc); 
     
     boxes=ReadXML(root_element);
-
+	
+	
 	xmlFreeDoc(doc);       // free document
     xmlCleanupParser();    // Free globals    	
 	boxes_t=boxes;
@@ -154,6 +159,7 @@ int main(int argc, char **argv){
 	std::vector<box> b;
 	box box_1;
 	std::vector<OCR_track> tracks;
+
 	while (boxes_t.size()>1) {
 					b.clear();
 					box_1=boxes_t[0];
@@ -221,7 +227,6 @@ int main(int argc, char **argv){
     		for (int i=0;i<tracks.size();i++ ){
 					box_node_output=xmlNewChild(root_node_output, NULL, BAD_CAST "box", BAD_CAST NULL);
 					char buffer[100];
-					//printf("%>2f %s\n",  b.time, sName.c_str());
 					sprintf(buffer, "%.2f",tracks[i].start);
 					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Start", (const xmlChar *) buffer);
 
