@@ -1,6 +1,5 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
 #include <map>
 #include "repere.h"
 #include "picojson.h"
