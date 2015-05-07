@@ -1,3 +1,5 @@
+// Please read the wiki for information and build instructions.
+
 #include <iostream>
 #include "repere.h"
 

@@ -1,5 +1,5 @@
 // Detect shotshots (splits) templates in videos or list of images.
-// Please read README.txt for information and build instructions.
+// Please read the wiki for information and build instructions.
 
 #include <opencv2/opencv.hpp>
 #include <iostream>

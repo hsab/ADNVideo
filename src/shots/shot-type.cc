@@ -1,6 +1,7 @@
+// Please read the wiki for information and build instructions.
+
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
 #include "shot-features.h"
 #include "classify.h"
 

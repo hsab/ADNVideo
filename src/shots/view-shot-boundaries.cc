@@ -1,5 +1,5 @@
 // View Shot boundary detection results 
-// Please read README.txt for information and build instructions.
+// Please read the wiki for information and build instructions.
 
 #include <iostream>
 #include <algorithm>

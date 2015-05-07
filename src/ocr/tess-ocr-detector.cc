@@ -1,9 +1,6 @@
 // OCR in videos.
-// Please read README.txt for information and build instructions.
+// Please read the wiki for information and build instructions.
 // Text boxes detection based on coarse detection discribed in "From Text Detection in Videos to Person Identification"
-
-
-
 #include <string>
 #include <vector>
 #include <iostream>
@@ -414,7 +411,7 @@ int main(int argc, char** argv) {
 	if (maskFile!=""){
 		isMask=true;
 		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
-		//cv::resize(mask,mask,cv::Size(1024,576));
+		cv::resize(mask,mask,cv::Size(1024,576));
 	}
 				
 		
@@ -441,8 +438,8 @@ int main(int argc, char** argv) {
 	
 	while(video.HasNext()) {
         if(video.ReadFrame(image)) {		
-				//cv::resize(image,resized,cv::Size(1024,576));
-				resized =image;
+				cv::resize(image,resized,cv::Size(1024,576));
+				//resized =image;
 				
 				// apply mask if it exists
 				if (isMask) cv::bitwise_and(resized, mask, resized);	
@@ -531,6 +528,10 @@ int main(int argc, char** argv) {
 		
 	//	seek to time + step
 	if (step >1) video.SeekTime(video.GetTime()+0.04*(step-1));
+		char *o_file = new char[output.length() + 1];
+	strcpy(o_file, output.c_str());					
+	xmlSaveFormatFileEnc(o_file, doc, "UTF-8", 1);
+	delete [] o_file ;
 	}
 	
 	

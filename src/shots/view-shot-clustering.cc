@@ -1,9 +1,10 @@
+// View Clustering results
+// Please read the wiki for information and build instructions.
+
 #include <iostream>
 #include <algorithm>
-
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
 #include "video.h"
 
 void ShowTiles(amu::VideoReader& video, double frame, bool isTime = false) {
