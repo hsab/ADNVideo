@@ -16,6 +16,7 @@ Building opencv-utils requires the following software installed:
 
 For OCR tools :
     - Tesseract 3.0
+    - LibXML++2.6 or later
 
 
 

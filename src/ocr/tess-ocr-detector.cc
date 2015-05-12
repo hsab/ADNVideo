@@ -528,10 +528,6 @@ int main(int argc, char** argv) {
 		
 	//	seek to time + step
 	if (step >1) video.SeekTime(video.GetTime()+0.04*(step-1));
-		char *o_file = new char[output.length() + 1];
-	strcpy(o_file, output.c_str());					
-	xmlSaveFormatFileEnc(o_file, doc, "UTF-8", 1);
-	delete [] o_file ;
 	}
 	
 	
