@@ -42,20 +42,17 @@ namespace amu {
         public:
             Detector(const std::string& path = ".", DetectorType _type = DetectorType_CPU) : type(_type) {
                 if(type == DetectorType_CUDA) {
-                    cv::gpu::setDevice(0); // init CUDA
-                    detectors_gpu.push_back(cv::gpu::CascadeClassifier_GPU(path + "/haarcascade_frontalface_alt.xml"));
-                    detectors_gpu.push_back(cv::gpu::CascadeClassifier_GPU(path + "/haarcascade_profileface.xml"));
+                    //cv::gpu::setDevice(0); // init CUDA
+                    //detectors_gpu.push_back(cv::gpu::CascadeClassifier_GPU(path + "/haarcascade_frontalface_alt.xml"));
+                    //detectors_gpu.push_back(cv::gpu::CascadeClassifier_GPU(path + "/haarcascade_profileface.xml"));
                 } else if(type == DetectorType_OPENCL) {
-                    detectors_ocl.push_back(cv::ocl::OclCascadeClassifier());
-                    detectors.back().load(path + "/haarcascade_frontalface_alt.xml");
+                    //detectors_ocl.push_back(cv::ocl::OclCascadeClassifier());
+                    //detectors.back().load(path + "/haarcascade_frontalface_alt.xml");
                     //detectors_ocl.push_back(cv::ocl::OclCascadeClassifier());
                     //detectors.back().load(path + "/haarcascade_profileface.xml");
                 } else {
-                    detectors.push_back(cv::CascadeClassifier(path + "/haarcascade_frontalface_alt.xml"));
+                    detectors.push_back(cv::CascadeClassifier(path + "/haarcascade_frontalface_alt2.xml"));
                     detectors.push_back(cv::CascadeClassifier(path + "/haarcascade_profileface.xml"));
-                    //detectors.push_back(cv::CascadeClassifier(path + "/haarcascade_frontalface_alt2.xml"));
-                    //detectors.push_back(cv::CascadeClassifier(path + "/haarcascade_upperbody.xml"));
-                    //detectors.push_back(cv::CascadeClassifier(path + "/haarcascade_fullbody.xml"));
                 }
             }
 
@@ -69,62 +66,62 @@ namespace amu {
                 int model = 0;
 
                 if(type == DetectorType_CUDA) {
-                    cv::gpu::GpuMat gpuImage;
-                    gpuImage.upload(gray);
-                    for(std::vector<cv::gpu::CascadeClassifier_GPU>::iterator detector = detectors_gpu.begin(); detector != detectors_gpu.end(); detector++) {
-                        if(detector->empty()) {
-                            std::cerr << "ERROR: could not load models\n";
-                            return false;
-                        }
+                    //cv::gpu::GpuMat gpuImage;
+                    //gpuImage.upload(gray);
+                    //for(std::vector<cv::gpu::CascadeClassifier_GPU>::iterator detector = detectors_gpu.begin(); detector != detectors_gpu.end(); detector++) {
+                        //if(detector->empty()) {
+                            //std::cerr << "ERROR: could not load models\n";
+                            //return false;
+                        //}
 
-                        detector->visualizeInPlace = false;
-                        detector->findLargestObject = false;
+                        //detector->visualizeInPlace = false;
+                        //detector->findLargestObject = false;
 
-                        cv::gpu::GpuMat facesBuffer;
-                        cv::Mat facesDownloaded;
-                        int numDetections = detector->detectMultiScale(gpuImage, facesBuffer);
-                        facesBuffer.colRange(0, numDetections).download(facesDownloaded);
+                        //cv::gpu::GpuMat facesBuffer;
+                        //cv::Mat facesDownloaded;
+                        //int numDetections = detector->detectMultiScale(gpuImage, facesBuffer);
+                        //facesBuffer.colRange(0, numDetections).download(facesDownloaded);
 
-                        detectedFaces.clear();
-                        for(size_t i = 0; i < numDetections; i++) {
-                            detectedFaces.push_back(facesDownloaded.ptr<cv::Rect>()[i]);
-                        }
+                        //detectedFaces.clear();
+                        //for(size_t i = 0; i < numDetections; i++) {
+                            //detectedFaces.push_back(facesDownloaded.ptr<cv::Rect>()[i]);
+                        //}
 
-                        for(std::vector<cv::Rect>::const_iterator i = detectedFaces.begin(); i != detectedFaces.end(); i++) {
-                            cv::Mat head(image, *i);
-                            std::cout << frame << " " << i->x / scale << " " << i->y / scale 
-                                << " " << i->width / scale << " " << i->height / scale << " " << skin(head) << " " << model << "\n";
-                            if(show) {
-                                cv::rectangle(copy, *i, cv::Scalar(255, 0, 0), 1);
-                                std::stringstream value;
-                                value << model;
-                                cv::putText(copy, value.str(), cvPoint(i->x + 5, i->y + 10), cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(0, 0, 255));
-                            }
-                        }
-                        model++;
-                    }
+                        //for(std::vector<cv::Rect>::const_iterator i = detectedFaces.begin(); i != detectedFaces.end(); i++) {
+                            //cv::Mat head(image, *i);
+                            //std::cout << frame << " " << i->x / scale << " " << i->y / scale 
+                                //<< " " << i->width / scale << " " << i->height / scale << " " << skin(head) << " " << model << "\n";
+                            //if(show) {
+                                //cv::rectangle(copy, *i, cv::Scalar(255, 0, 0), 1);
+                                //std::stringstream value;
+                                //value << model;
+                                //cv::putText(copy, value.str(), cvPoint(i->x + 5, i->y + 10), cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(0, 0, 255));
+                            //}
+                        //}
+                        //model++;
+                    //}
                 } else if(type == DetectorType_OPENCL) {
-                    cv::ocl::oclMat oclGray(gray);
-                    for(std::vector<cv::ocl::OclCascadeClassifier>::iterator detector = detectors_ocl.begin(); detector != detectors_ocl.end(); detector++) {
-                        if(detector->empty()) {
-                            std::cerr << "ERROR: could not load models\n";
-                            return false;
-                        }
-                        detectedFaces.clear();
-                        detector->detectMultiScale(oclGray, detectedFaces);
-                        for(std::vector<cv::Rect>::const_iterator i = detectedFaces.begin(); i != detectedFaces.end(); i++) {
-                            cv::Mat head(image, *i);
-                            std::cout << frame << " " << i->x / scale << " " << i->y / scale 
-                                << " " << i->width / scale << " " << i->height / scale << " " << skin(head) << " " << model << "\n";
-                            if(show) {
-                                cv::rectangle(copy, *i, cv::Scalar(255, 0, 0), 1);
-                                std::stringstream value;
-                                value << model;
-                                cv::putText(copy, value.str(), cvPoint(i->x + 5, i->y + 10), cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(0, 0, 255));
-                            }
-                        }
-                        model++;
-                    }
+                    //cv::ocl::oclMat oclGray(gray);
+                    //for(std::vector<cv::ocl::OclCascadeClassifier>::iterator detector = detectors_ocl.begin(); detector != detectors_ocl.end(); detector++) {
+                        //if(detector->empty()) {
+                            //std::cerr << "ERROR: could not load models\n";
+                            //return false;
+                        //}
+                        //detectedFaces.clear();
+                        //detector->detectMultiScale(oclGray, detectedFaces);
+                        //for(std::vector<cv::Rect>::const_iterator i = detectedFaces.begin(); i != detectedFaces.end(); i++) {
+                            //cv::Mat head(image, *i);
+                            //std::cout << frame << " " << i->x / scale << " " << i->y / scale 
+                                //<< " " << i->width / scale << " " << i->height / scale << " " << skin(head) << " " << model << "\n";
+                            //if(show) {
+                                //cv::rectangle(copy, *i, cv::Scalar(255, 0, 0), 1);
+                                //std::stringstream value;
+                                //value << model;
+                                //cv::putText(copy, value.str(), cvPoint(i->x + 5, i->y + 10), cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(0, 0, 255));
+                            //}
+                        //}
+                        //model++;
+                    //}
                 } else {
                     for(std::vector<cv::CascadeClassifier>::iterator detector = detectors.begin(); detector != detectors.end(); detector++) {
                         if(detector->empty()) {
@@ -149,7 +146,7 @@ namespace amu {
                 }
                 if(show) {
                     cv::imshow("detector output", copy);
-                    cv::waitKey(100);
+                    cv::waitKey(1);
                 }
                 std::cout.flush();
                 return true;
