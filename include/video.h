@@ -115,6 +115,8 @@ namespace amu {
                 deinterlace = options.IsSet("--deinterlace");
                 double start = options.Get("--start", 0.0);
                 endTime = options.Get("--end", -1);
+                double threshold = options.Get("--threshold", 0.0);
+
                 int start_frame = options.Get("--start-frame", 0);
                 endFrame = options.Get("--end-frame", -1);
 
