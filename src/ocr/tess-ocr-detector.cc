@@ -482,27 +482,27 @@ int main(int argc, char** argv) {
 					char buffer[100];
 
 					sprintf(buffer, "%f",video.GetTime());
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Time", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "time", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",rects[i].x);
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Position_X", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "positionX", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",rects[i].y);	
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Position_Y", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "positionY", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",rects[i].width);
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Width", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "width", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",rects[i].height);
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Height", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "height", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%f",result.confidence );
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Confidence",(const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "confidence",(const xmlChar *) buffer);
 					
 					std::string str = result.text;
 					char *cstr = new char[str.length() + 1];
 					strcpy(cstr, str.c_str());
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Text",(const xmlChar *) cstr);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "ocr",(const xmlChar *) cstr);
 					delete [] cstr;	
 					
 					// display the text box image is show 
@@ -510,12 +510,12 @@ int main(int argc, char** argv) {
 						cv::imshow("original", im_box);
 						std::cout << "<box>\n";
 						std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
-						std::cout <<"  <position_X> "<<rects[i].x<< " </position_X>\n";
-						std::cout <<"  <position_Y> "<<rects[i].y<< " </position_Y>\n";
+						std::cout <<"  <positionX> "<<rects[i].x<< " </positionX>\n";
+						std::cout <<"  <positionY> "<<rects[i].y<< " </positionY>\n";
 						std::cout <<"  <width> "<<rects[i].width<< " </width>\n";
 						std::cout <<"  <height> "<<rects[i].height<< " </height>\n";
 						std::cout <<"  <confidence> "<<result.confidence  << " </confidence>\n";
-						std::cout <<"  <text> " <<result.text << " </text>\n";
+						std::cout <<"  <ocr> " <<result.text << " </ocr>\n";
 						std::cout << "</box>\n";
 					
 						cv::waitKey(600);

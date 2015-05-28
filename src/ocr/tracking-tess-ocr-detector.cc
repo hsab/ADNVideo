@@ -92,13 +92,13 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"box")){           
 			cur_node=cur->xmlChildrenNode;
 			while (cur_node != NULL){						
-						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Position_X"))  {std::string sName((char*) cur_node->children->content); b.position_X=::atof(sName.c_str());}
-						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Position_Y"))  {std::string sName((char*) cur_node->children->content); b.position_Y=::atof(sName.c_str());}
-						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Time"))  {std::string sName((char*) cur_node->children->content); b.time=::atof(sName.c_str());}						
-						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Width"))  {std::string sName((char*) cur_node->children->content); b.width=::atof(sName.c_str());}
-						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Height"))  {std::string sName((char*) cur_node->children->content); b.height=::atof(sName.c_str());}
-						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Confidence"))  {std::string sName((char*) cur_node->children->content); b.confidence=::atof(sName.c_str());}
-						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"Text") )  {
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"positionX"))  {std::string sName((char*) cur_node->children->content); b.position_X=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"positionY"))  {std::string sName((char*) cur_node->children->content); b.position_Y=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"time"))  {std::string sName((char*) cur_node->children->content); b.time=::atof(sName.c_str());}						
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"width"))  {std::string sName((char*) cur_node->children->content); b.width=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"height"))  {std::string sName((char*) cur_node->children->content); b.height=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"confidence"))  {std::string sName((char*) cur_node->children->content); b.confidence=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"ocr") )  {
 							if (cur_node->children != NULL){
 								std::string sName((char*) cur_node->children->content);
 								b.text=sName; 
@@ -226,30 +226,30 @@ int main(int argc, char **argv){
 					box_node_output=xmlNewChild(root_node_output, NULL, BAD_CAST "box", BAD_CAST NULL);
 					char buffer[100];
 					sprintf(buffer, "%.2f",tracks[i].start);
-					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Start", (const xmlChar *) buffer);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "start", (const xmlChar *) buffer);
 
 					sprintf(buffer, "%.2f",tracks[i].end);
-					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "End", (const xmlChar *) buffer);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "end", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",tracks[i].position_X);
-					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Position_X", (const xmlChar *) buffer);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "positionX", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",tracks[i].position_Y);	
-					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Position_Y", (const xmlChar *) buffer);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "PositionY", (const xmlChar *) buffer);
 								
 					sprintf(buffer, "%d",tracks[i].width);
-					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Width", (const xmlChar *) buffer);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "width", (const xmlChar *) buffer);
 										
 					sprintf(buffer, "%d",tracks[i].height);
-					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Height", (const xmlChar *) buffer);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "height", (const xmlChar *) buffer);
 										
 					sprintf(buffer, "%.2f",tracks[i].confidence);
-					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "Confidence",(const xmlChar *) buffer);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "confidence",(const xmlChar *) buffer);
 					
 					std::string str = tracks[i].text;
 					char *cstr = new char[str.length() + 1];
 					strcpy(cstr, str.c_str());
-					node_output = xmlNewChild(box_node_output, NULL, BAD_CAST "Text",(const xmlChar *) cstr);
+					node_output = xmlNewChild(box_node_output, NULL, BAD_CAST "ocr",(const xmlChar *) cstr);
 					delete [] cstr;	
 				}
 	char *o_file = new char[output.length() + 1];

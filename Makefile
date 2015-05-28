@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS_SHOT= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ `xml2-config --cflags --libs` -w 
-CFLAGS_OCR= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -ltesseract `xml2-config --cflags --libs` -w 
+CFLAGS_OCR=  -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -ltesseract `xml2-config --cflags --libs` -w 
 
 PROGS_shot:= shot-boundary-detector view-shot-boundaries subshot-from-template
 PROGS_tess:= tess-ocr-detector generate-mask tracking-tess-ocr-detector
