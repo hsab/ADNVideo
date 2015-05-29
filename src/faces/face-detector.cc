@@ -37,12 +37,12 @@ int main(int argc, char** argv) {
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --model                           haarcascade model (XML format) \n");
     options.AddUsage("  --step                            run detection every <step> frames (default 1)\n");
-    options.AddUsage("  --threshold                       filter faces following skin color (default 0)\n");
+    options.AddUsage("  --threshold                       filter faces following skin color (default 0.0)\n");
     options.AddUsage("  --show                            display face detection \n");
     std::string output = options.Get<std::string>("--output", "face_results.xml");
 
 	bool show = options.IsSet("--show");
-    std::string model= options.Get<std::string>("--model", "haarcascade_frontalface_alt2.xml");
+    std::string model= options.Get<std::string>("--model", "/usr/share/opencv/haarcascades/haarcascade_frontalface_alt2.xml");
     
 	// read configuration file 
     config_t cfg;
@@ -97,9 +97,10 @@ int main(int argc, char** argv) {
                 score = skin(face);
                 if (show & score>threshold) {
 					std::cout << video.GetIndex() << " "<<video.GetTime() <<" "<<detections[i].x << " " << detections[i].y << " " << detections[i].width << " " << detections[i].height << " " << score << std::endl;
-					cv::rectangle(image, detections[i], cv::Scalar(255, 0, 0), 1);
+					cv::rectangle(image, detections[i], cv::Scalar(255, 0, 0), 2);
 					sprintf(b, "%.2f",skin(face));
-                    cv::putText(image, b, cv::Point(detections[i].x + 5, detections[i].y + 10), cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(0, 0, 255));
+                    cv::putText(image, b, cv::Point(detections[i].x - 15, detections[i].y - 15), cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cv::Scalar(0, 0, 255));
+                    
 				}
 
 				box_node=xmlNewChild(root_node, NULL, BAD_CAST "face", BAD_CAST NULL);
@@ -126,7 +127,8 @@ int main(int argc, char** argv) {
                 
             }                      
 			if (show) {    
-				cv::imshow( "Display window", image );              
+				cv::imshow( "Display window", image );  
+				cv::imwrite( "tmp.jpg", image );            
 				if(cv::waitKey(1) == 27) break;
 			}
   
