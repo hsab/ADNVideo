@@ -266,7 +266,6 @@ std::vector<cv::Rect> find_boxes(cv::Mat im,  cv::Mat frame_BW, cv::Mat im_mask,
 	double y_min_size_text=	3;
 	double x_min_size_text = 34;
 	float ratio_width_height = 3.24;
-
     int i, j;
     std::vector<std::vector<cv::Point> > contours;
     std::vector<cv::Vec4i> hierarchy;
@@ -371,10 +370,10 @@ int main(int argc, char** argv) {
     options.AddUsage("  --mask                            use mask for text box search\n");
     options.AddUsage("  --upper-case                      contains only upper case characters\n");
     options.AddUsage("  --ignore-accents                  do not predict letters with diacritics\n");
-    options.AddUsage("  --sharpen                         sharpen image before processing\n");
     options.AddUsage("  --show                            show image beeing processed\n");
     options.AddUsage("  --step                            specify processing every step frame (default 1)\n");
     options.AddUsage("  --output                          specify name of the XML output file\n");
+    options.AddUsage("  --scale                           scale image before processing\n");
 
 	// if no option print the option-usage 
     if(options.Size() == 0){ 
@@ -387,8 +386,9 @@ int main(int argc, char** argv) {
     std::string lang = options.Get<std::string>("--lang", "fra");
     bool upper_case = options.IsSet("--upper-case");
     bool ignore_accents = options.IsSet("--ignore-accents");
-    bool sharpen = options.IsSet("--sharpen");
     bool show = options.IsSet("--show");
+    bool resize = false;
+
     std::string maskFile = options.Get<std::string>("--mask", "");
     
     
@@ -407,11 +407,14 @@ int main(int argc, char** argv) {
 
 	// read the mask if it exists
 	cv::Mat mask;
+	
 	bool isMask=false;	
 	if (maskFile!=""){
 		isMask=true;
 		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
-		cv::resize(mask,mask,cv::Size(1024,576));
+		if (resize) cv::resize(mask,mask,cv::Size(1024,576));
+
+		
 	}
 				
 		
@@ -437,10 +440,13 @@ int main(int argc, char** argv) {
 
 	
 	while(video.HasNext()) {
-        if(video.ReadFrame(image)) {		
-				cv::resize(image,resized,cv::Size(1024,576));
-				//resized =image;
+        if(video.ReadFrame(image)) {	
+				resized =image;	
+				if (resize) cv::resize(image,resized,cv::Size(1024,576));
+
 				
+				
+
 				// apply mask if it exists
 				if (isMask) cv::bitwise_and(resized, mask, resized);	
 				
@@ -468,12 +474,14 @@ int main(int argc, char** argv) {
 					
 					// initialize tesseract parameters
 					amu::Result result;
-
-					
+	
 					// image box
 					cv::Rect roi(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
 					cv::Mat im_box = resized(roi);
-					
+					if (zoom !=1) {
+						cv::Size s = im_box.size();
+						cv::resize(im_box,im_box,cv::Size(zoom*s.width,zoom*s.height));
+					}
 					// apply the OCR 
 					ocr.SetImage(im_box);
 					result = ocr.Process();
@@ -482,27 +490,27 @@ int main(int argc, char** argv) {
 					char buffer[100];
 
 					sprintf(buffer, "%f",video.GetTime());
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Time", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "time", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",rects[i].x);
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Position_X", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "positionX", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",rects[i].y);	
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Position_Y", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "positionY", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",rects[i].width);
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Width", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "width", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%d",rects[i].height);
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Height", (const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "height", (const xmlChar *) buffer);
 					
 					sprintf(buffer, "%f",result.confidence );
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Confidence",(const xmlChar *) buffer);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "confidence",(const xmlChar *) buffer);
 					
 					std::string str = result.text;
 					char *cstr = new char[str.length() + 1];
 					strcpy(cstr, str.c_str());
-					node = xmlNewChild(box_node, NULL, BAD_CAST "Text",(const xmlChar *) cstr);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "ocr",(const xmlChar *) cstr);
 					delete [] cstr;	
 					
 					// display the text box image is show 
@@ -510,15 +518,15 @@ int main(int argc, char** argv) {
 						cv::imshow("original", im_box);
 						std::cout << "<box>\n";
 						std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
-						std::cout <<"  <position_X> "<<rects[i].x<< " </position_X>\n";
-						std::cout <<"  <position_Y> "<<rects[i].y<< " </position_Y>\n";
+						std::cout <<"  <positionX> "<<rects[i].x<< " </positionX>\n";
+						std::cout <<"  <positionY> "<<rects[i].y<< " </positionY>\n";
 						std::cout <<"  <width> "<<rects[i].width<< " </width>\n";
 						std::cout <<"  <height> "<<rects[i].height<< " </height>\n";
 						std::cout <<"  <confidence> "<<result.confidence  << " </confidence>\n";
-						std::cout <<"  <text> " <<result.text << " </text>\n";
+						std::cout <<"  <ocr> " <<result.text << " </ocr>\n";
 						std::cout << "</box>\n";
 					
-						cv::waitKey(600);
+						cv::waitKey(2000);
 						cv::destroyWindow("original");
 						
 						

@@ -144,10 +144,11 @@ namespace amu {
                         model++;
                     }
                 }
-                if(show) {
-                    cv::imshow("detector output", copy);
-                    cv::waitKey(1);
-                }
+                
+                if (show) {    
+					cv::imshow( "Display window", copy );              
+					cv::waitKey(1);
+				}
                 std::cout.flush();
                 return true;
             }

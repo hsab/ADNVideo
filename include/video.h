@@ -86,12 +86,12 @@ namespace amu {
                 std::string idx = options.Get("--idx", std::string(""));
                 std::string output = options.Get("--output", std::string("output.xml"));
                 std::string input = options.Get("--input", std::string("input.xml"));
-
+                std::string model = options.Get("--model", std::string("/usr/share/opencv/haarcascades/haarcascade_frontalface_alt2.xml"));
+				std::cout <<model <<std::endl;
                 std::string uem = options.Get("--uem", std::string(""));
                 showname = options.Get("--uem-show", std::string(""));
                 std::string maskFile = options.Get("--mask", std::string(""));
-
-                std::string size_string = options.Get("--size", std::string(""));
+				std::string size_string = options.Get("--size", std::string(""));
                 if(size_string != "") {
                     size_t xLocation = size_string.find("x");
                     std::stringstream widthReader(size_string);
@@ -115,6 +115,8 @@ namespace amu {
                 deinterlace = options.IsSet("--deinterlace");
                 double start = options.Get("--start", 0.0);
                 endTime = options.Get("--end", -1);
+                double threshold = options.Get("--threshold", 0.0);
+
                 int start_frame = options.Get("--start-frame", 0);
                 endFrame = options.Get("--end-frame", -1);
 

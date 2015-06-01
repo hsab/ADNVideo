@@ -1,12 +1,13 @@
 CC=g++
-CFLAGS_SHOT= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -w
-CFLAGS_OCR= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -ltesseract `xml2-config --cflags --libs` -w 
+CFLAGS_SHOT= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ `xml2-config --cflags --libs` -w 
+CFLAGS_OCR=  -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -ltesseract `xml2-config --cflags --libs` -w 
 
 PROGS_shot:= shot-boundary-detector view-shot-boundaries subshot-from-template
 PROGS_tess:= tess-ocr-detector generate-mask tracking-tess-ocr-detector
 PROGS_utils:= play-video
+PROGS_face:= face-detector haar-detector
 
-all: $(PROGS_shot) $(PROGS_tess) $(PROGS_utils)
+all: $(PROGS_shot) $(PROGS_tess) $(PROGS_utils) $(PROGS_face)
 
 ocr: $(PROGS_tess)
 
@@ -14,6 +15,7 @@ shots: $(PROGS_shot)
 
 utils: $(PROGS_utils)
 
+face: $(PROGS_face)
 
 shot-boundary-detector: src/shots/shot-boundary-detector.cc 
 	$(CC) src/shots/shot-boundary-detector.cc -o bin/$@  $(CFLAGS_SHOT)
@@ -35,6 +37,12 @@ generate-mask: src/ocr/generate-mask.cc
 
 tracking-tess-ocr-detector: src/ocr/tracking-tess-ocr-detector.cc 
 	$(CC) src/ocr/tracking-tess-ocr-detector.cc -o  bin/$@  $(CFLAGS_OCR)
+
+face-detector: src/faces/face-detector.cc 
+	$(CC) src/faces/face-detector.cc -o  bin/$@  $(CFLAGS_SHOT)
+	
+haar-detector: src/faces/haar-detector.cc 
+	$(CC) src/faces/haar-detector.cc -o  bin/$@  $(CFLAGS_SHOT)
 
 
 play-video: src/utils/play-video.cc 
