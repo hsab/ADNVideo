@@ -128,7 +128,6 @@ int main(int argc, char** argv) {
             }                      
 			if (show) {    
 				cv::imshow( "Display window", image );  
-				cv::imwrite( "tmp.jpg", image );            
 				if(cv::waitKey(1) == 27) break;
 			}
   
