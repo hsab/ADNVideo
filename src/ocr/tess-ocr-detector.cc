@@ -526,7 +526,7 @@ int main(int argc, char** argv) {
 						std::cout <<"  <ocr> " <<result.text << " </ocr>\n";
 						std::cout << "</box>\n";
 					
-						cv::waitKey(2000);
+						cv::waitKey(1000);
 						cv::destroyWindow("original");
 						
 						
