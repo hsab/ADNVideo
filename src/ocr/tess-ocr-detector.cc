@@ -365,7 +365,7 @@ int main(int argc, char** argv) {
     std::cout<<"*********** Text boxes detection and tracking ***********"<<std::endl;	
 	// Usages
     amu::CommandLine options(argv, "[options]\n");
-    options.AddUsage("  --data <directory>                tesseract model directory (containing tessdata/)\n");
+    options.AddUsage("  --data <directory>                tesseract model directory containing tessdata (default /usr/share/tesseract-ocr/)\n");
     options.AddUsage("  --lang <language>                 tesseract model language (default fra)\n");
     options.AddUsage("  --mask                            use mask for text box search\n");
     options.AddUsage("  --upper-case                      contains only upper case characters\n");
@@ -381,7 +381,7 @@ int main(int argc, char** argv) {
 		}
 		
     double zoom = options.Read("--scale", 1.0); 
-    std::string dataPath = options.Get<std::string>("--data", "");
+    std::string dataPath = options.Get<std::string>("--data", "/usr/share/tesseract-ocr/");
     std::string output = options.Get<std::string>("--output", "ocr_results.xml");
     std::string lang = options.Get<std::string>("--lang", "fra");
     bool upper_case = options.IsSet("--upper-case");
@@ -535,7 +535,7 @@ int main(int argc, char** argv) {
 		}
 		
 	//	seek to time + step
-	if (step >1) video.SeekTime(video.GetTime()+0.04*(step-1));
+	if (step >1) video.Seek(video.GetIndex()+step);
 	}
 	
 	

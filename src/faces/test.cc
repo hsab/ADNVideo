@@ -1,124 +1,73 @@
-#include "opencv2/video/tracking.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/objdetect/objdetect.hpp"
-
-
+#include <opencv2/opencv.hpp>
 #include <iostream>
-#include <ctype.h>
-
+#include <vector>
+#include <cmath>
+ 
 using namespace cv;
-using namespace std;
-
-Mat image;
-int trackObject = 0;
-Rect selection;
-
-int main()
+using namespace std; 
+ 
+int main(int argc, char** argv)
 {
-VideoCapture cap;
-Rect trackWindow;
-int hsize = 16;
-float hranges[] = {0,180};
-const float* phranges = hranges;
-int matchesNum = 0;
-CascadeClassifier cascade;
-if (!cascade.load("/usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml")) {
-    cout << "Cannot load face xml!" << endl;
-    return -1;
-}
+	// Load two images and allocate other structures
+	Mat imgA = imread("../../../mediaEval/experiments/lip/image_2237.png", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat imgB = imread("../../../mediaEval/experiments/lip/image_2000.png", CV_LOAD_IMAGE_GRAYSCALE);
+	
+	Size img_sz = imgA.size();
+	Mat imgC(img_sz,1);
+ 
+	int win_size = 15;
+	int maxCorners = 100; 
+    double qualityLevel = 0.3; 
+    double minDistance = 7; 
+    int blockSize = 7; 
+    
+    double k = 0.04; 
+    std::vector<cv::Point2f> cornersA; 
+    cornersA.reserve(maxCorners); 
+	std::vector<cv::Point2f> cornersB; 
+    cornersB.reserve(maxCorners);
 
-
-cap.open("/home/meriem/work/repere/data/BFMTV_BFMStory_2011-11-28_175800.MPG");
-
-if (!cap.isOpened()) {
-    cout << "***Could not initialize capturing...***\n";
-    return -1;
-}
-
-namedWindow( "Result", 1 );
-
-Mat frame, hsv, hue, hist, mask, backproj;
-
-for(;;)
-{
-
-    cap >> frame;
-    if( frame.empty() )
-        break;
-
-    frame.copyTo(image);
-
-    if ( !trackObject )
-    {
-        Mat grayframe; 
-        vector <Rect> facesBuf;
-        int detectionsNum = 0;
-
-        cvtColor(image, grayframe, CV_BGR2GRAY);
-        cascade.detectMultiScale(grayframe, facesBuf, 1.2, 4, CV_HAAR_FIND_BIGGEST_OBJECT |
-        CV_HAAR_SCALE_IMAGE, cvSize(0, 0));
-
-        detectionsNum = (int) facesBuf.size();
-        Rect *faceRects = &facesBuf[0];
-
-        //It must found faces in three consecutives frames to start the tracking to discard false positives
-        if (detectionsNum > 0) 
-            matchesNum += 1;
-        else matchesNum = 0;
-        if ( matchesNum == 3 )
-        {
-            trackObject = -1;
-            selection = faceRects[0];
-        }
-
-        for (int i = 0; i < detectionsNum; i++) 
-        { 
-            Rect r = faceRects[i];
-            rectangle(image, Point(r.x, r.y), Point(r.x + r.width, r.y + r.height), CV_RGB(0, 255, 0)); 
-        }   
-    }
-
-    if( trackObject )
-    {
-        cvtColor(image, hsv, CV_BGR2HSV);
-        inRange(hsv, Scalar(0, 69, 53),
-                    Scalar(180, 256, 256), mask);
-        int ch[] = {0, 0};
-        hue.create(hsv.size(), hsv.depth());
-        mixChannels(&hsv, 1, &hue, 1, ch, 1);
-
-        if( trackObject < 0 )
-        {
-            Mat roi(hue, selection), maskroi(mask, selection);
-            calcHist(&roi, 1, 0, maskroi, hist, 1, &hsize, &phranges);
-            normalize(hist, hist, 0, 255, CV_MINMAX);
-
-            trackWindow = selection;
-            trackObject = 1;      
-        }
-
-        calcBackProject(&hue, 1, 0, hist, backproj, &phranges);
-        backproj &= mask;
-        RotatedRect trackBox = CamShift(backproj, trackWindow,
-                TermCriteria( CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 10, 1 ));
-        if( trackWindow.area() <= 1 )
-        {
-            int cols = backproj.cols, rows = backproj.rows, r = (MIN(cols, rows) + 5)/6;
-            trackWindow = Rect(trackWindow.x - r, trackWindow.y - r,
-                    trackWindow.x + r, trackWindow.y + r) &
-                    Rect(0, 0, cols, rows);
-        }
-
-        ellipse( image, trackBox, Scalar(0,0,255), 3, CV_AA );
-    }
-
-
-    imshow( "Result", image );
-
-    if(waitKey(1) >= 0) break;
-
-}
-
-return 0;
+	
+	goodFeaturesToTrack( imgA,cornersA,maxCorners,qualityLevel,minDistance,cv::Mat());
+	goodFeaturesToTrack( imgB,cornersB,maxCorners,qualityLevel,minDistance,cv::Mat());
+ 
+	cornerSubPix( imgA, cornersA, Size( win_size, win_size ), Size( -1, -1 ), 
+				  TermCriteria( CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03 ) );
+	
+	cornerSubPix( imgB, cornersB, Size( win_size, win_size ), Size( -1, -1 ), 
+				  TermCriteria( CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03 ) );
+ 
+	// Call Lucas Kanade algorithm
+ 
+	CvSize pyr_sz = Size( img_sz.width+8, img_sz.height/3 );
+ 
+	std::vector<uchar> features_found; 
+    features_found.reserve(maxCorners);
+	std::vector<float> feature_errors; 
+	feature_errors.reserve(maxCorners);
+    
+	calcOpticalFlowPyrLK( imgA, imgB, cornersA, cornersB, features_found, feature_errors ,
+		Size( win_size, win_size ), 5,
+		 cvTermCriteria( CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.3 ), 0 );
+ 
+	// Make an image of the results
+ 
+	for( int i=0; i < features_found.size(); i++ ){
+		cout<<"Error is "<<feature_errors[i]<<endl;
+		Point p0( ceil( cornersA[i].x ), ceil( cornersA[i].y ) );
+		Point p1( ceil( cornersB[i].x ), ceil( cornersB[i].y ) );
+		line( imgC, p0, p1, CV_RGB(255,255,255), 2 );
+	}
+ 
+	namedWindow( "ImageA", 0 );
+	namedWindow( "ImageB", 0 );
+	namedWindow( "LKpyr_OpticalFlow", 0 );
+ 
+	imshow( "ImageA", imgA );
+	imshow( "ImageB", imgB );
+	imshow( "LKpyr_OpticalFlow", imgC );
+ 
+	cvWaitKey(0);
+	
+	return 0;
 }

@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
   
 		}
     		//	seek to time + step
-		if (step >1) video.SeekTime(video.GetTime()+0.04*(step-1));  
+		if (step >1) video.Seek(video.GetIndex()+step);  
 		
 	}
 	
@@ -147,4 +147,5 @@ int main(int argc, char** argv) {
 	xmlFreeDoc(doc);
     xmlCleanupParser();
     xmlMemoryDump();
+    return 0;
 }
