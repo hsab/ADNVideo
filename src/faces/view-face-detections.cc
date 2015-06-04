@@ -43,6 +43,9 @@ namespace amu {
 int main(int argc, char** argv) {
 
     amu::CommandLine options(argv, "[options]\n");
+    options.AddUsage("  --detections <detection-file>     haar detector ourput for each frame\n");
+    std::string detectionFilename = options.Get<std::string>("--detections", "");
+
 
     amu::VideoReader video;
     if(!video.Configure(options)) {
@@ -51,7 +54,7 @@ int main(int argc, char** argv) {
 
     if(options.Size() != 0) options.Usage();
 
-    std::map<int, std::vector<amu::Detection> > detections = amu::Detection::LoadByFrame("/dev/stdin");
+    std::map<int, std::vector<amu::Detection> > detections = amu::Detection::LoadByFrame(detectionFilename);
 
     cv::Mat image;
     for(std::map<int, std::vector<amu::Detection> >::const_iterator frame = detections.begin(); frame != detections.end(); frame++) {

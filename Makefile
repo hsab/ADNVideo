@@ -5,7 +5,7 @@ CFLAGS_OCR=  -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdev
 PROGS_shot:= shot-boundary-detector view-shot-boundaries subshot-from-template
 PROGS_tess:= tess-ocr-detector generate-mask tracking-tess-ocr-detector
 PROGS_utils:= play-video
-PROGS_face:= face-detector haar-detector
+PROGS_face:= face-detector haar-detector view-face-detections
 
 all: $(PROGS_shot) $(PROGS_tess) $(PROGS_utils) $(PROGS_face)
 
@@ -43,6 +43,9 @@ face-detector: src/faces/face-detector.cc
 	
 haar-detector: src/faces/haar-detector.cc 
 	$(CC) src/faces/haar-detector.cc -o  bin/$@  $(CFLAGS_SHOT)
+
+view-face-detections: src/faces/view-face-detections.cc 
+	$(CC) src/faces/view-face-detections.cc -o  bin/$@  $(CFLAGS_SHOT)
 
 
 play-video: src/utils/play-video.cc 
