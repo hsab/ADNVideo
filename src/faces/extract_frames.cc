@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 		std::ostringstream ss;
 		ss << frame;
     	f=filename + "_" + ss.str() +".jpg";
-		//std::cout <<f <<std::endl;
+		std::cout <<f <<std::endl;
 		cv::imwrite( f, image );
 		//cv::namedWindow( "Gray image", CV_WINDOW_AUTOSIZE );
 		//cv::imshow("Gray image", image );
