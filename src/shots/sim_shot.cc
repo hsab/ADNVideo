@@ -53,13 +53,9 @@ Mat concat(Mat *A, Mat *B, Mat *C){
 }
 
 // hsv histogram of an image
-Mat hsvHist( string nameImage ){	
-	
-  Mat  dst, hsv, image;
-  /// Load image
-  Mat src = imread( nameImage , 1 );
-  cvtColor(src, hsv, COLOR_BGR2HSV);
-
+Mat hsvHist( Mat hsv ){	
+  Mat  dst;
+  
   /// Separate the image in 3 places ( v, h and s )
   vector<Mat> vsh_planes, rgb_planes;
   split( hsv, vsh_planes );
@@ -181,15 +177,24 @@ Mat R1, R2;
 int n = list.size();
 float D=0;
 Mat_<float> Similarity(n,n);
-
-			
+Mat img_rgb1, img_hsv1;			
+Mat img_rgb2, img_hsv2;			
 			
 for (int i=0; i <n; i++){
-		std::cout <<list.at(i)<<std::endl;
-		R1 = hsvHist( list.at(i));
+		
 		Similarity.row(i).col(i) = 0;
+		img_rgb1 = imread(list.at(i),1);
+		cvtColor(img_rgb1,img_hsv1,CV_BGR2HSV);
+		
+		R1 = hsvHist(img_hsv1);
 	for (int j=i+1; j <n; j++){
-			R2 = hsvHist(list.at(j));		
+			img_rgb2 = imread(list.at(j),1);
+			
+			
+			cvtColor(img_rgb2,img_hsv2,CV_BGR2HSV);
+		
+			R2 = hsvHist(img_hsv2);
+			
 			D = cosine_distance(R1,R2);
 			Similarity.row(i).col(j) = D;
 			Similarity.row(j).col(i) = D;
