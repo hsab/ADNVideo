@@ -185,7 +185,7 @@ Mat_<float> Similarity(n,n);
 			
 			
 for (int i=0; i <n; i++){
-	
+		std::cout <<list.at(i)<<std::endl;
 		R1 = hsvHist( list.at(i));
 		Similarity.row(i).col(i) = 0;
 	for (int j=i+1; j <n; j++){
