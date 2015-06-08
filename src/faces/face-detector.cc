@@ -39,6 +39,8 @@ int main(int argc, char** argv) {
     options.AddUsage("  --step                            run detection every <step> frames (default 1)\n");
     options.AddUsage("  --threshold                       filter faces following skin color (default 0.0)\n");
     options.AddUsage("  --show                            display face detection \n");
+    options.AddUsage("  --output                          XML results output\n");
+
     std::string output = options.Get<std::string>("--output", "face_results.xml");
 
 	bool show = options.IsSet("--show");

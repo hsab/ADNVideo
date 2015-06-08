@@ -202,13 +202,11 @@ for (int i=0; i <n; i++){
 }
 
   ofstream myfile;
-  myfile.open (output.c_str());
-  
+  myfile.open (output.c_str());  
   myfile << Similarity;
   myfile.close();
  
 
-  waitKey(0);
 
   return 0;
 } 
