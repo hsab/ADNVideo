@@ -1,9 +1,6 @@
-//#include "opencv2/highgui/highgui.hpp"
-//#include "opencv2/imgproc/imgproc.hpp"
 #include <stdio.h>
 #include <stdlib.h> 
 #include <fstream>
-
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include "video.h"
@@ -61,9 +58,6 @@ Mat hsvHist( string nameImage ){
   Mat  dst, hsv, image;
   /// Load image
   Mat src = imread( nameImage , 1 );
-  
-  //Mat src(image, Rect(0,0,720,492));
-  
   cvtColor(src, hsv, COLOR_BGR2HSV);
 
   /// Separate the image in 3 places ( v, h and s )
@@ -161,7 +155,6 @@ int main( int argc, char **argv)
     std::string output= options.Get<std::string>("--output", "");
     
 
-    	
 	cout <<file_liste<<endl;
 	vector<string> list;
     list.clear();
@@ -185,13 +178,14 @@ int main( int argc, char **argv)
 
 Mat R1, R2;
 
-
-
-
 int n = list.size();
 float D=0;
 Mat_<float> Similarity(n,n);
+
+			
+			
 for (int i=0; i <n; i++){
+	
 		R1 = hsvHist( list.at(i));
 		Similarity.row(i).col(i) = 0;
 	for (int j=i+1; j <n; j++){
@@ -203,7 +197,6 @@ for (int i=0; i <n; i++){
 }
 
   ofstream myfile;
-  string output_file= "toto.sim";
   myfile.open (output.c_str());
   
   myfile << Similarity;
