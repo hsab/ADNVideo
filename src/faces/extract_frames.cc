@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     std::string idxFilename = options.Get<std::string>("--idx", "");
     std::string filename(shotFilename);
     std::string f;
-    if(options.Size() != 0 || shotFilename == "" )  options.Usage();
+    if(options.Size() == 0)  options.Usage();
 
     filename.replace( filename.end()-6, filename.end(),"");
     amu::VideoReader video;
