@@ -1,4 +1,3 @@
-// Text boxes tracking and OCR-results fusion
 // Please read the wiki for information and build instructions.
 #include <string>
 #include <iostream>
@@ -101,7 +100,7 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"ocr") )  {
 							if (cur_node->children != NULL){
 								std::string sName((char*) cur_node->children->content);
-								b.text=" "+ sName + " "; 
+								b.text=sName ; 
 							}
 							else {
 								std::string sName = "XML_FAILED";
@@ -136,7 +135,7 @@ std::vector<std::string>  Read_list(std::string file_name) {
             std::string ch;        
             fichier >> ch;	  
             if ( ch != "" ) {
-				ch=" " +ch + " "  ;
+				ch=ch  ;
                 list.push_back(ch);
 				
               }else           
@@ -147,10 +146,6 @@ std::vector<std::string>  Read_list(std::string file_name) {
 return list	;
 }
 
- 
-// Main function: takes the tess-ocr-detector resutls XML-file (OCR result at each frame)
-// returns XML-file of text boxes tracks
-// Text boxes tracking is based on geometrical matching and Levenshtein distance
 int main(int argc, char **argv){
 
 	// Usages
@@ -191,20 +186,37 @@ int main(int argc, char **argv){
     xmlCleanupParser(); 
     bool found =false;
     int i=0;
-    std::string name;
-    while ((!found) & (boxes_t[i].time <120)){
-		    for (int j=0; j<list_name.size();j++) {
-				std::string ocr=boxes_t[i].text;
-				if (ocr.find(list_name[j]) != std::string::npos) {
+    std::string name="";
+    std::string ocr;
+    size_t t;
+    while ((!found) & (boxes_t[i].time <200)){
+		ocr=boxes_t[i].text;
+		std::string buf;
+		std::stringstream ss(ocr);
+		std::vector<std::string> tokens;   
+		while (ss>> buf){
+			tokens.push_back(buf);
+		}
+		int k=0;
+		while ((!found) & (k <tokens.size())){
+			for (int j=0; j<list_name.size();j++) {		
+				size_t L = LevenshteinDistance(list_name[j], tokens[k]);
+				if (L<2){
 					name=list_name[j];
 					found=true;
 					break;
 				}
+				
 			}
-			i++;
+			k++;
+		}
+		i++;
 	}
-	if (found) 
-		std::cout <<"anchor = "<< name <<std::endl;
 	
+	if (found) {
+		
+	   
+        std::cout <<"anchor = "<< name <<std::endl;
+	}
 	return 0;
 }
