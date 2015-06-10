@@ -165,19 +165,21 @@ int main(int argc, char **argv){
    	std::vector<std::string>  list_name;
    	list_name=Read_list(file_name);
    	
-   	
+
    	
 	char *i_file = new char[input.length() + 1];
 	strcpy(i_file, input.c_str());									
   	xmlDoc *doc = NULL;
     xmlNode *root_element = NULL;
+
 	doc = xmlReadFile(i_file, NULL, 0);
+
     if (doc == NULL){
        std::cerr<<"Error: could not parse the XML file "<< input <<std::endl;
        exit(1);
     }
 	delete [] i_file ;	
-	
+
 	std::vector<box> boxes_t;
     root_element = xmlDocGetRootElement(doc); 
 	// read tess-ocr-detecor results
