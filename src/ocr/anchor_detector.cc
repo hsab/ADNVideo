@@ -101,7 +101,7 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"ocr") )  {
 							if (cur_node->children != NULL){
 								std::string sName((char*) cur_node->children->content);
-								b.text=sName; 
+								b.text=" "+ sName + " "; 
 							}
 							else {
 								std::string sName = "XML_FAILED";
@@ -136,6 +136,7 @@ std::vector<std::string>  Read_list(std::string file_name) {
             std::string ch;        
             fichier >> ch;	  
             if ( ch != "" ) {
+				ch=" " +ch + " "  ;
                 list.push_back(ch);
 				
               }else           
