@@ -189,8 +189,10 @@ int main(int argc, char **argv){
     std::string name="";
     std::string ocr;
     size_t t;
+    double time;
     while ((!found) & (boxes_t[i].time <200)){
 		ocr=boxes_t[i].text;
+		time = boxes_t[i].time;
 		std::string buf;
 		std::stringstream ss(ocr);
 		std::vector<std::string> tokens;   
@@ -216,7 +218,7 @@ int main(int argc, char **argv){
 	if (found) {
 		
 	   
-        std::cout <<"anchor = "<< name <<std::endl;
+        std::cout <<"anchor="<< name << " time="<< time<<std::endl;
 	}
 	return 0;
 }
