@@ -46,19 +46,13 @@ int main(int argc, char** argv) {
 
     amu::FeatureExtractor extractor;	
 	for (int i =0; i<data.size();i++){
-	    image = cv::imread(data[i].name, CV_LOAD_IMAGE_COLOR); 
-		std::vector<float> features = extractor.Compute(image);
-		cv::resize(image, image, cv::Size(128, 64));
-                std::vector<float> descriptorsValues;
-                std::vector<cv::Point> locations;
-                hog.compute(image, descriptorsValues, cv::Size(0,0), cv::Size(0,0), locations);
+				image = cv::imread(data[i].name, CV_LOAD_IMAGE_COLOR); 
+				std::vector<float> features = extractor.Compute(image);
                 std::cout << data[i].label;
-                for(size_t j = 0; j < descriptorsValues.size(); j++) {
-                    std::cout << " "<<j+1<<":" << descriptorsValues[j];
+                for(size_t j = 0; j < features.size(); j++) {
+                    std::cout << " "<<j+1<<":" << features[j];
                 }
                 std::cout << "\n";
-                
-                
 	
 	}
     return 0;

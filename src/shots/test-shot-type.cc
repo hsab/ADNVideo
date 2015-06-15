@@ -5,46 +5,50 @@
 #include "shot-features.h"
 #include "classify.h"
 
+
+namespace amu {
+    struct Data {
+        std::string name;
+        int label;
+        static std::vector<Data> Load(const std::string& filename) {
+            std::vector<Data> output;
+            std::ifstream input(filename.c_str());
+            if(input) {
+                std::string line;
+                while(std::getline(input, line)) {
+                    std::stringstream reader(line);
+					Data detection;
+                    reader >> detection.name >> detection.label;
+                    output.push_back(detection);
+                }
+            } else {
+                std::cerr << "ERROR: loading \"" << filename << "\"\n";
+            }
+            return output;
+        }
+        
+	};
+}
 int main(int argc, char** argv) {
     amu::CommandLine options(argv, "[options]\n");
-    options.AddUsage("  --shots <shots-file>              shot segmentation \n");
+    options.AddUsage("  --data                                     \n");
+    options.AddUsage("  --model                           SVM model\n");
 
-    std::string shotFile = options.Get<std::string>("--shots", "");
+    std::string dataFilename = options.Get<std::string>("--data", "");
+    std::string modelFilename = options.Get<std::string>("--model", "");
 
-    amu::VideoReader video;
-    if(!video.Configure(options)) return 1;
-	
-	
-    std::map<int, amu::ShotType> shotTypes;
-    if(shotFile != "") {
-        std::vector<amu::ShotSegment> shots = amu::ShotSegment::Read(shotFile);
-        for(size_t i = 0; i < shots.size(); i++) {
-            shotTypes[shots[i].frame] = amu::ShotType(video.GetShowName(), shots[i].frame, amu::ShotLabel_Set);
-        }
-    }
 
-    amu::FeatureExtractor extractor;
-    amu::LibLinearClassifier classifier("/home/meriem/work/repere/data/All.model");
-	std::vector<std::string> classes;
-	classes.push_back("set");
-	classes.push_back("report");
-	classes.push_back("mixed");
-	classes.push_back("other");
-	
-    cv::Mat image,resized;
-	for(std::map<int, amu::ShotType>::const_iterator shot = shotTypes.begin(); shot != shotTypes.end(); shot++) {
-        video.Seek(shot->first);
-        if(!video.ReadFrame(image) || image.empty()) {
-            std::cerr << "ERROR: reading frame " << video.GetIndex() << "\n";
-            continue;
-        }
-		cv::resize(image,resized,cv::Size(1024,576));
+
+    amu::LibLinearClassifier classifier(modelFilename);	
+	std::vector<amu::Data> data = amu::Data::Load(dataFilename);
+    cv::Mat image;
+
+    amu::FeatureExtractor extractor;	
+	for (int i =0; i<data.size();i++){
+				image = cv::imread(data[i].name, CV_LOAD_IMAGE_COLOR); 
+				std::vector<float> features = extractor.Compute(image);
+                std::cout << data[i].label <<" "<<classifier.Classify(features) << "\n";
+	}
 		
-        std::vector<float> features = extractor.Compute(resized);
-		std::cout<<shot->first <<" "<<classifier.Classify(features) << "\n";
-		cv::imshow("original", resized);
-		cv::waitKey(0);
-		cv::destroyWindow("original");
-    }
     return 0;
 }
