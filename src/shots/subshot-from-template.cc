@@ -109,7 +109,7 @@ namespace amu {
 // if split candidates then prints split_ids and split_scores
 int main(int argc, char** argv) {
 
-    std::cout<<"*********** Templates split detection ***********"<<std::endl;	
+    std::cerr<<"*********** Templates split detection ***********"<<std::endl;	
 	// need split template file and shot boudaries detection outputs	
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --templates <template-file>       subshot template definition file\n");

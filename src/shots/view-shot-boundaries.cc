@@ -50,7 +50,7 @@ void ShowTiles(amu::VideoReader& video, double frame, bool isTime = false) {
 // Main function: Takes a frame number or time,
 // shows the four frames before and after the specifed frame :
 int main(int argc, char** argv) {
-    std::cout<<"*********** View shot boundaries ***********"<<std::endl;	
+    std::cerr<<"*********** View shot boundaries ***********"<<std::endl;	
     amu::CommandLine options(argv, "[options]\n");
     // if specified time instead of a frame number
     options.AddUsage("  --time                            specify that shot boundaries are in seconds\n");

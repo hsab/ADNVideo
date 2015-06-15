@@ -87,7 +87,7 @@ double Median(const amu::Buffer<double>& values) {
 // score is the break distance
 int main(int argc, char** argv) {
 	
-    std::cout<<"*********** Shot boundary detection ***********"<<std::endl;		
+    std::cerr<<"*********** Shot boundary detection ***********"<<std::endl;		
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --window                          specify window size for boundary breaks search (default 9)\n");
     options.AddUsage("  --scale                           scale picture according to this factor after resizing (default 1.0)\n");
