@@ -46,7 +46,6 @@ int main(int argc, char** argv) {
 
     amu::FeatureExtractor extractor;	
 	for (int i =0; i<data.size();i++){
-		std::cout<<data[i].name <<std::endl;
 	    image = cv::imread(data[i].name, CV_LOAD_IMAGE_COLOR); 
 		std::vector<float> features = extractor.Compute(image);
 		cv::resize(image, image, cv::Size(128, 64));
