@@ -64,66 +64,7 @@ namespace amu {
 
                 std::vector<cv::Rect> detectedFaces;
                 int model = 0;
-
-                if(type == DetectorType_CUDA) {
-                    //cv::gpu::GpuMat gpuImage;
-                    //gpuImage.upload(gray);
-                    //for(std::vector<cv::gpu::CascadeClassifier_GPU>::iterator detector = detectors_gpu.begin(); detector != detectors_gpu.end(); detector++) {
-                        //if(detector->empty()) {
-                            //std::cerr << "ERROR: could not load models\n";
-                            //return false;
-                        //}
-
-                        //detector->visualizeInPlace = false;
-                        //detector->findLargestObject = false;
-
-                        //cv::gpu::GpuMat facesBuffer;
-                        //cv::Mat facesDownloaded;
-                        //int numDetections = detector->detectMultiScale(gpuImage, facesBuffer);
-                        //facesBuffer.colRange(0, numDetections).download(facesDownloaded);
-
-                        //detectedFaces.clear();
-                        //for(size_t i = 0; i < numDetections; i++) {
-                            //detectedFaces.push_back(facesDownloaded.ptr<cv::Rect>()[i]);
-                        //}
-
-                        //for(std::vector<cv::Rect>::const_iterator i = detectedFaces.begin(); i != detectedFaces.end(); i++) {
-                            //cv::Mat head(image, *i);
-                            //std::cout << frame << " " << i->x / scale << " " << i->y / scale 
-                                //<< " " << i->width / scale << " " << i->height / scale << " " << skin(head) << " " << model << "\n";
-                            //if(show) {
-                                //cv::rectangle(copy, *i, cv::Scalar(255, 0, 0), 1);
-                                //std::stringstream value;
-                                //value << model;
-                                //cv::putText(copy, value.str(), cvPoint(i->x + 5, i->y + 10), cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(0, 0, 255));
-                            //}
-                        //}
-                        //model++;
-                    //}
-                } else if(type == DetectorType_OPENCL) {
-                    //cv::ocl::oclMat oclGray(gray);
-                    //for(std::vector<cv::ocl::OclCascadeClassifier>::iterator detector = detectors_ocl.begin(); detector != detectors_ocl.end(); detector++) {
-                        //if(detector->empty()) {
-                            //std::cerr << "ERROR: could not load models\n";
-                            //return false;
-                        //}
-                        //detectedFaces.clear();
-                        //detector->detectMultiScale(oclGray, detectedFaces);
-                        //for(std::vector<cv::Rect>::const_iterator i = detectedFaces.begin(); i != detectedFaces.end(); i++) {
-                            //cv::Mat head(image, *i);
-                            //std::cout << frame << " " << i->x / scale << " " << i->y / scale 
-                                //<< " " << i->width / scale << " " << i->height / scale << " " << skin(head) << " " << model << "\n";
-                            //if(show) {
-                                //cv::rectangle(copy, *i, cv::Scalar(255, 0, 0), 1);
-                                //std::stringstream value;
-                                //value << model;
-                                //cv::putText(copy, value.str(), cvPoint(i->x + 5, i->y + 10), cv::FONT_HERSHEY_COMPLEX_SMALL, 1, cvScalar(0, 0, 255));
-                            //}
-                        //}
-                        //model++;
-                    //}
-                } else {
-                    for(std::vector<cv::CascadeClassifier>::iterator detector = detectors.begin(); detector != detectors.end(); detector++) {
+                for(std::vector<cv::CascadeClassifier>::iterator detector = detectors.begin(); detector != detectors.end(); detector++) {
                         if(detector->empty()) {
                             std::cerr << "ERROR: could not load models\n";
                             return false;
@@ -142,8 +83,8 @@ namespace amu {
                             }
                         }
                         model++;
-                    }
                 }
+                
                 
                 if (show) {    
 					cv::imshow( "Display window", copy );              
@@ -162,7 +103,6 @@ int main(int argc, char** argv) {
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --data <directory>                directory containing haar cascades\n");
     options.AddUsage("  --show                            draw detector output\n");
-    options.AddUsage("  --type <cpu|cuda|opencl>          choose from CPU/GPU-accelerated detector\n");
 
     std::string data = options.Get<std::string>("--data", ".");
     bool show = options.IsSet("--show");
@@ -184,7 +124,6 @@ int main(int argc, char** argv) {
     amu::Detector detector(data, type);
 
     while (video.HasNext()) {
-        //std::cerr << video.GetIndex() << "\n";
         video.ReadFrame(image);
         if(false == detector.Detect(image, scale, video.GetIndex(), show)) return 1;
     }

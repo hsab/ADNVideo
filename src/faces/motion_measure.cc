@@ -34,7 +34,7 @@ double motion(cv::Mat imgA,cv::Mat imgB ) {
 
 
 int main(int argc, char** argv) {
-    std::cout<<"*********** face motion ***********"<<std::endl;	
+    std::cerr<<"*********** face motion ***********"<<std::endl;	
 	// Usages
     amu::CommandLine options(argv, "[options]\n");
 

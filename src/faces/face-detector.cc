@@ -32,7 +32,7 @@ double skin(cv::Mat &image) {
 
 int main(int argc, char** argv) {
     
-      std::cout<<"*********** Face Detection ***********"<<std::endl;	
+      std::cerr<<"*********** Face Detection ***********"<<std::endl;	
 	// Usages
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --model                           haarcascade model (XML format) \n");

@@ -57,8 +57,6 @@ int main(int argc, char** argv) {
             std::vector<float> descriptorsValues;
             std::vector<cv::Point> locations;
             hog.compute(image, descriptorsValues, cv::Size(0,0), cv::Size(0,0), locations);
-
-            std::cout << shots[shot].frame;
             for(size_t i = 0; i < descriptorsValues.size(); i++) {
                 std::cout << " " << descriptorsValues[i];
             }

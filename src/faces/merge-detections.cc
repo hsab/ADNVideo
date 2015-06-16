@@ -1,6 +1,8 @@
+// Merge Face detection and create facetracks 
+// Please read the wiki for information and build instructions.
+
 #include <iostream>
 #include <list>
-
 #include "repere.h"
 #include "commandline.h"
 #include "face.h"
@@ -45,16 +47,15 @@ namespace amu {
 
 int main(int argc, char** argv) {
 
+    std::cerr<<"*********** Face tracks ***********"<<std::endl;	
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --shots <shot-file>               shot segmentation output\n");
     options.AddUsage("  --detections <detection-file>     haar detector ourput for each frame\n");
-    options.AddUsage("  --idx <idx-file>                  idx for converting frames to times\n");
     options.AddUsage("  --min-detect <int>                minimum number of detections in track (default=5)\n");
     options.AddUsage("  --min-density <float>             minimum density of detections in track (default=0.5)\n");
 
     std::string shotFilename = options.Get<std::string>("--shots", "");
     std::string detectionFilename = options.Get<std::string>("--detections", "");
-    std::string idxFilename = options.Get<std::string>("--idx", "");
     int minDetections = options.Get("--min-detect", 5);
     double minDensity = options.Get("--min-density", 0.5);
 

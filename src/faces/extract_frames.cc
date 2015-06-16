@@ -6,7 +6,7 @@
 #include "face.h"
 
 int main(int argc, char** argv) {
-    std::cout<<"*********** Extract shot frames ***********"<<std::endl;	
+    std::cerr<<"*********** Extract shot frames ***********"<<std::endl;	
     amu::CommandLine options(argv, "[options]\n");
     options.AddUsage("  --shots <shot-file>               shot segmentation output\n");
     options.AddUsage("  --idx <idx-file>                  idx for converting frames to times\n");
