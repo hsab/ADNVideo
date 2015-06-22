@@ -11,10 +11,6 @@
 using namespace std;
 using namespace cv;
 
-
-
-
-
 // distance between to vectors
 float d_distance(Mat a, Mat b){
 	float result;
