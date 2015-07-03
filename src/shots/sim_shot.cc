@@ -151,24 +151,23 @@ int main( int argc, char **argv)
     std::string output= options.Get<std::string>("--output", "");
     
 
-	cout <<file_liste<<endl;
 	vector<string> list;
     list.clear();
     
 	fstream fichier(file_liste.c_str());
-    if ( !fichier ) {               // si le fichier n'est pas trouvé
+    if ( !fichier ) {           
         cout << "fichier inexistant";
-    } else {                        // sinon
-        bool continuer = true;      // indicateur de fin de fichier
+    } else {                    
+        bool continuer = true;  
         while( continuer ) {	
-            string ch;              // chaine contenant une ligne du fichier
-            fichier >> ch;	    // ranger une ligne dans ch
+            string ch;          
+            fichier >> ch;	    
 
-            if ( ch != "" )  {       // si la ligne n'est pas vide faire
+            if ( ch != "" )  {  
                 list.push_back(ch);
 				
-              }else                   // sinon
-                continuer = false;  //   sortir de la boucle de lecture
+              }else                  
+                continuer = false;  
         }
     }
 
