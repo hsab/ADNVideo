@@ -19,37 +19,42 @@ face: $(PROGS_face)
 
 shot-boundary-detector: src/shots/shot-boundary-detector.cc 
 	$(CC) src/shots/shot-boundary-detector.cc -o bin/$@  $(CFLAGS_SHOT)
-
+	scripts/make-bundle bin/$@  bin/$@.bundle
 
 view-shot-boundaries: src/shots/view-shot-boundaries.cc 
 	$(CC) src/shots/view-shot-boundaries.cc -o  bin/$@  $(CFLAGS_SHOT)
-
+	scripts/make-bundle bin/$@  bin/$@.bundle
+	
 subshot-from-template: src/shots/subshot-from-template.cc 
 	$(CC) src/shots/subshot-from-template.cc -o  bin/$@  $(CFLAGS_SHOT)
-
+	scripts/make-bundle bin/$@  bin/$@.bundle
 
 tess-ocr-detector: src/ocr/tess-ocr-detector.cc 
 	$(CC) src/ocr/tess-ocr-detector.cc -o  bin/$@  $(CFLAGS_OCR)
-
+	scripts/make-bundle bin/$@  bin/$@.bundle
 
 generate-mask: src/ocr/generate-mask.cc 
 	$(CC) src/ocr/generate-mask.cc -o  bin/$@  $(CFLAGS_OCR)
+	scripts/make-bundle bin/$@  bin/$@.bundle
 
 tracking-tess-ocr-detector: src/ocr/tracking-tess-ocr-detector.cc 
 	$(CC) src/ocr/tracking-tess-ocr-detector.cc -o  bin/$@  $(CFLAGS_OCR)
+	scripts/make-bundle bin/$@  bin/$@.bundle
 
 face-detector: src/faces/face-detector.cc 
 	$(CC) src/faces/face-detector.cc -o  bin/$@  $(CFLAGS_SHOT)
-	
+	scripts/make-bundle bin/$@  bin/$@.bundle
+
 haar-detector: src/faces/haar-detector.cc 
 	$(CC) src/faces/haar-detector.cc -o  bin/$@  $(CFLAGS_SHOT)
-
+	scripts/make-bundle bin/$@  bin/$@.bundle
 view-face-detections: src/faces/view-face-detections.cc 
 	$(CC) src/faces/view-face-detections.cc -o  bin/$@  $(CFLAGS_SHOT)
-
+	scripts/make-bundle bin/$@  bin/$@.bundle
 
 play-video: src/utils/play-video.cc 
 	$(CC) src/utils/play-video.cc -o  bin/$@  $(CFLAGS_SHOT)
+	scripts/make-bundle bin/$@  bin/$@.bundle
 
 clean:
 	rm -rf  bin/*
