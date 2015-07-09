@@ -3,7 +3,7 @@ CFLAGS_SHOT= -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdev
 CFLAGS_OCR=  -W `pkg-config --cflags --libs opencv`  -Iinclude -lswscale -lavdevice -lavformat -lavcodec -lavutil -lswresample -lz -lconfig++ -ltesseract `xml2-config --cflags --libs` -w 
 
 PROGS_shot:= shot-boundary-detector view-shot-boundaries subshot-from-template
-PROGS_tess:= tess-ocr-detector generate-mask tracking-tess-ocr-detector
+PROGS_tess:= tess-ocr-detector generate-mask tracking-tess-ocr-detector run_lif_cleanocr
 PROGS_utils:= play-video
 PROGS_face:= face-detector haar-detector view-face-detections
 
@@ -56,9 +56,25 @@ play-video: src/utils/play-video.cc
 	$(CC) src/utils/play-video.cc -o  bin/$@  $(CFLAGS_SHOT)
 	scripts/make-bundle bin/$@  bin/$@.bundle
 
+
+C = gcc
+OPTION = -Iinclude
+
+run_lif_cleanocr: src/ocr/run_lif_cleanocr.c src/ocr/charset.o src/ocr/lia_liblex.o src/ocr/manage_capital.o
+	$(C) $(OPTION) -o bin/run_lif_cleanocr src/ocr/run_lif_cleanocr.c src/ocr/charset.o src/ocr/lia_liblex.o src/ocr/manage_capital.o
+	scripts/make-bundle bin/run_lif_cleanocr  bin/run_lif_cleanocr.bundle
+	
+charset.o: src/ocr/charset.c
+	$(C)  $(OPTION) -c src/ocr/charset.c
+
+lia_liblex.o: src/ocr/lia_liblex.c src/ocr/lia_liblex.h
+	$(C)  $(OPTION) -c src/ocr/lia_liblex.c
+
+manage_capital.o: src/ocr/manage_capital.c
+	$(C)  $(OPTION)  -c src/ocr/manage_capital.c
+
 clean:
 	rm -rf  bin/*
-
 
 mrproper: clean
 	rm -rf  bin/*

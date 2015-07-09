@@ -16,7 +16,9 @@
 #define False   0
 
 void ERREUR(char *ch1,char *ch2){
-	fprintf(stderr,"ERREUR : %s %s\n",ch1,ch2);
+	fprintf(stderr,"ERREUR : %s %s \n",ch1,ch2);
+	fprintf(stderr,"Use --h for \n");
+	
 	exit(0);
 }
 
@@ -75,38 +77,55 @@ int find_word(int lexidorig, int lexidlite, char *ch, char *buffer){
 #define UTF8	1
 
 int main(int argc, char **argv) {
+	
+	if(argc <2){
+		fprintf(stderr,"USAGE : %s --input ocr.flitred.xml --lex lexique [--confusion <file>][--threshold <float>] \n", argv[0]);
+	return 1;
+	}
+	
 	int ret,nb,i,j,k,lexidorig,lexidlite,ilite,found,nbin;
 	double coeff;
-	char ch[TailleLigne],*chname,chorig[TailleLigne],*ptword,chconfu[TailleLigne],buffer[TailleLigne],chfilt[TailleLigne],wpart1[TailleLigne],wpart2[TailleLigne];
+	char ch[TailleLigne],*chname,chorig[TailleLigne],*ptword,chconfu[TailleLigne],buffer[TailleLigne],chfilt[TailleLigne],wpart1[TailleLigne],wpart2[TailleLigne],input[TailleLigne];
 	wchar dest[TailleLigne];
 	FILE *file;
 	chconfu[0]='\0';
 	chname=NULL;
 	coeff=50;
+
 	if (argc>1)
 		for(nb=1;nb<argc;nb++)
-		if (!strcmp(argv[nb],"-lex")){
+		if (!strcmp(argv[nb],"--lex")){
 			if (nb+1==argc) ERREUR("must have a value after argument;",argv[nb]);
 			chname=argv[++nb];
 		}	
 		else
-		if (!strcmp(argv[nb],"-confusion")){
-			if (nb+1==argc) ERREUR("must have a value after argument;",argv[nb]);
-			strcpy(chconfu,argv[++nb]);
+			if (!strcmp(argv[nb],"--confusion")){
+				if (nb+1==argc) ERREUR("must have a value after argument;",argv[nb]);
+				strcpy(chconfu,argv[++nb]);
 		}
 		else
-			if (!strcmp(argv[nb],"-threshold")){
+			if (!strcmp(argv[nb],"--input")){
+				if (nb+1==argc) ERREUR("must have a value after argument;",argv[nb]);
+				strcpy(input,argv[++nb]);
+		}
+		else
+			if (!strcmp(argv[nb],"--threshold")){
 				if (nb+1==argc) ERREUR("must have a value after argument;",argv[nb]);
 				if (sscanf(argv[++nb],"%lf",&coeff)!=1) ERREUR("bad argument:",argv[nb]);
 			}
-			else
-			if (!strcmp(argv[nb],"-h")){
-				fprintf(stderr,"Syntax: %s [-h] -lex <name> [-confusion <file>][-threshold <float>]\n",argv[0]);
+		else
+			if (!strcmp(argv[nb],"--h")){
+				fprintf(stderr,"USAGE : %s --input ocr.flitred.xml --lex lexique [--confusion <file>][--threshold <float>] \n", argv[0]);
 				exit(0);
 			}
-			else ERREUR("unknown option:",argv[nb]);
+		else ERREUR("Unknown option ",argv[nb]);
 
-			if (chname==NULL) ERREUR("bad syntax, check '-h'","");
+			if (chname==NULL) {
+				fprintf(stderr,"**** BAD SYNTAX ****\n");
+				fprintf(stderr,"USAGE : %s --input ocr.flitred.xml --lex lexique [--confusion <file>][--threshold <float>] \n", argv[0]);
+				exit(0);
+			}
+
 
 			if (chconfu[0]){
 				NbConf=0;
@@ -143,9 +162,10 @@ int main(int argc, char **argv) {
 
 			while(fgets(ch,TailleLigne,stdin)){
 				printf("%s",ch);
-				if ((strstr(ch,"<Text>"))||(strstr(ch,"<text>"))){
-					for(i=0;(ch[i])&&(strncmp(ch+i,"<Text>",6))&&(strncmp(ch+i,"<text>",6));i++) printf("%c",ch[i]); if (!ch[i]) ERREUR("DOODi::",ch);
-					for (j=i+6;(ch[j])&&(strncmp(ch+j,"</Text>",7))&&(strncmp(ch+j,"</text>",7));j++); if (!ch[j]) ERREUR("bad format:",ch);
+				if (strstr(ch,"<ocr>")){
+					printf("<**** %s\n",ch);
+					for(i=0;(ch[i])&&(strncmp(ch+i,"<ocr>",5));i++) printf("%c",ch[i]); if (!ch[i]) ERREUR("DOODi::",ch);
+					for (j=i+6;(ch[j])&&(strncmp(ch+j,"</ocr>",6));j++); if (!ch[j]) ERREUR("bad format:",ch);
 					ch[j]='\0';
 					strcpy(chorig,ch+i+6);
 					for(chfilt[0]='\0',nb=nbin=0,ptword=strtok(chorig," \t\n\r");ptword;ptword=strtok(NULL," \t\n\r"),nb++){
