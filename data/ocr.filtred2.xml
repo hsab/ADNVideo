@@ -1,0 +1,20 @@
+<box>
+    <Start>134.84</Start>
+    <End>148.04</End>
+    <Position_X>149</Position_X>
+    <Position_Y>451</Position_Y>
+    <Width>644</Width>
+    <Height>23</Height>
+    <Confidence>0.90</Confidence>
+    <ocr>CINO CORPS SANS VIE DE BEBES ONT ETE RETROUVES</ocr>
+  </box>
+<box>
+    <Start>134.84</Start>
+    <End>148.04</End>
+    <Position_X>149</Position_X>
+    <Position_Y>478</Position_Y>
+    <Width>637</Width>
+    <Height>24</Height>
+    <Confidence>0.91</Confidence>
+    <ocr>AU DOMICILE D'UN COUPLE A LOUCHATS, EN GIRONDI</ocr>
+</box>

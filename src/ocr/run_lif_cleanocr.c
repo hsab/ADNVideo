@@ -17,7 +17,7 @@
 
 void ERREUR(char *ch1,char *ch2){
 	fprintf(stderr,"ERREUR : %s %s \n",ch1,ch2);
-	fprintf(stderr,"Use --h for \n");
+	fprintf(stderr,"Use --h for help \n");
 	
 	exit(0);
 }
@@ -37,13 +37,13 @@ int NbConf=0;
 /*................................................................*/
 
 int find_word(int lexidorig, int lexidlite, char *ch, char *buffer){
+	
 	int ret,nb,i,j,found;
 	char *ptword,chconfu[TailleLigne];
 	wchar dest[TailleLigne];
 	buffer[0]='\0';
-
+	
 	if (word2code(lexidorig,ch,&i)) { sprint_code_list_word(buffer,lexidorig,i); return True; }
-
 	ret=utf8ToUnicode(ch,strlen(ch),dest,TailleLigne); dest[ret]='\0';
 	ret=unicodeToIso8859(dest,ret,ch,TailleLigne); ch[ret]='\0';
 	copy_lite(dest,ch);
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 		fprintf(stderr,"USAGE : %s --input ocr.flitred.xml --lex lexique [--confusion <file>][--threshold <float>] \n", argv[0]);
 	return 1;
 	}
-	
+
 	int ret,nb,i,j,k,lexidorig,lexidlite,ilite,found,nbin;
 	double coeff;
 	char ch[TailleLigne],*chname,chorig[TailleLigne],*ptword,chconfu[TailleLigne],buffer[TailleLigne],chfilt[TailleLigne],wpart1[TailleLigne],wpart2[TailleLigne],input[TailleLigne];
@@ -159,19 +159,26 @@ int main(int argc, char **argv) {
 			fclose(file);
 			lexicon_sort_code(lexidlite);
 			lexicon_sort_code(lexidorig);
-
-			while(fgets(ch,TailleLigne,stdin)){
+			
+			FILE *f;
+			
+			if (!(f=fopen(input,"rt"))) ERREUR("can't open:",input);
+			while(fgets(ch,TailleLigne,f)){
+				int ok=0;
 				printf("%s",ch);
 				if (strstr(ch,"<ocr>")){
-					printf("<**** %s\n",ch);
-					for(i=0;(ch[i])&&(strncmp(ch+i,"<ocr>",5));i++) printf("%c",ch[i]); if (!ch[i]) ERREUR("DOODi::",ch);
-					for (j=i+6;(ch[j])&&(strncmp(ch+j,"</ocr>",6));j++); if (!ch[j]) ERREUR("bad format:",ch);
+					for(i=0;(ch[i])&&(strncmp(ch+i,"<ocr>",4));i++) printf("%c",ch[i]); if (!ch[i]) ERREUR("DOODi::",ch);
+					for (j=i+5;(ch[j])&&(strncmp(ch+j,"</ocr>",5));j++); if (!ch[j]) ERREUR("bad format:",ch);
 					ch[j]='\0';
-					strcpy(chorig,ch+i+6);
+					strcpy(chorig,ch+i+5);
 					for(chfilt[0]='\0',nb=nbin=0,ptword=strtok(chorig," \t\n\r");ptword;ptword=strtok(NULL," \t\n\r"),nb++){
 						strcpy(wpart1,ptword);
 						if (find_word(lexidorig,lexidlite,ptword,buffer)){ 
-							nbin++; sprintf(chfilt+strlen(chfilt)," [ %s ]",buffer); 
+							nbin++; 
+							sprintf(chfilt+strlen(chfilt),"[%s]",buffer); 
+							char k;
+							for(k=0; ptword[k]!='\0'; ++k);
+							if (k >3) ok=1;
 						}
 						else
 							if (strstr(wpart1,"'")){
@@ -179,19 +186,31 @@ int main(int argc, char **argv) {
 									wpart1[i]='\0';
 									for(i++,j=0;wpart1[i];i++,j++) wpart2[j]=wpart1[i];
 									wpart2[j]='\0';
-								if (find_word(lexidorig,lexidlite,wpart1,buffer)) { nbin++; sprintf(chfilt+strlen(chfilt)," [ %s ]",buffer); }
-								else sprintf(chfilt+strlen(chfilt)," [! %s !]",wpart1);
-								if (find_word(lexidorig,lexidlite,wpart2,buffer)) { sprintf(chfilt+strlen(chfilt)," [ %s ]",buffer); }
-								else sprintf(chfilt+strlen(chfilt)," [! %s !]",wpart2);
+								if (find_word(lexidorig,lexidlite,wpart1,buffer)) {
+									nbin++;
+									sprintf(chfilt+strlen(chfilt),"[%s]",buffer); 
+									char k;
+									for(k=0; wpart1[k]!='\0'; ++k);
+									if (k >3) ok=1;
+								}
+								else sprintf(chfilt+strlen(chfilt),"[!%s!]",wpart1);
+								if (find_word(lexidorig,lexidlite,wpart2,buffer)) {
+									 sprintf(chfilt+strlen(chfilt),"[%s]",buffer); 
+								}
+								else sprintf(chfilt+strlen(chfilt),"[!%s!]",wpart2);
 							}
-						else sprintf(chfilt+strlen(chfilt)," [! %s !]",wpart1);
-					}
-					if (nbin>(((double)nb/(double)100)*(double)coeff)) // more than coeff% in vocab 
-						printf("<TextFiltered>%s <TextFiltered>\n",chfilt);
+						else sprintf(chfilt+strlen(chfilt),"[!%s!]",wpart1);
+					}	
+					float t=coeff;
+					if (nb <=3) {t=0.5;}
+					if (ok ==0) {t=1;}
+					if (nbin>=((double)nb)*(double)t) // more than coeff% in vocab 
+						printf("<ocrFiltered>%s<ocrFiltered>\n",chfilt);
 					else
-						printf("<TextFiltered> REJECTED <TextFiltered>\n");
+						printf("<ocrFiltered>REJECTED<ocrFiltered>\n");
 			}
 		}
+		fclose(f);
 	exit(0);
 }
   
