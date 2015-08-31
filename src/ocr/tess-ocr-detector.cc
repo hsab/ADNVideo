@@ -405,16 +405,30 @@ int main(int argc, char** argv) {
 	config_destroy(&cfg);    
     step = options.Read("--step", step);
 
+	// load video
+    amu::VideoReader video;
+    if(!video.Configure(options)) return 1;
+    if(options.Size() != 0) options.Usage();
+    
+	cv::Mat image, image_BW, resized;
+
 	// read the mask if it exists
 	cv::Mat mask;
-	
 	bool isMask=false;	
 	if (maskFile!=""){
 		isMask=true;
 		mask = cv::imread(maskFile, CV_LOAD_IMAGE_COLOR); 
-		if (resize) cv::resize(mask,mask,cv::Size(1024,576));
-
+		video.ReadFrame(image);
+		cv::Size s_image = image.size();
+		cv::Size s_mask = mask.size();
+		cv::resize(mask,mask,cv::Size(s_image.width,s_image.height));
+		// check if size mask ok
+		if ((s_image.height != s_mask.height) or (s_image.width != s_mask.width)){
+			std::cerr<<"ERROR: Mask need to have same dimension than video!! " <<std::endl;
+			return 0;	
+		}
 		
+	
 	}
 				
 		
@@ -423,12 +437,7 @@ int main(int argc, char** argv) {
     if(upper_case) ocr.SetUpperCase(ignore_accents);
     else ocr.SetMixedCase(ignore_accents);
 	
-	// load video
-    amu::VideoReader video;
-    if(!video.Configure(options)) return 1;
-    if(options.Size() != 0) options.Usage();
-    
-	cv::Mat image, image_BW, resized;
+
 
 	//XML output
 	xmlDocPtr doc = NULL;      
@@ -436,20 +445,15 @@ int main(int argc, char** argv) {
     doc = xmlNewDoc(BAD_CAST "1.0");
     root_node = xmlNewNode(NULL, BAD_CAST "root");
     xmlDocSetRootElement(doc, root_node);
-    
-
 	
+
 	while(video.HasNext()) {
         if(video.ReadFrame(image)) {	
 				resized =image;	
-				if (resize) cv::resize(image,resized,cv::Size(1024,576));
-
-				
-				
-
+				//(resize) cv::resize(image,resized,cv::Size(1024,576));
 				// apply mask if it exists
 				if (isMask) cv::bitwise_and(resized, mask, resized);	
-				
+				cv::Size size_frame = resized.size();
 				cv::cvtColor(resized, image_BW, CV_RGB2GRAY);		
 				cv::Mat im=image_BW;
 				
@@ -492,6 +496,12 @@ int main(int argc, char** argv) {
 					sprintf(buffer, "%f",video.GetTime());
 					node = xmlNewChild(box_node, NULL, BAD_CAST "time", (const xmlChar *) buffer);
 					
+					sprintf(buffer, "%d",size_frame.width);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "ratioX", (const xmlChar *) buffer);
+					
+					sprintf(buffer, "%d",size_frame.height);
+					node = xmlNewChild(box_node, NULL, BAD_CAST "ratioY", (const xmlChar *) buffer);
+															
 					sprintf(buffer, "%d",rects[i].x);
 					node = xmlNewChild(box_node, NULL, BAD_CAST "positionX", (const xmlChar *) buffer);
 					
@@ -517,16 +527,17 @@ int main(int argc, char** argv) {
 					if(show) {
 						cv::imshow("original", im_box);
 						std::cout << "<box>\n";
-						std::cout <<"  <time> "<<video.GetTime()<< " </time>\n";
-						std::cout <<"  <positionX> "<<rects[i].x<< " </positionX>\n";
-						std::cout <<"  <positionY> "<<rects[i].y<< " </positionY>\n";
-						std::cout <<"  <width> "<<rects[i].width<< " </width>\n";
-						std::cout <<"  <height> "<<rects[i].height<< " </height>\n";
-						std::cout <<"  <confidence> "<<result.confidence  << " </confidence>\n";
-						std::cout <<"  <ocr> " <<result.text << " </ocr>\n";
-						std::cout << "</box>\n";
-					
-						cv::waitKey(1000);
+						std::cout <<"    <time>"<<video.GetTime()<<"</time>\n";
+						std::cout <<"    <ratioX>"<<size_frame.width<<"</ratioX>\n";
+						std::cout <<"    <ratioY>"<<size_frame.height<<"</ratioY>\n";
+						std::cout <<"    <positionX>"<<rects[i].x<<"</positionX>\n";
+						std::cout <<"    <positionY>"<<rects[i].y<<"</positionY>\n";
+						std::cout <<"    <width>"<<rects[i].width<<"</width>\n";
+						std::cout <<"    <height>"<<rects[i].height<<"</height>\n";
+						std::cout <<"    <confidence>"<<result.confidence<<"</confidence>\n";
+						std::cout <<"    <ocr>"<<result.text <<"</ocr>\n";
+						std::cout << "</box>\n";					
+						cv::waitKey(300);
 						cv::destroyWindow("original");
 						
 						

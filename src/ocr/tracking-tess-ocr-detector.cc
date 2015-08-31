@@ -28,8 +28,10 @@
 class box {
         public:
             double time;
-            int position_X;
-            int position_Y;
+            int positionX;
+            int positionY;
+            int ratioX;
+            int ratioY;
 			int width;
 			int height;
 			double confidence;
@@ -42,8 +44,10 @@ class OCR_track {
         public:
             double start;
             double end;
-            int position_X;
-            int position_Y;
+            int positionX;
+            int positionY;
+            int ratioX;
+            int ratioY;            
 			int width;
 			int height;
 			double confidence;
@@ -92,8 +96,10 @@ size_t LevenshteinDistance(const std::string &s1, const std::string &s2){
 		if (!xmlStrcmp(cur->name, (const xmlChar *)"box")){           
 			cur_node=cur->xmlChildrenNode;
 			while (cur_node != NULL){						
-						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"positionX"))  {std::string sName((char*) cur_node->children->content); b.position_X=::atof(sName.c_str());}
-						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"positionY"))  {std::string sName((char*) cur_node->children->content); b.position_Y=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"ratioX"))  {std::string sName((char*) cur_node->children->content); b.ratioX=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"ratioY"))  {std::string sName((char*) cur_node->children->content); b.ratioY=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"positionX"))  {std::string sName((char*) cur_node->children->content); b.positionX=::atof(sName.c_str());}
+						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"positionY"))  {std::string sName((char*) cur_node->children->content); b.positionY=::atof(sName.c_str());}
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"time"))  {std::string sName((char*) cur_node->children->content); b.time=::atof(sName.c_str());}						
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"width"))  {std::string sName((char*) cur_node->children->content); b.width=::atof(sName.c_str());}
 						if (!xmlStrcmp(cur_node->name, (const xmlChar *)"height"))  {std::string sName((char*) cur_node->children->content); b.height=::atof(sName.c_str());}
@@ -173,13 +179,13 @@ int main(int argc, char **argv){
 					b.push_back(box_1);
 					OCR_track track;
 					cv::Rect r1, r2, intersection;
-					r1.x=box_1.position_X; r1.y=box_1.position_Y; r1.width=box_1.width;	r1.height=box_1.height;			
+					r1.x=box_1.positionX; r1.y=box_1.positionY; r1.width=box_1.width;	r1.height=box_1.height;			
 					area_1= r1.width*r1.height;
 					ok = true;
 					i=0;
 					while (ok & i<boxes_t.size()){
 						if 	(boxes_t[i].time != b[b.size()-1].time) {
-							r2.x=boxes_t[i].position_X; r2.y=boxes_t[i].position_Y;	r2.width=boxes_t[i].width;	r2.height=boxes_t[i].height;	
+							r2.x=boxes_t[i].positionX; r2.y=boxes_t[i].positionY;	r2.width=boxes_t[i].width;	r2.height=boxes_t[i].height;	
 							area_2= r2.width*r2.height;
 							intersection= r1&r2;							
 							area_3= intersection.width*intersection.height;
@@ -203,10 +209,12 @@ int main(int argc, char **argv){
 						if (b[j].confidence > track.confidence){
 							track.confidence=b[j].confidence;
 							track.text=b[j].text;
-							track.position_X=b[j].position_X;
+							track.positionX=b[j].positionX;
+							track.ratioX=b[j].ratioX;
 							track.width=b[j].width;
-							track.position_Y=b[j].position_Y;
+							track.positionY=b[j].positionY;
 							track.height=b[j].height;
+							track.ratioY=b[j].ratioY;
 							}
 						}					
 						if ((track.end - track.start >=0)& (track.text!= "TESSERCAT_FAILED") & ( track.text.size()>3)) {
@@ -230,12 +238,18 @@ int main(int argc, char **argv){
 
 					sprintf(buffer, "%.2f",tracks[i].end);
 					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "end", (const xmlChar *) buffer);
+
+					sprintf(buffer, "%d",tracks[i].ratioX);
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "ratioX", (const xmlChar *) buffer);
 					
-					sprintf(buffer, "%d",tracks[i].position_X);
+					sprintf(buffer, "%d",tracks[i].ratioY);	
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "ratioY", (const xmlChar *) buffer);
+										
+					sprintf(buffer, "%d",tracks[i].positionX);
 					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "positionX", (const xmlChar *) buffer);
 					
-					sprintf(buffer, "%d",tracks[i].position_Y);	
-					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "PositionY", (const xmlChar *) buffer);
+					sprintf(buffer, "%d",tracks[i].positionY);	
+					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "positionY", (const xmlChar *) buffer);
 								
 					sprintf(buffer, "%d",tracks[i].width);
 					node_output =  xmlNewChild(box_node_output, NULL, BAD_CAST "width", (const xmlChar *) buffer);

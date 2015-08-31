@@ -80,9 +80,17 @@ int main(int argc, char **argv) {
 	
 	if(argc <2){
 		fprintf(stderr,"USAGE : %s --input ocr.flitred.xml --lex lexique [--confusion <file>][--threshold <float>] \n", argv[0]);
+		fprintf(stderr," --input                      Specify input XML file\n");
+		fprintf(stderr," --lex                        Specify vocabulary\n");
+		fprintf(stderr," --confusion                  Specify confusions file (eg. o p)\n");
+		fprintf(stderr," --threshold                  Specify the filtering threshold (percentage of sentence to be found in the lexicon, 0-1, default 0.5)\n");		
+		
 	return 1;
 	}
 
+
+
+    
 	int ret,nb,i,j,k,lexidorig,lexidlite,ilite,found,nbin;
 	double coeff;
 	char ch[TailleLigne],*chname,chorig[TailleLigne],*ptword,chconfu[TailleLigne],buffer[TailleLigne],chfilt[TailleLigne],wpart1[TailleLigne],wpart2[TailleLigne],input[TailleLigne];
@@ -90,7 +98,7 @@ int main(int argc, char **argv) {
 	FILE *file;
 	chconfu[0]='\0';
 	chname=NULL;
-	coeff=50;
+	coeff=0.5;
 
 	if (argc>1)
 		for(nb=1;nb<argc;nb++)
